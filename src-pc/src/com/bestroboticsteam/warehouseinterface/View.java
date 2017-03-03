@@ -1,4 +1,4 @@
-package com.bestroboticsteam.warehouseInterface;
+package com.bestroboticsteam.warehouseinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
