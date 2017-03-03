@@ -19,13 +19,9 @@ public class View extends JFrame {
 	public View() {
 		this.setTitle("Warehouse Management Interface");
 		this.setSize(900, 500);//set size of frame
-		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//left hand panel - map
-	//	GridMap gridMap = MapUtils.createMarkingWarehouseMap();
-	//	GridMapVisualisation mapVis = new GridMapVisualisation(gridMap, gridMap, 100f);
-		//Test
 		GridMap map = MapUtils.createRealWarehouse();
 		MapBasedSimulation sim = new MapBasedSimulation(map);
 		
@@ -65,7 +61,7 @@ public class View extends JFrame {
 		split.setRightComponent(jobPanel);
 
 		this.add(split);
-
+		this.setVisible(true);
 	}
 
 	public static void main(String[] args) {
