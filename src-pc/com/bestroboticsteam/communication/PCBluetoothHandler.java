@@ -12,16 +12,14 @@ import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 
-public class PCBluetoothHandler extends BaseBluetoothSocketHandler implements Runnable {
+public class PCBluetoothHandler extends BaseBluetoothSocketHandler {
 	private String robotName;
-	private String status;
 	private NXTComm nxtComm;
 
 	final static Logger logger = Logger.getLogger(PCBluetoothHandler.class);
 
 	public PCBluetoothHandler(String robotName) {
 		this.robotName = robotName;
-		this.status = "";
 	}
 
 	@Override
@@ -43,22 +41,6 @@ public class PCBluetoothHandler extends BaseBluetoothSocketHandler implements Ru
 		} catch (NXTCommException e) {
 			logger.error("Couldn't establish a connection");
 		}
-	}
-
-	@Override
-	public void sendObject(Communicatable obj) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String getStatus() {
-		return this.status;
-	}
-
-	@Override
-	public void receiveObject(Communicatable obj) throws ConnectionNotEstablishedException {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

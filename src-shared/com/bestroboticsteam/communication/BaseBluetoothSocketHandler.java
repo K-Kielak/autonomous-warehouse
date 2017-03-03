@@ -7,17 +7,15 @@ import java.io.IOException;
 import lejos.nxt.comm.NXTConnection;
 
 public abstract class BaseBluetoothSocketHandler implements Runnable {
-	protected boolean connectedEstabilsied = false;
-	
+	protected boolean connectionEstablished = false;
+
 	protected NXTConnection bluetooth;
 	protected DataInputStream input;
 	protected DataOutputStream output;
-	
-	public abstract void receiveObject(Communicatable obj) throws ConnectionNotEstablishedException;
-	
-	public void disconnect() throws ConnectionNotEstablishedException{
+
+	public void disconnect() throws ConnectionNotEstablishedException {
 		this.checkEstablished();
-		
+
 		try {
 			input.close();
 			output.close();
@@ -25,22 +23,26 @@ public abstract class BaseBluetoothSocketHandler implements Runnable {
 			e.printStackTrace();
 		}
 		bluetooth.close();
-		status = "Disconnected";
+		// TODO Status
 	}
 
-	@Override
-	public void sendObject(Communicatable obj) throws ConnectionNotEstablishedException{
+	public void sendObject(Communicatable obj) throws ConnectionNotEstablishedException {
 		checkEstablished();
 		obj.sendObject(this.output);
 	}
-	
-	
-	
+
+	public void receiveObject(Communicatable obj) throws ConnectionNotEstablishedException {
+		obj.receiveObject(this.input);
+
+	}
+
 	private void checkEstablished() throws ConnectionNotEstablishedException {
 		if (!connectionEstablished) {
 			throw new ConnectionNotEstablishedException();
 		}
 	}
-	
-	
+
+	// public String getStatus() {
+	// return this.status; // TODO
+	// }
 }
