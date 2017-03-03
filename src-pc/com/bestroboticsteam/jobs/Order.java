@@ -1,6 +1,8 @@
 package com.bestroboticsteam.jobs;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -35,8 +37,16 @@ public class Order implements Comparable<Order> {
 		return orderTable.get(j);
 	}
 	
-	public Collection getOrderList(){
-		return orderTable.keySet();
+	//Try not to use this, it is made for JobAssignment
+	public LinkedList<JobInfo> toJobInfos(){
+		
+		LinkedList<JobInfo> list = new LinkedList<JobInfo>();
+		
+		for(Item i: orderTable.keySet()){
+			JobInfo info = new JobInfo(i.getCode(), i.getPosition(), orderTable.get(i), id);
+			list.add(info);
+		}
+		return null;
 	}
 	
 	public ConcurrentMap getOrderTable(){

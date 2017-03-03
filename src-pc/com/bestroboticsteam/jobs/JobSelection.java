@@ -6,13 +6,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class JobSelection {
 	
-	private BlockingQueue<Order> queue = new LinkedBlockingQueue<Order>();
+	private LinkedList<Order> list;
 	private Collection<Item> itemList;
 	private Collection<Point> dropLocation;
 	
@@ -22,22 +21,29 @@ public class JobSelection {
 		itemList = reader.readItemData(path);
 		dropLocation = reader.readDropData(path);
 		
-		Collection<Order> orderList = reader.readOrderData(path);
-		setQueue(orderList);
+		list = reader.readOrderData(path);
+		setQueue(list);
 	}
 	
 	public Collection<Point> getDropLocation(){
 		return dropLocation;
 	}
+	
+	public Collection<Item> getItemList(){
+		return itemList;
+	}
 
 	public Order take(){
 
 		while (true) {
-			try {
-				return (queue.take());
-			} catch (InterruptedException e) {
-			}
+			list.getFirst();	
+			list.removeFirst();
 		}
+	}
+	
+	public Order viewOrder(int i){
+		return list.get(i);
+		
 	}
 	
 	private void setQueue(Collection<Order> orderList) {
@@ -48,13 +54,8 @@ public class JobSelection {
 			       return o1.compareTo(o2);
 			   }
 			};
-
 		
-		Order[] list = orderList.toArray(new Order[orderList.size()]);
-		Arrays.sort(list, comparator);
-		
-		for(Order order: list)
-			queue.offer(order);
+		list.sort(comparator);
 	}
 
 }

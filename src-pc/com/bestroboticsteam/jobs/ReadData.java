@@ -7,26 +7,27 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class ReadData {
 	
-	//tell me if you prefer another type of collection
+	
 	private Collection<Item> itemList = new ArrayList<Item>();
-	private Collection<Order> orderList = new ArrayList<Order>();
+	private LinkedList<Order> orderList = new LinkedList<Order>();
 	private Collection<Point> dropLocations = new ArrayList<Point>();
 	
 	
-	//###pls... first read items
+	
 	public Collection<Item> readItemData(String path){
 		readItemSpecification(path + "/ItemSpecification.csv");
 		readItemLocation(path + "/ItemLocation.csv");
 		return itemList;
 	}
 	
-	//###then read orders
-	public Collection<Order> readOrderData(String path){
+	
+	public LinkedList<Order> readOrderData(String path){
 		//i'll finish these...
 		readOrderSpecification(path + "/OrderSpecifictation.csv");
 		readOrderCancelation(path + "/OderCancelation.csv");

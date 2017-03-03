@@ -1,23 +1,32 @@
 package com.bestroboticsteam.jobs;
 
+import java.awt.Point;
+
 public class JobInfo {
 	
-	private Item item;
-	private int quantaty;
+	private String itemCode;
+	private Point position;
+	private int quantity;
 	private int jobCode;
 	
-	public JobInfo(Item _item, int _quantaty, int _jobCode){
-		this.item = _item;
-		this.quantaty = _quantaty;
+	public JobInfo(String code, Point position, int _quantity, int _jobCode){
+		
+		this.itemCode = code;
+		this.position = position;
+		this.quantity = _quantity;
 		this.jobCode = jobCode;
 	}
 	
-	public Item getItem(){
-		return item;
+	public String getItem(){
+		return itemCode;
 	}
 	
-	public int getQuantaty(){
-		return quantaty;
+	public Point getPosition(){
+		return position;
+	}
+	
+	public int getQuantity(){
+		return quantity;
 	}
 	
 	public int getJobCode(){
