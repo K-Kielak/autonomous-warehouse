@@ -14,7 +14,7 @@ public class Order implements Comparable<Order> {
 	private int cancelationNumb;
 	private float totalReward = 0f;
 	
-	public Order(int _id, ConcurrentHashMap<Item, Integer> ot){
+	public Order(int _id, ConcurrentMap<Item, Integer> ot){
 		orderTable = ot;
 		id = _id;
 		cancelationNumb = 0;

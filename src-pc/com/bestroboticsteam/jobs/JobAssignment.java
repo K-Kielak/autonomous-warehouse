@@ -29,8 +29,10 @@ public class JobAssignment {
 	private void setInfoJobs(){
 		Order nextOrder = selection.take();
 		currentOrders.add(nextOrder);
-		
 		jobPath = nextOrder.toJobInfos();
+		
+		jobPath.add(new JobInfo("DropBox",selection.getDropLocation().getFirst()));
+		
 	}
 	
 	public LinkedList<Order> getCurrentOrders(){

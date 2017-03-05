@@ -13,7 +13,7 @@ public class JobSelection {
 	
 	private LinkedList<Order> list;
 	private Collection<Item> itemList;
-	private Collection<Point> dropLocation;
+	private LinkedList<Point> dropLocation;
 	
 	public JobSelection(String path){
 		
@@ -22,10 +22,10 @@ public class JobSelection {
 		dropLocation = reader.readDropData(path);
 		
 		list = reader.readOrderData(path);
-		setQueue(list);
+		setList(list);
 	}
 	
-	public Collection<Point> getDropLocation(){
+	public LinkedList<Point> getDropLocation(){
 		return dropLocation;
 	}
 	
@@ -46,7 +46,7 @@ public class JobSelection {
 		
 	}
 	
-	private void setQueue(Collection<Order> orderList) {
+	private void setList(Collection<Order> orderList) {
 		
 		Comparator<Order> comparator = new Comparator<Order>() {
 			   @Override

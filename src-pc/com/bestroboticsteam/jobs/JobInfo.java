@@ -17,6 +17,13 @@ public class JobInfo {
 		this.jobCode = jobCode;
 	}
 	
+	public JobInfo(String code, Point position){
+		this.itemCode = code;
+		this.position = position;
+		this.quantity = 0;
+		this.jobCode = 0;
+	}
+	
 	public String getItem(){
 		return itemCode;
 	}
