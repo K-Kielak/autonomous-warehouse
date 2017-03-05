@@ -7,14 +7,11 @@ import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.communication.BaseBluetoothSocketHandler;
 
-import lejos.pc.comm.NXTComm;
-import lejos.pc.comm.NXTCommException;
-import lejos.pc.comm.NXTCommFactory;
-import lejos.pc.comm.NXTInfo;
+import lejos.pc.comm.NXTCommLogListener;
+import lejos.pc.comm.NXTConnector;
 
 public class PCBluetoothHandler extends BaseBluetoothSocketHandler {
 	private String robotName;
-	private NXTComm nxtComm;
 
 	final static Logger logger = Logger.getLogger(PCBluetoothHandler.class);
 
@@ -25,22 +22,30 @@ public class PCBluetoothHandler extends BaseBluetoothSocketHandler {
 	@Override
 	public void run() {
 		logger.info("Attempting connection to: " + this.robotName);
-		try {
-			nxtComm = NXTCommFactory.createNXTComm(NXTCommFactory.BLUETOOTH);
-			NXTInfo[] availableDevices = nxtComm.search(robotName);
-			if (availableDevices.length > 1) {
-				logger.warn("Got more than one possible device. Connecting to " + availableDevices[0].name);
-			}
-			boolean sucessful = nxtComm.open(availableDevices[0]);
-			if (!sucessful) {
-				logger.error("Error connecting to " + availableDevices[0].name);
-			}
-			input = new DataInputStream(nxtComm.getInputStream());
-			output = new DataOutputStream(nxtComm.getOutputStream());
 
-		} catch (NXTCommException e) {
-			logger.error("Couldn't establish a connection");
+		NXTConnector conn = new NXTConnector();
+
+		conn.addLogListener(new NXTCommLogListener() {
+
+			public void logEvent(String message) {
+				logger.debug("Bluetooth Log Event: " + message);
+			}
+
+			public void logEvent(Throwable throwable) {
+				logger.debug("Bluetooth Throwable: ", throwable);
+			}
+
+		});
+
+		boolean sucessful = conn.connectTo("btspp://" + this.robotName);
+
+		if (!sucessful) {
+			logger.error("Error connecting via bluetooth");
+			return; // TODO Retry
 		}
+		input = new DataInputStream(conn.getInputStream());
+		output = new DataOutputStream(conn.getOutputStream());
+
 	}
 
 }

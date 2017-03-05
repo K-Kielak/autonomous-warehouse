@@ -2,8 +2,11 @@ package com.bestroboticsteam.communication;
 
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
+import lejos.nxt.LCD;
+import lejos.nxt.comm.BTConnection;
+import lejos.nxt.comm.Bluetooth;
 
-public class Test_Bluetooth {
+public class Test_Rob_Blue {
 
 	public static void main(String[] args) {
 
@@ -18,16 +21,8 @@ public class Test_Bluetooth {
 				System.exit(0);
 			}
 		});
-
-		RobotBluetoothHandler b = new RobotBluetoothHandler();
-		(new Thread(b)).start();
-		while (true) {
-			// LCD.drawString(b.getStatus(), 0, 0);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		
+		(new Thread(new RobotBluetoothHandler())).start();
+		Button.waitForAnyPress();
 	}
 }
