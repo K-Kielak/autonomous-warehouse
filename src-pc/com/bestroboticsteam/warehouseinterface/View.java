@@ -15,8 +15,11 @@ import javax.swing.JSplitPane;
 
 
 public class View extends JFrame {
-
+	public String displayText = "";
+    public JLabel list = new JLabel();
+	
 	public View() {
+		
 		this.setTitle("Warehouse Management Interface");
 		this.setSize(900, 500);//set size of frame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,14 +41,18 @@ public class View extends JFrame {
 		toDoLabel.setOpaque(true);
 		doingLabel.setPreferredSize(new Dimension(150, 20));
 		doingLabel.setOpaque(true);
+		list.setPreferredSize(new Dimension(150, 150));
+		list.setOpaque(true);
 		
 		jobInProgPanel.setPreferredSize(new Dimension(180, 200));
 		jobInProgPanel.setBorder(BorderFactory.createLineBorder(Color.orange));
 		jobListPanel.setPreferredSize(new Dimension(180, 200));
 		jobListPanel.setBorder(BorderFactory.createLineBorder(Color.green));
+		list.setBorder(BorderFactory.createLineBorder(Color.pink));
 		
-		jobInProgPanel.add(doingLabel);
 		jobListPanel.add(toDoLabel);
+		jobListPanel.add(list);
+		jobInProgPanel.add(doingLabel);
 		jobPanel.add(jobListPanel);
 		jobPanel.add(jobInProgPanel);
 		jobListPanel.setVisible(true);
@@ -62,6 +69,7 @@ public class View extends JFrame {
 
 		this.add(split);
 		this.setVisible(true);
+
 	}
 
 	public static void main(String[] args) {
