@@ -26,22 +26,22 @@ public class InterfaceController extends Thread {
 
 	public void run() {
 		while (true) {
+			Thread.sleep(1000);
 			// while running keep updating jobs - sleep for 1s between updates
 			getTenJobs();
 			try {
-				InterfaceController.sleep(1000);
+				InterfaceController.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
 			}
-			// empty the string jobListText so that an updated 10 items can be
-			// added
+			// empty the string jobListText so that an updated 10 items can be added
 			warehouseInterface.setJobList("");
 		}
 	}
 
 	public static void main(String[] args) {
 		InterfaceController test = new InterfaceController(incomingJobs);
-		test.run();
+		test.start();
 		logger.info("Running");
 	}
 
