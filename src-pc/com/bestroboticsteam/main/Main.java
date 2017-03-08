@@ -3,17 +3,16 @@ package com.bestroboticsteam.main;
 import java.awt.Point;
 
 import com.bestroboticsteam.jobs.JobSelection;
-import com.bestroboticsteam.pathfinding.AStar;
 import com.bestroboticsteam.jobs.JobAssignment;
-import com.bestroboticsteam.robotsmanagement.RobotInfo;
-import com.bestroboticsteam.robotsmanagement.RobotsManager;
+import com.bestroboticsteam.pathfinding.AStar;
+import com.bestroboticsteam.robotsmanagement.*;
 import com.bestroboticsteam.warehouseinterface.InterfaceController;
 
 public class Main {
 
-	private static final String PATH = "../assets";
+	private static final String PATH = "../assets/production";
 	private static final RobotInfo[] robots = { 
-			new RobotInfo("robot1", new Point(0, 0))
+			new RobotInfo("robot1", new Point(0, 0), Direction.FORWARD)
 		};
 	
 	
