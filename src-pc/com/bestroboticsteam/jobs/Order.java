@@ -39,7 +39,7 @@ public class Order implements Comparable<Order> {
 		return orderTable.get(j);
 	}
 
-	LinkedList<JobInfo> toJobInfos() { // ? Make package private
+	LinkedList<JobInfo> toJobInfos() { // ? Made package private
 
 		LinkedList<JobInfo> list = new LinkedList<JobInfo>();
 
