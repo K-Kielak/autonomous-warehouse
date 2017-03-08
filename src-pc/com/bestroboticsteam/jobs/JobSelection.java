@@ -38,6 +38,9 @@ public class JobSelection {
 	}
 
 	public synchronized Order viewOrder(int i) {
+		if(i >= list.size())
+			return null;
+		
 		return list.get(i);
 
 	}

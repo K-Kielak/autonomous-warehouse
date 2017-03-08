@@ -20,6 +20,9 @@ public class InterfaceController extends Thread {
 		for (int i = 0; i < 10; i++) {
 			logger.debug("index position " + i);
 			Order job = incomingJobs.viewOrder(i);
+			if(job == null)
+				break;
+			
 			logger.debug("order:  " + job);
 			warehouseInterface.setJobList(job, i);
 			logger.debug("get jobs list " + warehouseInterface.getJobList());
