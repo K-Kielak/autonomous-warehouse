@@ -91,9 +91,8 @@ public class InterfaceView extends JFrame {
 	}
 
 	// set method for job list
-	public void setJobList(String job, int index){
-		jobListText = jobListText + index + " " + job + "\n";
-		list.setText(jobListText);
+	public void setJobList(String jobs){
+		list.setText(jobs);
 	}
 	
 	public void emptyJobList (){
