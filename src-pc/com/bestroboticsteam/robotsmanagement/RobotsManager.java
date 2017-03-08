@@ -4,12 +4,12 @@ package com.bestroboticsteam.robotsmanagement;
 
 import java.awt.Point;
 import java.util.LinkedList;
-
-import com.bestroboticsteam.communication;
-import com.bestroboticsteam.jobs;
-import com.bestroboticsteam.pathfinding;
-
 import rp.util.Pair;
+
+import com.bestroboticsteam.jobs.JobAssignment;
+import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.pathfinding.AStar;
+import com.bestroboticsteam.communication.PCConnectionHandler;
 
 public class RobotsManager extends Thread{
 	
@@ -17,15 +17,13 @@ public class RobotsManager extends Thread{
 	private RobotInfo[] robots;
 	private PCConnectionHandler[] connectionHandlers;
 	private JobAssignment jobs;
-	private PathFinder pathFinder;
+	private AStar pathFinder;
 	
-	public RobotsManager(String[] robotNames, JobAssignment jobs, PathFinder pathFinder){
-		this.robots = new RobotInfo[robotNames.length];
-		this.connectionHandlers = new PCConnectionHandler[robotNames.length];
-		for(int i=0; i<robotNames.length; i++){
-			this.robots[i] = new RobotInfo(robotNames[i]);
-			this.connectionHandlers[i] = new PCConnectionHandler(robotNames[i]);
-		}
+	public RobotsManager(RobotInfo[] robots, JobAssignment jobs, AStar pathFinder){
+		this.robots = robots;
+		this.connectionHandlers = new PCConnectionHandler[robots.length];
+		for(int i=0; i<robots.length; i++)
+			this.connectionHandlers[i] = new PCConnectionHandler(robots[i].NAME);
 		
 		this.jobs = jobs;
 		this.pathFinder = pathFinder;
@@ -35,7 +33,7 @@ public class RobotsManager extends Thread{
 		for(RobotInfo r: robots){
 			if(r.finished()){
 				JobInfo nextJob = jobs.getNextJob();
-				LinkedList<Point> path = pathFinder.singleGetPath(new Pair<Point, Point>(r.getPosition(), nextJob.getPosition()));
+				LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(r.getPosition(), nextJob.getPosition()));
 				r.setCurrentJob(nextJob, path);
 			}
 			

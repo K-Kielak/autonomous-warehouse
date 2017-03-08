@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import com.bestroboticsteam.jobs;
+import com.bestroboticsteam.jobs.JobInfo;
 
 public class RobotInfo {
 	public final String NAME;
@@ -27,6 +27,7 @@ public class RobotInfo {
 	//returns true if number of clicks was sufficient
 	public boolean clicked(){ 
 		//TODO decrease quantity
+		return true;
 	}
 	
 	public boolean finished(){
