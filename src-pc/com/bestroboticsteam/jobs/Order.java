@@ -76,4 +76,11 @@ public class Order implements Comparable<Order> {
 		else
 			return -1;
 	}
+	
+	@Override
+	public String toString(){
+		//toString method -> used in InterfaceController
+		return "Job ID: " + getId() + " " + "Job Reward: " + getTotalReward();
+		
+	}
 }
