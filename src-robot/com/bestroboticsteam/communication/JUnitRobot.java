@@ -11,7 +11,9 @@ public class JUnitRobot extends RobotProgrammingDemo {
 	private BaseConnectionHandler bluetooth;
 
 	public JUnitRobot() {
-		usb = new RobotCommunicationHandler(false); // We need to out false if we want to communicate via USB
+		usb = new RobotCommunicationHandler(false); // We need to out false if
+													// we want to communicate
+													// via USB
 		bluetooth = new RobotCommunicationHandler();
 	}
 
@@ -43,7 +45,7 @@ public class JUnitRobot extends RobotProgrammingDemo {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 			}
 			r.sleep();
 		}
@@ -51,7 +53,7 @@ public class JUnitRobot extends RobotProgrammingDemo {
 			usb.disconnect();
 			bluetooth.disconnect();
 		} catch (ConnectionNotEstablishedException e) {
-			
+
 		}
 	}
 

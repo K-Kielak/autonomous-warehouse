@@ -38,7 +38,7 @@ public abstract class BaseConnectionHandler implements Runnable {
 		input = null;
 		output = null;
 		connection = null;
-		
+
 		this.status = BaseConnectionHandler.DISCONNECTED;
 	}
 
