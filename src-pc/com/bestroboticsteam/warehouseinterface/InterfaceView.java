@@ -12,7 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
+import com.bestroboticsteam.jobs.Order;
+
 public class InterfaceView extends JFrame {
+
 	// Go on right hand panel - jobs
 	public JPanel jobInProgPanel = new JPanel();
 	public JPanel jobListPanel = new JPanel();
@@ -23,9 +26,10 @@ public class InterfaceView extends JFrame {
 	// create visualisation of graph
 	public GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 
-	// jobListText will display list of orders -> from JobSelection class via interfaceController
+	// jobListText will display list of orders -> from JobSelection class via
+	// interfaceController
 	public String jobListText = "";
-	public JLabel list = new JLabel(jobListText);
+	public JLabel list = new JLabel();
 
 	// jobProgText will display orders in progress
 	public String jobProgText = "";
@@ -87,10 +91,14 @@ public class InterfaceView extends JFrame {
 	}
 
 	// set method for job list
-	public void setJobList(String jobListText) {
-		this.jobListText = jobListText;
+	public void setJobList(Order job, int index){
+		jobListText = jobListText + index + " " + job + "\n";
+		list.setText(jobListText);
 	}
-
+	public void emptyJobList (){
+		jobListText = "";
+		list.setText(jobListText);
+	}
 	// get method for job list
 	public String getJobList() {
 		return jobListText;
