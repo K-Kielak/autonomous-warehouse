@@ -47,7 +47,8 @@ public class Order implements Comparable<Order> {
 			JobInfo info = new JobInfo(i.getCode(), i.getPosition(), orderTable.get(i), id);
 			list.add(info);
 		}
-		return null;
+		
+		return list;
 	}
 
 	public ConcurrentMap<Item, Integer> getOrderTable() {

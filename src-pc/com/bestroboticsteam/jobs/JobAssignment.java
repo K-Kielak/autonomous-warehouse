@@ -23,13 +23,14 @@ public class JobAssignment {
 		return jobPath.pop();
 	}
 
-	private void setInfoJobs() {
+	private void setInfoJobs() throws NullPointerException{
 		Order nextOrder = selection.take();
+		if(nextOrder == null)
+			throw new NullPointerException("there are no more jobs left");
+		
 		currentOrders.add(nextOrder);
 		jobPath = nextOrder.toJobInfos();
-
 		jobPath.add(new JobInfo("DropBox", selection.getDropLocation().getFirst()));
-
 	}
 
 	public LinkedList<Order> getCurrentOrders() {
