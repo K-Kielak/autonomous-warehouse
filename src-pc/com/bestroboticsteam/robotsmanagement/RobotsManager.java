@@ -9,6 +9,8 @@ import com.bestroboticsteam.communication;
 import com.bestroboticsteam.jobs;
 import com.bestroboticsteam.pathfinding;
 
+import rp.util.Pair;
+
 public class RobotsManager extends Thread{
 	
 	private final int MS_DELAY = 500;
@@ -33,9 +35,10 @@ public class RobotsManager extends Thread{
 		for(RobotInfo r: robots){
 			if(r.finished()){
 				JobInfo nextJob = jobs.getNextJob();
-				LinkedList<Point> path = pathFinder.getPath(r.getPosition(), nextJob.getPosition());
+				LinkedList<Point> path = pathFinder.singleGetPath(new Pair<Point, Point>(r.getPosition(), nextJob.getPosition()));
 				r.setCurrentJob(nextJob, path);
 			}
+			
 			
 			//TODO communication with robots
 		}
