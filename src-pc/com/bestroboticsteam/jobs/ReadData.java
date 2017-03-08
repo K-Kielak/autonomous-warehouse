@@ -21,20 +21,20 @@ public class ReadData {
 	private LinkedList<Point> dropLocations = new LinkedList<Point>();
 
 	public Collection<Item> readItemData(String path) {
-		readItemSpecification(path + "/ItemSpecification.csv");
-		readItemLocation(path + "/ItemLocation.csv");
+		readItemSpecification(path + "/items.csv");
+		readItemLocation(path + "/locations.csv");
 		return itemList;
 	}
 
 	public LinkedList<Order> readOrderData(String path) {
 		// i'll finish these...
-		readOrderSpecification(path + "/OrderSpecifictation.csv");
-		readOrderCancelation(path + "/OderCancelation.csv");
+		readOrderSpecification(path + "/jobs.csv");
+		readOrderCancelation(path + "/cancellations.csv");
 		return orderList;
 	}
 
 	public LinkedList<Point> readDropData(String path) {
-		readDropLocations(path + "/DropLocations.csv");
+		readDropLocations(path + "/drops.csv");
 		return dropLocations;
 	}
 
