@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.bestroboticteam.jobs.JobInfo;
+
 public class Order implements Comparable<Order> {
 
 	// do you prefer another type of map?
