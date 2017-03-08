@@ -3,6 +3,7 @@ package com.bestroboticsteam.pathfinding;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
@@ -24,7 +25,7 @@ public class AStar {
 	}
 	
 	//Single robot AStar
-	public static Point[] singleGetPath(Pair<Point, Point> locationDestinationPair){ //Follows a basic implementation of the A* pathfinding algorithm.
+	public static LinkedList<Point> singleGetPath(Pair<Point, Point> locationDestinationPair){ //Follows a basic implementation of the A* pathfinding algorithm.
 		GridMap map = MapUtils.createRealWarehouse();
 		
 		ArrayList<AStarNode> openList  = new ArrayList<AStarNode>();
@@ -35,12 +36,12 @@ public class AStar {
 		Point botPosition = locationDestinationPair.getItem1();
 		Point doorPosition = locationDestinationPair.getItem2();
 		
-		ArrayList<Point> path = new ArrayList<Point>();
+		LinkedList<Point> path = new LinkedList<Point>();
 		
 		openList.add(new AStarNode(botPosition, new AStarNode(true), botPosition.x+botPosition.y-doorPosition.x-doorPosition.y, 0, botPosition.x+botPosition.y-doorPosition.x-doorPosition.y)); //Adds the robots square to the open list.
 		while(true){
 			if(openList.size()==0){
-				logger.warn("No paths found from (" + (int)locationDestinationPair.getItem1().getX() + ", " + (int)locationDestinationPair.getItem1().getY() + ") to (" + (int)locationDestinationPair.getItem2().getX() + ", " + (int)locationDestinationPair.getItem2().getY() + ")");
+				logger.warn("No paths found from (" + (int)botPosition.getX() + ", " + (int)botPosition.getY() + ") to (" + (int)doorPosition.getX() + ", " + (int)doorPosition.getY() + ")");
 				return null;
 				}//Stops pathfinding when all possible paths have been examined and no path is possible.
 			int lowestFCost=Integer.MAX_VALUE;
@@ -70,7 +71,7 @@ public class AStar {
 			
 		}
 		
-		path = new ArrayList<Point>();
+		path = new LinkedList<Point>();
 		AStarNode currentNode = closedList.get(closedList.size()-1);
 		while(!(currentNode.location.x==botPosition.x && currentNode.location.y==botPosition.y)){
 			path.add(currentNode.location);
@@ -86,8 +87,7 @@ public class AStar {
 		openListLocations = new boolean[map.getXSize()][map.getYSize()];
 		closedListLocations = new boolean[map.getXSize()][map.getYSize()];
 		Collections.reverse(path);
-		return (Point[]) path.toArray(new Point[path.size()]);
-		
+		return path;
 		
 	}
 	
