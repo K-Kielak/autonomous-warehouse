@@ -9,19 +9,33 @@ import com.bestroboticsteam.jobs.JobInfo;
 public class RobotInfo {
 	public final String NAME;
 	private Point position;
+	private Direction direction;
 	private Optional<JobInfo> currentJob = Optional.empty();
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
 	
-	public RobotInfo(String name, Point position){
+	public RobotInfo(String name, Point position, Direction direction){
 		this.NAME = name;
 		this.position = position;
-		
+		this.direction = direction;	
 	}
 	
-	//returns true if whole path was finished
-	public boolean moved(){ 
-		position = currentPath.poll();
-		return currentPath.isEmpty();
+	//returns null whole path was finished
+	public Direction move(){ 
+		Point newPos = currentPath.poll();
+		if(position.distance(newPos) != 1)
+			throw new IllegalArgumentException("wrong path");
+		
+		if(position.x+1 == newPos.x)
+			return turn(Direction.LEFT); //turn west
+		
+		if(position.x-1 == newPos.x)
+			return turn(Direction.RIGHT); //turn east
+		
+		if(position.y+1 == newPos.y)
+			return turn(Direction.FORWARD); //turn north
+		
+		//if(position.y-1 == newPos.y)
+		return turn(Direction.BACKWARD); //turn south
 	}
 	
 	//returns true if number of clicks was sufficient
@@ -49,5 +63,19 @@ public class RobotInfo {
 	
 	public LinkedList<Point> getCurrentPath(){
 		return currentPath;
+	}
+	
+	private Direction turn(Direction goal){
+		if(direction == goal)
+			return Direction.FORWARD;
+		
+		if(direction.ordinal() == (goal.ordinal()+1)%4)
+			return Direction.RIGHT;
+		
+		if(direction.ordinal() == (goal.ordinal()+2)%4)
+			return Direction.BACKWARD;
+		
+		//if(direction.ordinal() == (goal.ordinal()+3)%4)
+		return Direction.LEFT;
 	}
 }

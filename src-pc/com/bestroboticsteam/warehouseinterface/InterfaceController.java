@@ -27,12 +27,12 @@ public class InterfaceController extends Thread {
 	}
 
 	public void run() {
+		logger.info("warehouse interface running");
 		while (true) {
 			try {
 				Thread.sleep(1000);
 				// while running keep updating jobs
 				getTenJobs();
-				logger.debug("here");
 				InterfaceController.sleep(5000);
 				// empty the string jobListText so that an updated 10 items can be added
 			} catch (InterruptedException e) {
@@ -40,14 +40,5 @@ public class InterfaceController extends Thread {
 			}
 			warehouseInterface.emptyJobList();
 		}
-	}
-
-	public static void main(String[] args) {
-		//This needs changing to the path of the file that readOrderData uses
-		String path = ""; 
-		JobSelection jobs = new JobSelection(path);
-		InterfaceController test = new InterfaceController(jobs);
-		test.start();
-		logger.info("Running");
 	}
 }
