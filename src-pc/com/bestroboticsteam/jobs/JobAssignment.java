@@ -2,7 +2,7 @@ package com.bestroboticsteam.jobs;
 
 import java.util.LinkedList;
 
-import com.bestroboticteam.jobs.JobInfo;
+import com.bestroboticsteam.jobs.JobInfo;
 
 public class JobAssignment {
 
