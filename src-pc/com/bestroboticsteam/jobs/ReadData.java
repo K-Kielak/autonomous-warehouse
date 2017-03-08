@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class ReadData {
 	
@@ -49,8 +48,8 @@ public class ReadData {
 			
 			while((line = reader.readLine()) != null){
 				Point p = new Point();
-				p.x = Integer.parseInt(line.substring(0, line.indexOf(',')-1));
-				p.y = Integer.parseInt(line.substring(line.indexOf(',')));
+				p.x = Integer.parseInt(line.substring(0, line.indexOf(',')));
+				p.y = Integer.parseInt(line.substring(line.indexOf(',')+1));
 				
 				dropLocations.add(p);
 			}
@@ -72,18 +71,25 @@ public class ReadData {
 			String line;
 			while( (line = reader.readLine()) != null ){
 				
-				int id = Integer.parseInt(line.substring(0, line.indexOf(',')-1));
-				line = line.substring(line.indexOf(','));
+				int id = Integer.parseInt(line.substring(0, line.indexOf(',')));
+				line = line.substring(line.indexOf(',')+1);
 				
-				ConcurrentMap<Item, Integer> orderTable = new ConcurrentHashMap<Item, Integer>(); 
+				ConcurrentHashMap<Item, Integer> orderTable = new ConcurrentHashMap<Item, Integer>(); 
+				
 				String code;
 				int quantity;
 				int i;
+				
 				while((i = line.indexOf(',')) > 0){
-					code = line.substring(0,i-1);
-					line = line.substring(i);
-					quantity = Integer.parseInt(line.substring(0, line.indexOf(',')-1));
-					line = line.substring(i);
+					
+					code = line.substring(0,i);
+					line = line.substring(i+1);
+					
+					if(line.indexOf(',') > 0){
+						quantity = Integer.parseInt(line.substring(0, line.indexOf(',')));
+						line = line.substring(i+1);
+					}else
+						quantity = Integer.parseInt(line);
 					
 					for(Item item: itemList){
 						if(item.getCode().equals(code)){
@@ -92,9 +98,7 @@ public class ReadData {
 						}
 					}
 				}
-				
-				Order order = new Order(id, orderTable);
-				orderList.add(order);
+				orderList.add(new Order(id,orderTable));
 				
 			}
 		} catch (FileNotFoundException e) {
@@ -114,6 +118,19 @@ public class ReadData {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			
+			String line;
+			
+			while((line = reader.readLine()) != null){
+				
+				int codeOrder = Integer.parseInt(line.substring(0, line.indexOf(',')));
+				int value = Integer.parseInt(line.substring(line.indexOf(',')+1));
+				
+				for(Order o: orderList){
+					if(o.getId() == codeOrder)
+						o.setCancelation(value);
+				}
+				
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -134,9 +151,9 @@ public class ReadData {
 				int second = line.lastIndexOf(',');
 				
 				Point p = new Point();
-				p.x = Integer.parseInt(line.substring(0, first-1));
-				p.y = Integer.parseInt(line.substring(first, second-1));
-				String itemCode = line.substring(second);
+				p.x = Integer.parseInt(line.substring(0, first));
+				p.y = Integer.parseInt(line.substring(first+1, second));
+				String itemCode = line.substring(second+1);
 				
 				for(Item i: itemList){
 					if(i.getCode().equals(itemCode)){
@@ -166,9 +183,9 @@ public class ReadData {
 				int first = line.indexOf(',');
 				int second = line.lastIndexOf(',');
 				
-				String code = line.substring(0, first-1);
-				String reward = line.substring(first, second-1);
-				String weight = line.substring(second);
+				String code = line.substring(0, first);
+				String reward = line.substring(first+1, second);
+				String weight = line.substring(second+1);
 				
 				itemList.add(new Item(code, Float.parseFloat(reward), Float.parseFloat(weight)));
 				
