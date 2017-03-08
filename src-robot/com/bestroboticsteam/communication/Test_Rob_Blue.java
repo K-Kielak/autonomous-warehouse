@@ -22,7 +22,7 @@ public class Test_Rob_Blue {
 				System.exit(0);
 			}
 		});
-		
+
 		(new Thread(new RobotCommunicationHandler())).start();
 		Button.waitForAnyPress();
 	}

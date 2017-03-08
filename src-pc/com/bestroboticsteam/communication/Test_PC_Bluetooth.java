@@ -8,6 +8,6 @@ public class Test_PC_Bluetooth {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Connecting...");
-		 (new PCConnectionHandler(ROBOT_1_NAME)).run();
+		(new PCConnectionHandler(ROBOT_1_NAME)).run();
 	}
 }

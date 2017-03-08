@@ -23,8 +23,7 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 
 	public PCConnectionHandler(String robotName, boolean bluetooth) {
 		this.robotName = robotName;
-		this.protocol = bluetooth ? BaseConnectionHandler.BLUETOOTH_PROTOCOL
-				: BaseConnectionHandler.USB_PROTOCOL;
+		this.protocol = bluetooth ? BaseConnectionHandler.BLUETOOTH_PROTOCOL : BaseConnectionHandler.USB_PROTOCOL;
 	}
 
 	@Override
@@ -43,11 +42,11 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		 * will mean ERROR message
 		 * 
 		 */
-		
+
 		if (this.robotName.equals("")) { // TODO Remove
 			return;
 		}
-		
+
 		logger.info("Attempting connection to: " + this.robotName);
 
 		this.status = BaseConnectionHandler.CONNECTING;
