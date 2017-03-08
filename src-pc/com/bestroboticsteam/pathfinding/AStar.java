@@ -4,17 +4,19 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import lejos.robotics.pathfinding.Path;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
-import rp.robotics.simulation.MapBasedSimulation;
 import rp.util.Pair;
+
+import org.apache.log4j.Logger;
 
 public class AStar {
 
 	boolean[][] cells; // A 2D boolean array of state of cells in the grid (e.g. if a cell has a wall in it the value for that location will be true.)
 	
-
+	final static Logger logger = Logger.getLogger(AStar.class);
+	
+	
 	// multi robot AStar
 	public Point[][] multiGetPath(Pair<Point, Point>[] locationDestinationPairs) {
 		Point[][] paths = new Point[3][3];
@@ -37,7 +39,10 @@ public class AStar {
 		
 		openList.add(new AStarNode(botPosition, new AStarNode(true), botPosition.x+botPosition.y-doorPosition.x-doorPosition.y, 0, botPosition.x+botPosition.y-doorPosition.x-doorPosition.y)); //Adds the robots square to the open list.
 		while(true){
-			if(openList.size()==0){break;}//Stops pathfinding when all possible paths have been examined and no path is possible.
+			if(openList.size()==0){
+				logger.warn("No paths found from (" + (int)locationDestinationPair.getItem1().getX() + ", " + (int)locationDestinationPair.getItem1().getY() + ") to (" + (int)locationDestinationPair.getItem2().getX() + ", " + (int)locationDestinationPair.getItem2().getY() + ")");
+				return null;
+				}//Stops pathfinding when all possible paths have been examined and no path is possible.
 			int lowestFCost=Integer.MAX_VALUE;
 			AStarNode currentNode = null;
 			for(AStarNode n : openList){
@@ -85,7 +90,6 @@ public class AStar {
 		
 		
 	}
-	///////////////////////////
 	
 	//Adds a point to the openList if it is not blocked
 	private static ArrayList<AStarNode> addToOpenList(Point location, AStarNode currentNode, boolean[][] openListLocations, ArrayList<AStarNode> openList, boolean[][] closedListLocations, Point doorPosition){
