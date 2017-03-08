@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.bestroboticteam.jobs.JobInfo;
+import com.bestroboticsteam.jobs.JobInfo;
 
 public class Order implements Comparable<Order> {
 
@@ -24,7 +24,7 @@ public class Order implements Comparable<Order> {
 	}
 
 	public void setCancelation(int i) {
-		cancelationNumb = 0; // ??
+		cancelationNumb = i; // ??
 	}
 
 	public int getCancelationNumb() {

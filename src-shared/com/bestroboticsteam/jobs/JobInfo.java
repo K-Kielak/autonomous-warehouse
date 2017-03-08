@@ -1,4 +1,4 @@
-package com.bestroboticteam.jobs;
+package com.bestroboticsteam.jobs;
 
 import java.awt.Point;
 
