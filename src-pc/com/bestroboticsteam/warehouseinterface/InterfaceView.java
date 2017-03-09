@@ -11,33 +11,33 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+
+import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.jobs.Order;
 
 public class InterfaceView extends JFrame {
-
+	final static Logger logger = Logger.getLogger(InterfaceView.class);
+	
 	// Go on right hand panel - jobs
 	public JPanel jobInProgPanel = new JPanel();
 	public JPanel jobListPanel = new JPanel();
-
+	
 	// left hand panel - map
 	public GridMap map = MapUtils.createRealWarehouse();
 	public MapBasedSimulation sim = new MapBasedSimulation(map);
 	// create visualisation of graph
 	public GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 
-	// jobListText will display list of orders -> from JobSelection class via
-	// interfaceController
-	public String jobListText = "";
-	public JLabel list = new JLabel();
-
-	// jobProgText will display orders in progress
-	public String jobProgText = "";
-	public JLabel list2 = new JLabel(jobProgText);
+	// will display list of orders -> from JobSelection class via interfaceController
+	public JTextArea text = new JTextArea();
+	// will display orders in progress (not yet implemented)
+	public JTextArea text2 = new JTextArea();
 
 	public InterfaceView() {
 		this.setTitle("Warehouse Management Interface");
-		this.setSize(900, 500);// set size of frame
+		this.setSize(1200, 500);// set size of frame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// right hand panel - jobs
@@ -48,28 +48,29 @@ public class InterfaceView extends JFrame {
 		// list of jobs in progress
 		toDoLabel.setPreferredSize(new Dimension(150, 20));
 		toDoLabel.setOpaque(true);
-		list2.setPreferredSize(new Dimension(150, 350));
-		list2.setOpaque(true);
+		text2.setPreferredSize(new Dimension(270, 350));
+		text2.setOpaque(true);
+
 		// list of first 10 jobs
 		doingLabel.setPreferredSize(new Dimension(150, 20));
 		doingLabel.setOpaque(true);
-		list.setPreferredSize(new Dimension(150, 350));
-		list.setOpaque(true);
+		text.setPreferredSize(new Dimension(270, 350));
+		text.setOpaque(true);
+		text.setEditable(false);
 
-		jobInProgPanel.setPreferredSize(new Dimension(180, 400));
+		jobInProgPanel.setPreferredSize(new Dimension(300, 400));
+		jobListPanel.setPreferredSize(new Dimension(300, 400));
+
 		// this is just for testing - ignore it
-		jobInProgPanel.setBorder(BorderFactory.createLineBorder(Color.orange));
-		jobListPanel.setPreferredSize(new Dimension(180, 400));
-		// this is just for testing - ignore it
+		jobInProgPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		jobListPanel.setBorder(BorderFactory.createLineBorder(Color.green));
-		// this is just for testing - ignore it
-		list.setBorder(BorderFactory.createLineBorder(Color.pink));
-		list2.setBorder(BorderFactory.createLineBorder(Color.red));
+		text.setBorder(BorderFactory.createLineBorder(Color.pink));
+		text2.setBorder(BorderFactory.createLineBorder(Color.red));
 
 		jobListPanel.add(toDoLabel);
-		jobListPanel.add(list);
+		jobListPanel.add(text);
 		jobInProgPanel.add(doingLabel);
-		jobInProgPanel.add(list2);
+		jobInProgPanel.add(text2);
 		jobPanel.add(jobListPanel);
 		jobPanel.add(jobInProgPanel);
 		jobListPanel.setVisible(true);
@@ -78,7 +79,7 @@ public class InterfaceView extends JFrame {
 
 		// create split pane and add the map and job panels to it respectively
 		JSplitPane split = new JSplitPane();
-		split.setSize(700, 300);
+		split.setSize(1000, 300);
 		split.setDividerLocation(500);
 		split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 		split.setLeftComponent(mapVis);
@@ -87,31 +88,39 @@ public class InterfaceView extends JFrame {
 		// add split pane to frame
 		this.add(split);
 		this.setVisible(true);
-
 	}
 
-	// set method for job list
-	public void setJobList(String jobs){
-		list.setText(jobs);
+	//job list methods
+	public void setJobList(String jobs) {
+		logger.debug("Input fron IC " + jobs);
+		String newline = "\n";
+		String[] parts = jobs.split(" : ");
+		for (int i = 0; i < parts.length; i++) {
+			logger.debug("order adding to list: " + parts[i]);
+			text.append(parts[i] + newline);
+		}
 	}
-	
-	public void emptyJobList (){
-		jobListText = "";
-		list.setText(jobListText);
+
+	public void addOneToJobList(String job) {
+		String newline = "\n";
+		text.append(job + newline);
 	}
-	
-	// get method for job list
+
+	public void emptyJobList() {
+		text.setText("");
+	}
+
 	public String getJobList() {
-		return jobListText;
+		return text.getText();
 	}
-
-	// set method for job in progress list
+ 
+	//job in progress list methods -> not yet implemented
 	public void setInProgList(String jobProgText) {
-		this.jobProgText = jobProgText;
+		String newline = "\n";
+		text2.append(jobProgText + newline);
 	}
 
-	// get method for job in progress list
 	public String getInProgList() {
-		return jobProgText;
+		return text2.getText();
 	}
 }
