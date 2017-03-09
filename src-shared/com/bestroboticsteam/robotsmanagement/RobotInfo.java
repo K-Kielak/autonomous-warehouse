@@ -11,7 +11,7 @@ import com.bestroboticsteam.communication.MyDataOutputStream;
 import com.bestroboticsteam.jobs.JobInfo;
 
 public class RobotInfo implements Communicatable {
-	public String name;
+	private String name;
 	private Point position;
 	private Direction direction;
 	private JobInfo currentJob;
@@ -31,18 +31,18 @@ public class RobotInfo implements Communicatable {
 
 	// returns null whole path was finished
 	public Direction move() {
-		if (currentPath.isEmpty()) {
+		if(currentPath.isEmpty())
 			return null;
-		}
+			
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
 		if(position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
 		
-		if(position.x+1 == newPos.x)
+		if(position.x-1 == newPos.x)
 			newDir = Direction.LEFT; //turn west
-		else if(position.x-1 == newPos.x)
+		else if(position.x+1 == newPos.x)
 			newDir = Direction.RIGHT; //turn east
 		else if(position.y+1 == newPos.y)
 			newDir = Direction.FORWARD; //turn north
@@ -53,14 +53,18 @@ public class RobotInfo implements Communicatable {
 		return turn(newDir);
 	}
 
-	// returns true if number of clicks was sufficient
-	public boolean clicked() {
-		// TODO decrease quantity
-		return true;
+	public void click() {
+		currentJob.decreaseQuantity();
+		if(currentJob.getQuantity() <= 0)
+			currentJob = null;
 	}
 
 	public boolean finished() {
 		return currentJob == null;
+	}
+	
+	public String getName(){
+		return name;
 	}
 
 	public Point getPosition() {
@@ -81,20 +85,19 @@ public class RobotInfo implements Communicatable {
 	}
 
 	private Direction turn(Direction goal) {
-		direction = goal;
-
+		Direction turnSide;
+		
 		if (direction == goal)
-			return Direction.FORWARD;
-
-		if (direction.ordinal() == (goal.ordinal() + 1) % 4) {
-			return Direction.RIGHT;
-		}
-
-		if (direction.ordinal() == (goal.ordinal() + 2) % 4)
-			return Direction.BACKWARD;
-
-		// if(direction.ordinal() == (goal.ordinal()+3)%4)
-		return Direction.LEFT;
+			turnSide = Direction.FORWARD;
+		else if ((direction.ordinal()  + 1) % 4 == goal.ordinal()) 
+			turnSide = Direction.RIGHT;
+		else if ((direction.ordinal()  + 2) % 4 == goal.ordinal())
+			turnSide = Direction.BACKWARD;
+		else// if(direction.ordinal() == (goal.ordinal()+3)%4)
+			turnSide =  Direction.LEFT;
+		
+		direction = goal;
+		return turnSide;
 	}
 
 	@Override

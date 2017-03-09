@@ -9,11 +9,15 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class JobSelection {
 
 	private LinkedList<Order> list;
 	private Collection<Item> itemList;
 	private LinkedList<Point> dropLocation;
+	
+	final Logger logger = Logger.getLogger(JobSelection.class);
 
 	public JobSelection(String path) {
 
@@ -38,8 +42,9 @@ public class JobSelection {
 	}
 
 	public synchronized Order viewOrder(int i) {
-		if(i >= list.size())
+		if(i >= list.size()){
 			return null;
+		}
 		
 		return list.get(i);
 
@@ -53,7 +58,8 @@ public class JobSelection {
 				return o1.compareTo(o2);
 			}
 		};
-
+		
+		logger.info("Sorting list.");
 		list.sort(comparator);
 	}
 

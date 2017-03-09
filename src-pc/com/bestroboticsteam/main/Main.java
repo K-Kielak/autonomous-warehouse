@@ -25,7 +25,7 @@ public class Main {
 		RobotsManager manager = new RobotsManager(robots, jobsAssign, pathFinder);
 		manager.run(); // Thread?
 		
-		InterfaceController warehouseInterface = new InterfaceController(jobsSelect);
+		InterfaceController warehouseInterface = new InterfaceController(jobsSelect, jobsAssign);
 		warehouseInterface.run();
 	}
 
