@@ -69,7 +69,7 @@ public class Order implements Comparable<Order> {
 	public int compareTo(Order compareOrder) {
 		float compareReward = compareOrder.getTotalReward();
 
-		if (this.totalReward - compareReward > 0)
+		if (this.totalReward - compareReward < 0)
 			return 1;
 		else if (this.totalReward - compareReward == 0)
 			return 0;
