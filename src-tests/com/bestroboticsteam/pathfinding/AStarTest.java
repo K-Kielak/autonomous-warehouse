@@ -47,6 +47,14 @@ public class AStarTest {
 		actualPath.add(new Point(5, 6));
 		actualPath.add(new Point(5, 5));
 		assertEquals(path, actualPath);
+		
+		path = AStar.singleGetPath(Pair.makePair(new Point(-1, 6), new Point(5, 5)));
+		//Should return null when no path is found
+		assertNull(path);
+		
+		path = AStar.singleGetPath(Pair.makePair(new Point(1, 6), new Point(-5, 5)));
+		//Should return null when no path is found
+		assertNull(path);
 	}
 	
 }
