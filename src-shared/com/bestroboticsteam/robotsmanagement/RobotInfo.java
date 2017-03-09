@@ -10,22 +10,24 @@ import com.bestroboticsteam.communication.MyDataInputStream;
 import com.bestroboticsteam.communication.MyDataOutputStream;
 import com.bestroboticsteam.jobs.JobInfo;
 
-import lejos.nxt.Button;
-
 public class RobotInfo implements Communicatable {
 	public String name;
 	private Point position;
 	private Direction direction;
-	private JobInfo currentJob = null;
+	private JobInfo currentJob;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
 
 	public RobotInfo(String name, Point position, Direction direction) {
+		super();
 		this.name = name;
 		this.position = position;
 		this.direction = direction;
+
 	}
 	
-	public RobotInfo() {}
+	public RobotInfo() {
+		this.currentJob = new JobInfo();
+	}
 
 	// returns null whole path was finished
 	public Direction move() {
@@ -119,7 +121,7 @@ public class RobotInfo implements Communicatable {
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
 			Point point = (Point) iterator.next();
 			System.out.println(point);
-			Button.waitForAnyPress();
+			//Button.waitForAnyPress();
 			o.writePoint(point);
 		}
 	}

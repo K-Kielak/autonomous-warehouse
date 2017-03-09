@@ -1,6 +1,5 @@
 package com.bestroboicsteam.robotexecution;
 
-import java.awt.Point;
 import java.util.LinkedList;
 
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;

@@ -28,6 +28,13 @@ public class JobInfo implements Communicatable {
 		this.quantity = 0;
 		this.jobCode = 0;
 	}
+	
+	public JobInfo() {
+		this.itemCode = "";
+		this.position = new Point();
+		this.quantity = 0;
+		this.jobCode = 0;
+	}
 
 	public String getItem() {
 		return itemCode;
