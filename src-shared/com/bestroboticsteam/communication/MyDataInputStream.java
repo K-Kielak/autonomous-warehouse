@@ -2,6 +2,7 @@ package com.bestroboticsteam.communication;
 
 import java.awt.Point;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -12,14 +13,30 @@ public class MyDataInputStream extends DataInputStream{
 	}
 
 	public String readString() throws IOException {
-		int stringLength = this.readInt();
-		byte[] string = new byte[stringLength];
-		this.read(string);
-		return new String(string);
+		try {
+			int stringLength = this.readInt();
+			byte[] string = new byte[stringLength];
+			this.read(string);
+			return new String(string);
+		} catch (EOFException e) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e1) {
+			}
+			return readString();
+		}
+
 	}
 	
 	public Point readPoint() throws IOException {
-		return new Point(this.readInt(), this.readInt());
-	}
-
+		try {
+			return new Point(this.readInt(), this.readInt());		
+		} catch (EOFException e) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e1) {
+			}
+			return readPoint();
+		}
+	}	
 }
