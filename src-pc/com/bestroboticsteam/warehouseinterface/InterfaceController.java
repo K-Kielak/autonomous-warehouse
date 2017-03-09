@@ -29,7 +29,7 @@ public class InterfaceController extends Thread {
 			for (int i = 0; i < length; i++){
 				warehouseInterface.emptyProgList();
 				Order job = assign.getCurrentOrders().get(i);
-				if (job.equals(null)){
+				if (job == null){
 					logger.error("No jobs left");
 					break;
 				} else {
