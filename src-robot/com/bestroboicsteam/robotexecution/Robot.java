@@ -3,6 +3,8 @@ package com.bestroboicsteam.robotexecution;
 import java.awt.Point;
 import java.util.LinkedList;
 
+import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
+import com.bestroboticsteam.communication.RobotCommunicationHandler;
 import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
@@ -22,6 +24,7 @@ import rp.systems.WheeledRobotSystem;
 public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 	private Movement movement;
 	private RobotInfo info;
+	private RobotCommunicationHandler comms;
 	
 	public Robot(SensorPort leftSensorPort, SensorPort rightSensorPort, WheeledRobotConfiguration ExpressBot, RobotInfo info){
 		LightSensor rightSensor = new LightSensor(rightSensorPort);
@@ -29,14 +32,33 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 		DifferentialPilot pilot = new WheeledRobotSystem(ExpressBot).getPilot();
 		this.movement = new Movement(leftSensor, rightSensor, pilot);
 		this.info = info;
+		this.comms = new RobotCommunicationHandler();
 	}
 	
 	@Override
-	public void run() {		
+	public void run() {
+		this.comms.run(); // Blocking to wait for connection
+		System.out.println(this.comms.getStatus());
 		Direction direction = info.move();
-		while(direction != null){
+		while(direction != null) {
 			movement.move(direction);
 			direction = info.move();
+		}
+	}
+	
+	public void sendInfo() {
+		try {
+			this.comms.sendObject(this.info);
+		} catch (ConnectionNotEstablishedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void receiveInfo() {
+		try {
+			this.info = (RobotInfo) this.comms.receiveObject(this.info);
+		} catch (ConnectionNotEstablishedException e) {
+			e.printStackTrace();
 		}
 	}
 
