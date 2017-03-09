@@ -1,84 +1,122 @@
 package com.bestroboticsteam.robotsmanagement;
 
 import java.awt.Point;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 
+import com.bestroboticsteam.communication.Communicatable;
 import com.bestroboticsteam.jobs.JobInfo;
 
-public class RobotInfo {
-	public final String NAME;
+public class RobotInfo implements Communicatable {
+	public String name;
 	private Point position;
 	private Direction direction;
-	private Optional<JobInfo> currentJob = Optional.empty();
+	private JobInfo currentJob = null;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
-	
-	public RobotInfo(String name, Point position, Direction direction){
-		this.NAME = name;
+
+	public RobotInfo(String name, Point position, Direction direction) {
+		this.name = name;
 		this.position = position;
-		this.direction = direction;	
+		this.direction = direction;
 	}
-	
-	//returns null whole path was finished
-	public Direction move(){ 
+
+	// returns null whole path was finished
+	public Direction move() {
 		Point newPos = currentPath.poll();
-		if(position.distance(newPos) != 1)
+		if (position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
-		
-		if(position.x+1 == newPos.x)
-			return turn(Direction.LEFT); //turn west
-		
-		if(position.x-1 == newPos.x)
-			return turn(Direction.RIGHT); //turn east
-		
-		if(position.y+1 == newPos.y)
-			return turn(Direction.FORWARD); //turn north
-		
-		//if(position.y-1 == newPos.y)
-		return turn(Direction.BACKWARD); //turn south
+
+		if (position.x + 1 == newPos.x)
+			return turn(Direction.LEFT); // turn west
+
+		if (position.x - 1 == newPos.x)
+			return turn(Direction.RIGHT); // turn east
+
+		if (position.y + 1 == newPos.y)
+			return turn(Direction.FORWARD); // turn north
+
+		// if(position.y-1 == newPos.y)
+		return turn(Direction.BACKWARD); // turn south
 	}
-	
-	//returns true if number of clicks was sufficient
-	public boolean clicked(){ 
-		//TODO decrease quantity
+
+	// returns true if number of clicks was sufficient
+	public boolean clicked() {
+		// TODO decrease quantity
 		return true;
 	}
-	
-	public boolean finished(){
-		return !currentJob.isPresent();
+
+	public boolean finished() {
+		return currentJob == null;
 	}
-	
-	public Point getPosition(){
+
+	public Point getPosition() {
 		return position;
 	}
-	
-	public void setCurrentJob(JobInfo job, LinkedList<Point> path){
-		currentJob = Optional.of(job);
+
+	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
+		currentJob = job;
 		currentPath = path;
 	}
-	
-	public JobInfo getCurrentJob(){
-		return currentJob.get();
+
+	public JobInfo getCurrentJob() {
+		return currentJob;
 	}
-	
-	public LinkedList<Point> getCurrentPath(){
+
+	public LinkedList<Point> getCurrentPath() {
 		return currentPath;
 	}
-	
-	private Direction turn(Direction goal){
+
+	private Direction turn(Direction goal) {
 		direction = goal;
-		
-		if(direction == goal)
+
+		if (direction == goal)
 			return Direction.FORWARD;
-		
-		if(direction.ordinal() == (goal.ordinal()+1)%4){
-			return Direction.RIGHT;	
+
+		if (direction.ordinal() == (goal.ordinal() + 1) % 4) {
+			return Direction.RIGHT;
 		}
-		
-		if(direction.ordinal() == (goal.ordinal()+2)%4)
+
+		if (direction.ordinal() == (goal.ordinal() + 2) % 4)
 			return Direction.BACKWARD;
-		
-		//if(direction.ordinal() == (goal.ordinal()+3)%4)
+
+		// if(direction.ordinal() == (goal.ordinal()+3)%4)
 		return Direction.LEFT;
+	}
+
+	@Override
+	public void sendObject(DataOutputStream o) throws IOException {
+		// this.name
+		this.writeString(o, this.name);
+		// this.position
+		this.writePoint(o, this.position);
+		// this.direction
+		o.writeInt(this.direction.ordinal());
+		// this.currentJob
+		this.currentJob.sendObject(o);
+		// this.currentPath
+		o.writeInt(this.currentPath.size());
+		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
+			Point point = (Point) iterator.next();
+			this.writePoint(o, point);
+		}
+	}
+
+	@Override
+	public RobotInfo receiveObject(DataInputStream i) throws IOException {
+		this.name = this.readString(i);
+		this.position = this.readPoint(i);
+		this.direction = Direction.values()[i.readInt()];
+		this.currentJob.receiveObject(i);
+		// currentPath
+		int pathSize = i.readInt();
+		this.currentPath.clear();
+		for (int j = 0; j < pathSize; j++) {
+			this.currentPath.add(j, this.readPoint(i));
+		}
+		return this;
 	}
 }
