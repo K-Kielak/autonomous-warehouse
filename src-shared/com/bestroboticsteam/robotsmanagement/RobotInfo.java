@@ -31,9 +31,9 @@ public class RobotInfo implements Communicatable {
 		if(position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
 		
-		if(position.x+1 == newPos.x)
+		if(position.x-1 == newPos.x)
 			newDir = Direction.LEFT; //turn west
-		else if(position.x-1 == newPos.x)
+		else if(position.x+1 == newPos.x)
 			newDir = Direction.RIGHT; //turn east
 		else if(position.y+1 == newPos.y)
 			newDir = Direction.FORWARD; //turn north
@@ -72,20 +72,19 @@ public class RobotInfo implements Communicatable {
 	}
 
 	private Direction turn(Direction goal) {
-		direction = goal;
-
+		Direction turnSide;
+		
 		if (direction == goal)
-			return Direction.FORWARD;
-
-		if (direction.ordinal() == (goal.ordinal() + 1) % 4) {
-			return Direction.RIGHT;
-		}
-
-		if (direction.ordinal() == (goal.ordinal() + 2) % 4)
-			return Direction.BACKWARD;
-
-		// if(direction.ordinal() == (goal.ordinal()+3)%4)
-		return Direction.LEFT;
+			turnSide = Direction.FORWARD;
+		else if ((direction.ordinal()  + 1) % 4 == goal.ordinal()) 
+			turnSide = Direction.RIGHT;
+		else if ((direction.ordinal()  + 2) % 4 == goal.ordinal())
+			turnSide = Direction.BACKWARD;
+		else// if(direction.ordinal() == (goal.ordinal()+3)%4)
+			turnSide =  Direction.LEFT;
+		
+		direction = goal;
+		return turnSide;
 	}
 
 	@Override
