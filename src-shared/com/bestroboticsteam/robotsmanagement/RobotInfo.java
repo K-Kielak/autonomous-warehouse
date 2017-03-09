@@ -66,11 +66,14 @@ public class RobotInfo {
 	}
 	
 	private Direction turn(Direction goal){
+		direction = goal;
+		
 		if(direction == goal)
 			return Direction.FORWARD;
 		
-		if(direction.ordinal() == (goal.ordinal()+1)%4)
-			return Direction.RIGHT;
+		if(direction.ordinal() == (goal.ordinal()+1)%4){
+			return Direction.RIGHT;	
+		}
 		
 		if(direction.ordinal() == (goal.ordinal()+2)%4)
 			return Direction.BACKWARD;
