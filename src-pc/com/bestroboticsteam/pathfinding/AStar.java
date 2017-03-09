@@ -1,6 +1,7 @@
 package com.bestroboticsteam.pathfinding;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -35,6 +36,13 @@ public class AStar {
 		
 		Point botPosition = locationDestinationPair.getItem1();
 		Point doorPosition = locationDestinationPair.getItem2();
+		
+		//Tests to make sure start and destination are within the map boundaries.
+		Rectangle mapBounds = new Rectangle(0, 0, map.getXSize(), map.getYSize());
+		if(!mapBounds.contains(botPosition) || !mapBounds.contains(doorPosition)){
+			logger.warn("Invalid path from (" + (int)botPosition.getX() + ", " + (int)botPosition.getY() + ") to (" + (int)doorPosition.getX() + ", " + (int)doorPosition.getY() + "), one of the coordinates is out of bounds.");
+			return null;
+		}
 		
 		LinkedList<Point> path = new LinkedList<Point>();
 		
