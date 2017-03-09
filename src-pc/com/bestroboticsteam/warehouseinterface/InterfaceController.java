@@ -32,11 +32,10 @@ public class InterfaceController extends Thread {
 	public void run() {
 		logger.info("warehouse interface running");
 		while (true) {
-			try {
-				Thread.sleep(1000);
+			try {			
 				// while running keep updating jobs
 				getTenJobs();
-				InterfaceController.sleep(5000);
+				Thread.sleep(5000);
 				// empty the string jobListText so that an updated 10 items can be added
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
