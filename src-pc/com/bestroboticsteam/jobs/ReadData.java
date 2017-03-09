@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 public class ReadData {
 
-	final static Logger logger = Logger.getLogger(ReadData.class);
+	final Logger logger = Logger.getLogger(ReadData.class);
 
 	private Collection<Item> itemList = new ArrayList<Item>();
 	private LinkedList<Order> orderList = new LinkedList<Order>();
@@ -44,7 +44,7 @@ public class ReadData {
 
 			String line;
 
-			while ((line = reader.readLine()) != null) {
+			while ((line = reader.readLine()) != null && !line.isEmpty()) {
 				Point p = new Point();
 				p.x = Integer.parseInt(line.substring(0, line.indexOf(',')));
 				p.y = Integer.parseInt(line.substring(line.indexOf(',') + 1));
@@ -54,8 +54,7 @@ public class ReadData {
 			reader.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("I/O error: ", e);
 		}
 
 	}
@@ -98,8 +97,7 @@ public class ReadData {
 			}
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("I/O error: ", e);
 		}
 	}
 
@@ -125,8 +123,7 @@ public class ReadData {
 			}
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("I/O error: ", e);
 		}
 	}
 
@@ -155,8 +152,7 @@ public class ReadData {
 			}
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("I/O error: ", e);
 		}
 
 	}
@@ -180,8 +176,7 @@ public class ReadData {
 			}
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("I/O error : ", e);
 		}
 
 	}
@@ -192,6 +187,7 @@ public class ReadData {
 		 * Exceptions to logger
 		 */
 		try {
+			logger.info("Openning file");
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			return reader;
 		} catch (FileNotFoundException e) {
