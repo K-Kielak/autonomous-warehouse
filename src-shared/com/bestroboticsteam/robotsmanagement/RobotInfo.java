@@ -1,13 +1,13 @@
 package com.bestroboticsteam.robotsmanagement;
 
 import java.awt.Point;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.bestroboticsteam.communication.Communicatable;
+import com.bestroboticsteam.communication.MyDataInputStream;
+import com.bestroboticsteam.communication.MyDataOutputStream;
 import com.bestroboticsteam.jobs.JobInfo;
 
 public class RobotInfo implements Communicatable {
@@ -22,6 +22,8 @@ public class RobotInfo implements Communicatable {
 		this.position = position;
 		this.direction = direction;
 	}
+	
+	public RobotInfo() {}
 
 	// returns null whole path was finished
 	public Direction move() {
@@ -92,11 +94,11 @@ public class RobotInfo implements Communicatable {
 	}
 
 	@Override
-	public void sendObject(DataOutputStream o) throws IOException {
+	public void sendObject(MyDataOutputStream o) throws IOException {
 		// this.name
-		this.writeString(o, this.name);
+		o.writeString(this.name);
 		// this.position
-		this.writePoint(o, this.position);
+		o.writePoint(this.position);
 		// this.direction
 		o.writeInt(this.direction.ordinal());
 		// this.currentJob
@@ -105,21 +107,21 @@ public class RobotInfo implements Communicatable {
 		o.writeInt(this.currentPath.size());
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
 			Point point = (Point) iterator.next();
-			this.writePoint(o, point);
+			o.writePoint(point);
 		}
 	}
 
 	@Override
-	public RobotInfo receiveObject(DataInputStream i) throws IOException {
-		this.name = this.readString(i);
-		this.position = this.readPoint(i);
+	public RobotInfo receiveObject(MyDataInputStream i) throws IOException {
+		this.name = i.readString();
+		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];
 		this.currentJob.receiveObject(i);
 		// currentPath
 		int pathSize = i.readInt();
 		this.currentPath.clear();
 		for (int j = 0; j < pathSize; j++) {
-			this.currentPath.add(j, this.readPoint(i));
+			this.currentPath.add(j, i.readPoint());
 		}
 		return this;
 	}

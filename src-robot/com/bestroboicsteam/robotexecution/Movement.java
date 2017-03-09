@@ -44,8 +44,11 @@ public class Movement {
 		boolean isRightOnBlack = isOnBlack(rightSensor.readValue());
 		while(!isLeftOnBlack || !isLeftOnBlack){
 			pilot.forward();
+			//System.out.println("isLeft: " + isLeftOnBlack);
+			//System.out.println("isRight: " + isRightOnBlack);
 			
 			while(isRightOnBlack && !isLeftOnBlack){
+				System.out.println("rotate right");
 				pilot.rotateRight();
 				
 				isLeftOnBlack = isOnBlack(leftSensor.readValue());
@@ -53,6 +56,7 @@ public class Movement {
 			}
 			
 			while(!isRightOnBlack && isLeftOnBlack){
+				System.out.println("rotate left");
 				pilot.rotateLeft();
 				
 				isLeftOnBlack = isOnBlack(leftSensor.readValue());

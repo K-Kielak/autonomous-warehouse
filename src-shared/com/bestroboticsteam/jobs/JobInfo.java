@@ -1,11 +1,11 @@
 package com.bestroboticsteam.jobs;
 
 import java.awt.Point;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import com.bestroboticsteam.communication.Communicatable;
+import com.bestroboticsteam.communication.MyDataInputStream;
+import com.bestroboticsteam.communication.MyDataOutputStream;
 
 public class JobInfo implements Communicatable {
 
@@ -46,18 +46,18 @@ public class JobInfo implements Communicatable {
 	}
 
 	@Override
-	public void sendObject(DataOutputStream o) throws IOException {
-		this.writeString(o, this.itemCode);
-		this.writePoint(o, this.position);
+	public void sendObject(MyDataOutputStream o) throws IOException {
+		o.writeString(this.itemCode);
+		o.writePoint(this.position);
 		o.writeInt(this.quantity);
 		o.writeInt(jobCode);
 
 	}
 
 	@Override
-	public Object receiveObject(DataInputStream i) throws IOException {
-		this.itemCode = this.readString(i);
-		this.position = this.readPoint(i);
+	public Object receiveObject(MyDataInputStream i) throws IOException {
+		this.itemCode = i.readString();
+		this.position = i.readPoint();
 		this.quantity = i.readInt();
 		this.jobCode = i.readInt();
 		return this;

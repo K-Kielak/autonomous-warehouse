@@ -47,6 +47,7 @@ public class RobotsManager extends Thread {
 		// TODO Check connection status
 
 		for (int i = 0; i < connectionHandlers.length; i++) {
+			connectionHandlers[i].run();
 			try {
 				connectionHandlers[i].sendObject(robots[i]);
 			} catch (ConnectionNotEstablishedException e) {

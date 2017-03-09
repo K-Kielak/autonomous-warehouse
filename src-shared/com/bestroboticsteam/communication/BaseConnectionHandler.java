@@ -1,7 +1,5 @@
 package com.bestroboticsteam.communication;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import lejos.nxt.comm.NXTConnection;
@@ -14,8 +12,8 @@ public abstract class BaseConnectionHandler implements Runnable {
 	public static String BLUETOOTH_PROTOCOL = "btspp://";
 	public static String USB_PROTOCOL = "usb://";
 
-	protected DataInputStream input;
-	protected DataOutputStream output;
+	protected MyDataInputStream input;
+	protected MyDataOutputStream output;
 
 	protected String status = DISCONNECTED;
 
