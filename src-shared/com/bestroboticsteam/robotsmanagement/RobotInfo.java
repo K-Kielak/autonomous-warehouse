@@ -11,7 +11,7 @@ import com.bestroboticsteam.communication.Communicatable;
 import com.bestroboticsteam.jobs.JobInfo;
 
 public class RobotInfo implements Communicatable {
-	public String name;
+	private String name;
 	private Point position;
 	private Direction direction;
 	private JobInfo currentJob = null;
@@ -25,6 +25,9 @@ public class RobotInfo implements Communicatable {
 
 	// returns null whole path was finished
 	public Direction move() {
+		if(currentPath.isEmpty())
+			return null;
+			
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
@@ -44,14 +47,18 @@ public class RobotInfo implements Communicatable {
 		return turn(newDir);
 	}
 
-	// returns true if number of clicks was sufficient
-	public boolean clicked() {
-		// TODO decrease quantity
-		return true;
+	public void click() {
+		currentJob.decreaseQuantity();
+		if(currentJob.getQuantity() <= 0)
+			currentJob = null;
 	}
 
 	public boolean finished() {
 		return currentJob == null;
+	}
+	
+	public String getName(){
+		return name;
 	}
 
 	public Point getPosition() {

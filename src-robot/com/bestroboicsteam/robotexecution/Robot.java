@@ -12,7 +12,6 @@ import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.robotics.navigation.DifferentialPilot;
-import lejos.util.Delay;
 import rp.config.RobotConfigs;
 import rp.config.WheeledRobotConfiguration;
 import rp.systems.RobotProgrammingDemo;
@@ -22,6 +21,7 @@ import rp.systems.WheeledRobotSystem;
 public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 	private Movement movement;
 	private RobotInfo info;
+	private boolean m_run = true;
 	
 	public Robot(SensorPort leftSensorPort, SensorPort rightSensorPort, WheeledRobotConfiguration ExpressBot, RobotInfo info){
 		LightSensor rightSensor = new LightSensor(rightSensorPort);
@@ -33,11 +33,38 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 	
 	@Override
 	public void run() {		
-		Direction direction = info.move();
-		while(direction != null){
-			movement.move(direction);
-			direction = info.move();
+		
+		
+		while(m_run){
+			//TODO read from robot
+			printInfo();
+			Direction direction = info.move();
+			if(direction != null)
+				movement.move(direction);
+			else if(!info.finished()){
+				Button.waitForAnyPress();
+				info.click();
+			}
+		
+			//TODO send to robot;
 		}
+		
+		
+		while(info.finished()){
+			
+		}
+	}
+	
+	@Override
+	public void stop(){
+		m_run = false;
+	}
+	
+	private void printInfo(){
+		System.out.println(info.getName());
+		System.out.println("Current job code: " + info.getCurrentJob().getJobCode());
+		System.out.println("Destination: " + "(" + info.getPosition().getX() + ", " + info.getPosition().getY() + ")");
+		System.out.println("Items left to pick: " + info.getCurrentJob().getQuantity());
 	}
 
 	public static void main(String[] args) {
@@ -54,7 +81,7 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 		path.add(new Point(6, 0)); path.add(new Point(6, 1)); path.add(new Point(6, 2)); path.add(new Point(6, 3)); path.add(new Point(6, 4));
 		path.add(new Point(6, 5)); path.add(new Point(6, 6)); path.add(new Point(7, 6)); path.add(new Point(8, 6)); path.add(new Point(9, 6));
 		path.add(new Point(10, 6)); path.add(new Point(11, 6)); path.add(new Point(11, 7)); path.add(new Point(11, 6));
-		JobInfo job = new JobInfo("", new Point(11, 6));
+		JobInfo job = new JobInfo("", new Point(11, 6), 4, 123);
 		info.setCurrentJob(job, path);
 		WheeledRobotConfiguration config = 
 		new WheeledRobotConfiguration(RobotConfigs.EXPRESS_BOT.getWheelDiameter(), RobotConfigs.EXPRESS_BOT.getTrackWidth(), (float) RobotConfigs.EXPRESS_BOT.getRobotLength(), Motor.C, Motor.B);
