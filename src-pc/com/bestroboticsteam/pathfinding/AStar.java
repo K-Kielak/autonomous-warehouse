@@ -2,9 +2,12 @@ package com.bestroboticsteam.pathfinding;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
@@ -20,13 +23,28 @@ public class AStar {
 	
 	
 	// multi robot AStar
-	public Point[][] multiGetPath(Pair<Point, Point>[] locationDestinationPairs) {
-		Point[][] paths = new Point[3][3];
-		return paths;
+	public static Point[][] multiGetPath(Pair<Point, Point>[] locationDestinationPairs) {
+		System.out.println("New calculation");
+		HashMap<TimePoint, Boolean> timedReservationTable = new HashMap<>(100);
+		List<Point[]> paths = new ArrayList<>();
+		for(Pair<Point, Point> locationDestinationPair : locationDestinationPairs){
+			List<Point> path = AStarPath(locationDestinationPair, timedReservationTable);
+			for(int i = 0; i<path.size(); i++){
+				timedReservationTable.put(new TimePoint(path.get(i), i), true);
+			}
+			System.out.println(timedReservationTable.containsKey(new TimePoint(new Point(0, 3), 1)));
+			paths.add(path.toArray(new Point[path.size()]));
+		}
+		
+		return paths.toArray(new Point[paths.size()][]);
+	}
+	
+	public static LinkedList<Point> singleGetPath(Pair<Point, Point> locationDestinationPair){
+		return AStarPath(locationDestinationPair, new HashMap<TimePoint, Boolean>());
 	}
 	
 	//Single robot AStar
-	public static LinkedList<Point> singleGetPath(Pair<Point, Point> locationDestinationPair){ //Follows a basic implementation of the A* pathfinding algorithm.
+	public static LinkedList<Point> AStarPath(Pair<Point, Point> locationDestinationPair, HashMap<TimePoint, Boolean> timedReservationTable){ //Follows a basic implementation of the A* pathfinding algorithm.
 		GridMap map = MapUtils.createRealWarehouse();
 		
 		ArrayList<AStarNode> openList  = new ArrayList<AStarNode>();
@@ -72,10 +90,10 @@ public class AStar {
 			closedListLocations[nodeX][nodeY] = true;
 			
 			//Add adjacent nodes to the open list
-			openList = addToOpenList(new Point(nodeX, nodeY+1), currentNode, openListLocations, openList, closedListLocations, doorPosition);
-			openList = addToOpenList(new Point(nodeX, nodeY-1), currentNode, openListLocations, openList, closedListLocations, doorPosition);
-			openList = addToOpenList(new Point(nodeX+1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition);
-			openList = addToOpenList(new Point(nodeX-1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition);
+			openList = addToOpenList(new Point(nodeX, nodeY+1), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
+			openList = addToOpenList(new Point(nodeX, nodeY-1), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
+			openList = addToOpenList(new Point(nodeX+1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
+			openList = addToOpenList(new Point(nodeX-1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			
 		}
 		
@@ -100,10 +118,12 @@ public class AStar {
 	}
 	
 	//Adds a point to the openList if it is not blocked
-	private static ArrayList<AStarNode> addToOpenList(Point location, AStarNode currentNode, boolean[][] openListLocations, ArrayList<AStarNode> openList, boolean[][] closedListLocations, Point doorPosition){
+	private static ArrayList<AStarNode> addToOpenList(Point location, AStarNode currentNode, boolean[][] openListLocations, ArrayList<AStarNode> openList, boolean[][] closedListLocations, Point doorPosition, HashMap<TimePoint, Boolean> timedReservationTable){
 		GridMap map = MapUtils.createRealWarehouse();
+		//Calculates the TimePoint for the current node based on its gCost
+		TimePoint nodeTimePoint = new TimePoint(new Point(currentNode.location.x, currentNode.location.y), currentNode.gCost);
 		if(location.x>=0 && location.y>=0 && location.x<map.getXSize() && location.y <map.getYSize()){
-			if(!map.isObstructed(location.x, location.y) && !closedListLocations[location.x][location.y]){
+			if(!map.isObstructed(location.x, location.y) && !closedListLocations[location.x][location.y] && !timedReservationTable.containsKey(nodeTimePoint)){
 				if(!openListLocations[location.x][location.y]){
 					openList.add(new AStarNode(new Point(location.x,location.y), currentNode, currentNode.gCost+1+Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y), currentNode.gCost+1, location.x+location.y-doorPosition.x-doorPosition.y));
 					openListLocations[location.x][location.y]=true;

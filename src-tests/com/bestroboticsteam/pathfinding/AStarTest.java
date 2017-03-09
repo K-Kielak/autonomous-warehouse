@@ -57,4 +57,26 @@ public class AStarTest {
 		assertNull(path);
 	}
 	
+	@Test
+	public void testMultiGetPath(){
+		Point[][] path;
+		Pair[] locationDetinationPairs = {Pair.makePair(new Point(0, 3), new Point(0, 2))};
+		path = AStar.multiGetPath(locationDetinationPairs);
+		Point[][] actualPath = {{new Point(0, 2)}};
+		assertArrayEquals(path, actualPath);
+		
+
+		locationDetinationPairs = new Pair[]{Pair.makePair(new Point(0, 3), new Point(0, 1)), Pair.makePair(new Point(0, 1), new Point(0, 3))};
+		path = AStar.multiGetPath(locationDetinationPairs);
+		for(Point[] pa : path){
+			for(Point point : pa){
+				System.out.println(point);
+			}
+			System.out.println();
+		}
+		actualPath = new Point[][]{{new Point(0, 2)}};
+		assertArrayEquals(path, actualPath);
+		
+	}
+	
 }
