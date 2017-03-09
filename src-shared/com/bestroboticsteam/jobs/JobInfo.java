@@ -40,6 +40,10 @@ public class JobInfo implements Communicatable {
 	public int getQuantity() {
 		return quantity;
 	}
+	
+	public void decreaseQuantity(){
+		quantity--;
+	}
 
 	public int getJobCode() {
 		return jobCode;

@@ -44,10 +44,10 @@ public class RobotInfo implements Communicatable {
 		return turn(newDir);
 	}
 
-	// returns true if number of clicks was sufficient
-	public boolean clicked() {
-		// TODO decrease quantity
-		return true;
+	public void click() {
+		currentJob.decreaseQuantity();
+		if(currentJob.getQuantity() <= 0)
+			currentJob = null;
 	}
 
 	public boolean finished() {
