@@ -41,7 +41,12 @@ public class RobotsManager extends Thread{
 			//TODO communication with robots
 		}
 			
-		Thread.sleep(MS_DELAY);
+		try{
+			Thread.sleep(MS_DELAY);
+		}
+		catch(InterruptedException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public RobotInfo[] getRobots(){
