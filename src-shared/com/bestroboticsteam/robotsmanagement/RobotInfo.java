@@ -25,7 +25,8 @@ public class RobotInfo implements Communicatable {
 
 	// returns null whole path was finished
 	public Direction move() {
-		Point newPos = currentPath.poll();
+		Point newPos = currentPath.get(0);
+		currentPath.remove(0);
 		Direction newDir;
 		if(position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
