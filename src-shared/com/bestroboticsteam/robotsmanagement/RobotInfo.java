@@ -52,8 +52,6 @@ public class RobotInfo implements Communicatable {
 
 	public void click() {
 		currentJob.decreaseQuantity();
-		if(currentJob.getQuantity() <= 0)
-			currentJob = null;
 	}
 
 	public boolean finished() {

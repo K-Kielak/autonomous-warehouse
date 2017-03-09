@@ -23,10 +23,10 @@ public class Main {
 		AStar pathFinder = new AStar();
 
 		RobotsManager manager = new RobotsManager(robots, jobsAssign, pathFinder);
-		manager.run(); // Thread?
+		manager.start();
 		
 		InterfaceController warehouseInterface = new InterfaceController(jobsSelect, jobsAssign);
-		warehouseInterface.run();
+		warehouseInterface.start();
 	}
 
 }

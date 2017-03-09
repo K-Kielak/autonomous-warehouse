@@ -29,7 +29,6 @@ public class RobotCommunicationHandler extends BaseConnectionHandler {
 
 		input = new MyDataInputStream(this.connection.openDataInputStream());
 		output = new MyDataOutputStream(this.connection.openDataOutputStream());
-		System.out.println(input + " # " + output);
 	}
 
 }
