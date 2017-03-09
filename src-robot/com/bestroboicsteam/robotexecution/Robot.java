@@ -89,7 +89,6 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
 			p.add(direction);
 			direction = Button.waitForAnyPress();
 		}
-<<<<<<< src-robot/com/bestroboicsteam/robotexecution/Robot.java
 
 //		RobotInfo info = new RobotInfo("xd", new Point(0, 0), Direction.FORWARD);
 //		LinkedList<Point> path = new LinkedList<Point>();
@@ -118,20 +117,6 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
 				RobotConfigs.EXPRESS_BOT.getTrackWidth(), (float) RobotConfigs.EXPRESS_BOT.getRobotLength(), Motor.C,
 				Motor.B);
 		RobotProgrammingDemo demo = new Robot(SensorPort.S2, SensorPort.S3, config);
-=======
-	
-		RobotInfo info = new RobotInfo("xd", new Point(0, 0), Direction.FORWARD);
-		LinkedList<Point> path = new LinkedList<Point>();
-		path.add(new Point(1, 0)); path.add(new Point(2, 0)); path.add(new Point(3, 0)); path.add(new Point(4, 0)); path.add(new Point(5, 0));
-		path.add(new Point(6, 0)); path.add(new Point(6, 1)); path.add(new Point(6, 2)); path.add(new Point(6, 3)); path.add(new Point(6, 4));
-		path.add(new Point(6, 5)); path.add(new Point(6, 6)); path.add(new Point(7, 6)); path.add(new Point(8, 6)); path.add(new Point(9, 6));
-		path.add(new Point(10, 6)); path.add(new Point(11, 6)); path.add(new Point(11, 7)); path.add(new Point(11, 6));
-		JobInfo job = new JobInfo("", new Point(11, 6), 4, 123);
-		info.setCurrentJob(job, path);
-		WheeledRobotConfiguration config = 
-		new WheeledRobotConfiguration(RobotConfigs.EXPRESS_BOT.getWheelDiameter(), RobotConfigs.EXPRESS_BOT.getTrackWidth(), (float) RobotConfigs.EXPRESS_BOT.getRobotLength(), Motor.C, Motor.B);
-		RobotProgrammingDemo demo = new Robot(SensorPort.S2, SensorPort.S3, config, info);
->>>>>>> src-robot/com/bestroboicsteam/robotexecution/Robot.java
 		demo.run();
 	}
 

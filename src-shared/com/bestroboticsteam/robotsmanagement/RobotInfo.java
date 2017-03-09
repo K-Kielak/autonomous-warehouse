@@ -14,7 +14,7 @@ public class RobotInfo implements Communicatable {
 	private String name;
 	private Point position;
 	private Direction direction;
-	private JobInfo currentJob;
+	private JobInfo currentJob = new JobInfo();;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
 
 	public RobotInfo(String name, Point position, Direction direction) {
@@ -22,12 +22,9 @@ public class RobotInfo implements Communicatable {
 		this.name = name;
 		this.position = position;
 		this.direction = direction;
-
 	}
 	
-	public RobotInfo() {
-		this.currentJob = new JobInfo();
-	}
+	public RobotInfo() {}
 
 	// returns null whole path was finished
 	public Direction move() {

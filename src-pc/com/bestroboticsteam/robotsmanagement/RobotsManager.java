@@ -12,6 +12,7 @@ import rp.util.Pair;
 import com.bestroboticsteam.jobs.JobAssignment;
 import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.pathfinding.AStar;
+import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.PCConnectionHandler;
 
 public class RobotsManager extends Thread {
