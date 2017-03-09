@@ -1,6 +1,11 @@
 package com.bestroboicsteam.robotexecution;
 
+import java.awt.Point;
 import java.util.LinkedList;
+
+import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.robotsmanagement.Direction;
+import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
 import lejos.nxt.Button;
 import lejos.nxt.LightSensor;
@@ -15,87 +20,24 @@ import rp.systems.StoppableRunnable;
 import rp.systems.WheeledRobotSystem;
 
 public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
+	private Movement movement;
+	private RobotInfo info;
 	
-	private LinkedList<Integer> path;
-	private DifferentialPilot pilot;
-	private LightSensor leftSensor;
-	private LightSensor rightSensor;
-	private int calibratedValue;
-	private int error = 7;
-	private boolean isMoving = true;
-	
-	public Robot(SensorPort leftSensor, SensorPort rightSensor, WheeledRobotConfiguration ExpressBot, LinkedList<Integer> path){
-		this.pilot = new WheeledRobotSystem(ExpressBot).getPilot();
-		this.rightSensor = new LightSensor(rightSensor);
-		this.leftSensor = new LightSensor(leftSensor);
-		this.calibratedValue = getCalibratedValue(this.leftSensor, this.rightSensor);
-		this.path = path;
-		
-		this.pilot.setTravelSpeed(0.08f);
-		this.leftSensor.setFloodlight(true);
-		this.rightSensor.setFloodlight(true);
-	}
-
-	private int getCalibratedValue(LightSensor leftSensor, LightSensor rightSensor){
-		Delay.msDelay(300);
-		int leftValue = leftSensor.readValue();
-		int rightValue = rightSensor.readValue();
-		Delay.msDelay(300);
-		int calibratedValue = (leftValue + rightValue) / 2;
-		return calibratedValue;
+	public Robot(SensorPort leftSensorPort, SensorPort rightSensorPort, WheeledRobotConfiguration ExpressBot, RobotInfo info){
+		LightSensor rightSensor = new LightSensor(rightSensorPort);
+		LightSensor leftSensor = new LightSensor(leftSensorPort);
+		DifferentialPilot pilot = new WheeledRobotSystem(ExpressBot).getPilot();
+		this.movement = new Movement(leftSensor, rightSensor, pilot);
+		this.info = info;
 	}
 	
 	@Override
 	public void run() {		
-		pilot.forward();
-		
-		boolean isLeftOnBlack = false;
-		boolean isRightOnBlack = false;
-		Integer direction = 0;
-		
-		while(isMoving && !path.isEmpty()){
-			isRightOnBlack = isOnBlack(rightSensor.readValue());
-		
-			isLeftOnBlack = isOnBlack(leftSensor.readValue());
-			
-			if(isRightOnBlack && isLeftOnBlack){
-				pilot.travel(0.07);
-				
-				direction = path.get(0);
-				path.remove(0);
-				switch(direction){
-					case Button.ID_LEFT:
-						pilot.rotate(90);
-						break;
-					case Button.ID_RIGHT:
-						pilot.rotate(-90);
-						break;
-				}
-				
-				pilot.forward();
-				continue;
-			}
-			
-			while(isRightOnBlack && !isLeftOnBlack){
-				pilot.rotateRight();
-				
-				isLeftOnBlack = isOnBlack(leftSensor.readValue());
-				isRightOnBlack = isOnBlack(rightSensor.readValue());
-			}
-			
-			while(!isRightOnBlack && isLeftOnBlack){
-				pilot.rotateLeft();
-				
-				isLeftOnBlack = isOnBlack(leftSensor.readValue());
-				isRightOnBlack = isOnBlack(rightSensor.readValue());
-			}
-			
-			pilot.forward();
+		Direction direction = info.move();
+		while(direction != null){
+			movement.move(direction);
+			direction = info.move();
 		}
-	}
-	
-	private boolean isOnBlack(int sensorValue){
-		return Math.abs(calibratedValue - sensorValue) > error;
 	}
 
 	public static void main(String[] args) {
@@ -106,10 +48,17 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 			direction = Button.waitForAnyPress();
 		}
 	
-
+		RobotInfo info = new RobotInfo("xd", new Point(0, 0), Direction.FORWARD);
+		LinkedList<Point> path = new LinkedList<Point>();
+		path.add(new Point(1, 0)); path.add(new Point(2, 0)); path.add(new Point(3, 0)); path.add(new Point(4, 0)); path.add(new Point(5, 0));
+		path.add(new Point(6, 0)); path.add(new Point(6, 1)); path.add(new Point(6, 2)); path.add(new Point(6, 3)); path.add(new Point(6, 4));
+		path.add(new Point(6, 5)); path.add(new Point(6, 6)); path.add(new Point(7, 6)); path.add(new Point(8, 6)); path.add(new Point(9, 6));
+		path.add(new Point(10, 6)); path.add(new Point(11, 6)); path.add(new Point(11, 7)); path.add(new Point(11, 6));
+		JobInfo job = new JobInfo("", new Point(11, 6));
+		info.setCurrentJob(job, path);
 		WheeledRobotConfiguration config = 
 		new WheeledRobotConfiguration(RobotConfigs.EXPRESS_BOT.getWheelDiameter(), RobotConfigs.EXPRESS_BOT.getTrackWidth(), (float) RobotConfigs.EXPRESS_BOT.getRobotLength(), Motor.C, Motor.B);
-		RobotProgrammingDemo demo = new Robot(SensorPort.S2, SensorPort.S3, config, p);
+		RobotProgrammingDemo demo = new Robot(SensorPort.S2, SensorPort.S3, config, info);
 		demo.run();
 	}
 
