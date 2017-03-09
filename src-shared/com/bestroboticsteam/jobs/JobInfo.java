@@ -51,7 +51,7 @@ public class JobInfo implements Communicatable {
 		this.writePoint(o, this.position);
 		o.writeInt(this.quantity);
 		o.writeInt(jobCode);
-		
+
 	}
 
 	@Override
