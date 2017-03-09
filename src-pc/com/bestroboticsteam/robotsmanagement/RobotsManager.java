@@ -6,7 +6,7 @@ import java.awt.Point;
 import java.util.LinkedList;
 import rp.util.Pair;
 
-import com.bestroboticsteam.jobs.JobAssignment;
+import com.bestroboticsteam.jobs.JobAssignmentTest;
 import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.pathfinding.AStar;
 import com.bestroboticsteam.communication.PCConnectionHandler;
@@ -16,10 +16,10 @@ public class RobotsManager extends Thread{
 	private final int MS_DELAY = 500;
 	private RobotInfo[] robots;
 	private PCConnectionHandler[] connectionHandlers;
-	private JobAssignment jobs;
+	private JobAssignmentTest jobs;
 	private AStar pathFinder;
 	
-	public RobotsManager(RobotInfo[] robots, JobAssignment jobs, AStar pathFinder){
+	public RobotsManager(RobotInfo[] robots, JobAssignmentTest jobs, AStar pathFinder){
 		this.robots = robots;
 		this.connectionHandlers = new PCConnectionHandler[robots.length];
 		for(int i=0; i<robots.length; i++)
