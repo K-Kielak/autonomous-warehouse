@@ -25,6 +25,9 @@ public class RobotInfo implements Communicatable {
 
 	// returns null whole path was finished
 	public Direction move() {
+		if (currentPath.isEmpty()) {
+			return null;
+		}
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
