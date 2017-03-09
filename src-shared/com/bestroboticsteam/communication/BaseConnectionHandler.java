@@ -51,6 +51,7 @@ public abstract class BaseConnectionHandler implements Runnable {
 	}
 
 	public Communicatable receiveObject(Communicatable obj) throws ConnectionNotEstablishedException {
+		checkEstablished();
 		try {
 			return (Communicatable) obj.receiveObject(this.input);
 		} catch (IOException e) {

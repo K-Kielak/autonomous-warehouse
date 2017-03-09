@@ -10,6 +10,8 @@ import com.bestroboticsteam.communication.MyDataInputStream;
 import com.bestroboticsteam.communication.MyDataOutputStream;
 import com.bestroboticsteam.jobs.JobInfo;
 
+import lejos.nxt.Button;
+
 public class RobotInfo implements Communicatable {
 	public String name;
 	private Point position;
@@ -102,11 +104,22 @@ public class RobotInfo implements Communicatable {
 		// this.direction
 		o.writeInt(this.direction.ordinal());
 		// this.currentJob
-		this.currentJob.sendObject(o);
+		if (this.currentJob == null) {
+			// We tell other side that this is null
+			o.writeInt(0);
+		}
+		else {
+			// We tell other side that this is not null
+			o.writeInt(1);
+			this.currentJob.sendObject(o);
+		}
+
 		// this.currentPath
 		o.writeInt(this.currentPath.size());
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
 			Point point = (Point) iterator.next();
+			System.out.println(point);
+			Button.waitForAnyPress();
 			o.writePoint(point);
 		}
 	}
@@ -116,7 +129,16 @@ public class RobotInfo implements Communicatable {
 		this.name = i.readString();
 		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];
-		this.currentJob.receiveObject(i);
+		int currentJobIsNotNull = i.readInt();
+		if (currentJobIsNotNull == 1) {
+			// currentJob received is not null
+			this.currentJob.receiveObject(i);
+		}
+		else {
+			// currentJob received is null
+			System.out.println("Setting currentJob to null");
+			this.currentJob = null;
+		}
 		// currentPath
 		int pathSize = i.readInt();
 		this.currentPath.clear();

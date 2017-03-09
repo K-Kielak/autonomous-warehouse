@@ -81,4 +81,13 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		logger.error("Error connecting");
 	}
 
+	public Communicatable receiveObject(Communicatable obj) throws ConnectionNotEstablishedException {
+		logger.info("Receiving: " + obj.toString());
+		return super.receiveObject(obj);
+	}
+
+	public void sendObject(Communicatable obj) throws ConnectionNotEstablishedException {
+		logger.info("Sending: " + obj.toString());
+		super.sendObject(obj);
+	}
 }

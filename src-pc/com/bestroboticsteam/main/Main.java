@@ -23,7 +23,7 @@ public class Main {
 		AStar pathFinder = new AStar();
 
 		RobotsManager manager = new RobotsManager(robots, jobsAssign, pathFinder);
-		manager.run();
+		manager.run(); // Thread?
 		
 		InterfaceController warehouseInterface = new InterfaceController(jobsSelect);
 		warehouseInterface.run();
