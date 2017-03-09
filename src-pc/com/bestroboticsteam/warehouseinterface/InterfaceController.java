@@ -1,13 +1,39 @@
 package com.bestroboticsteam.warehouseinterface;
 import org.apache.log4j.Logger;
+
 import com.bestroboticsteam.jobs.*;
+
 public class InterfaceController extends Thread {
 	final static Logger logger = Logger.getLogger(InterfaceController.class);
 	private InterfaceView warehouseInterface;
 	private JobSelection incomingJobs;
-	public InterfaceController(JobSelection incomingJobs) {
+	private JobAssignment assign;
+
+	public InterfaceController(JobSelection incomingJobs, JobAssignment assign) {
 		this.warehouseInterface = new InterfaceView();
 		this.incomingJobs = incomingJobs;
+		this.assign = assign;
+	}
+	
+/*	public void setRobotStatus(){
+		String status = connection.getStatus();
+		warehouseInterface.commLabel.setText(status);
+	} */
+	public void getCurrentJobs(){
+		String jobsText = "";
+		int length = assign.getCurrentOrders().size();
+		logger.debug(length);
+		for (int i = 0; i < length; i++){
+			warehouseInterface.emptyProgList();
+			Order job = assign.getCurrentOrders().get(i);
+			if (job.equals(null)){
+				logger.error("No jobs in progress");
+			} else {
+				jobsText = jobsText + " : " + job.toString();
+			}
+		}
+		warehouseInterface.setInProgList(jobsText);
+		logger.debug(jobsText);
 	}
 	
 	public void getTenJobs() {
@@ -19,7 +45,7 @@ public class InterfaceController extends Thread {
 			Order job = incomingJobs.viewOrder(i);
 			logger.debug("job: " + job);
 			if(job == null){
-				logger.debug("not enough jobs");
+				logger.debug("Not enough jobs left");
 				break;
 			}
 			String inputJob = job.toString();
@@ -29,14 +55,18 @@ public class InterfaceController extends Thread {
 		warehouseInterface.setJobList(jobsText);
 		logger.debug("get jobs list " + jobsText);
 	}
+	
 	public void run() {
 		logger.info("warehouse interface running");
 		while (true) {
 			try {			
 				// while running keep updating jobs
 				getTenJobs();
+				getCurrentJobs();
+//				setRobotStatus();
 				Thread.sleep(5000);
 				// empty the string jobListText so that an updated 10 items can be added
+				
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
 			}
