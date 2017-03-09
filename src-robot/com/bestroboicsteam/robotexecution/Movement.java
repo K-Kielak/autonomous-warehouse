@@ -25,6 +25,21 @@ public class Movement {
 	}
 	
 	public void move(Direction direction){
+		switch(direction){
+			case LEFT:
+				pilot.rotate(90);
+				break;
+			case RIGHT:
+				pilot.rotate(-90);
+				break;
+			case BACKWARD:
+				pilot.rotate(180);
+				break;
+			case FORWARD:
+				//dont't rotate
+				break;
+		}
+		
 		boolean isLeftOnBlack = isOnBlack(leftSensor.readValue());
 		boolean isRightOnBlack = isOnBlack(rightSensor.readValue());
 		while(!isLeftOnBlack || !isLeftOnBlack){
@@ -49,20 +64,8 @@ public class Movement {
 		}
 		
 		pilot.stop();
-		switch(direction){
-			case LEFT:
-				pilot.rotate(90);
-				break;
-			case RIGHT:
-				pilot.rotate(-90);
-				break;
-			case BACKWARD:
-				pilot.rotate(180);
-				break;
-			case FORWARD:
-				//dont't rotate
-				break;
-		}
+		pilot.travel(0.07);
+		pilot.stop();
 	}
 	
 	private int getCalibratedValue(LightSensor leftSensor, LightSensor rightSensor){

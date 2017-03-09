@@ -22,20 +22,21 @@ public class RobotInfo {
 	//returns null whole path was finished
 	public Direction move(){ 
 		Point newPos = currentPath.poll();
+		Direction newDir;
 		if(position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
 		
 		if(position.x+1 == newPos.x)
-			return turn(Direction.LEFT); //turn west
+			newDir = Direction.LEFT; //turn west
+		else if(position.x-1 == newPos.x)
+			newDir = Direction.RIGHT; //turn east
+		else if(position.y+1 == newPos.y)
+			newDir = Direction.FORWARD; //turn north
+		else //if(position.y-1 == newPos.y)
+			newDir = Direction.BACKWARD; //turn south
 		
-		if(position.x-1 == newPos.x)
-			return turn(Direction.RIGHT); //turn east
-		
-		if(position.y+1 == newPos.y)
-			return turn(Direction.FORWARD); //turn north
-		
-		//if(position.y-1 == newPos.y)
-		return turn(Direction.BACKWARD); //turn south
+		position = newPos;
+		return turn(newDir);
 	}
 	
 	//returns true if number of clicks was sufficient
