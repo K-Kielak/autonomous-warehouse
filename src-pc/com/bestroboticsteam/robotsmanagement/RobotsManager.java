@@ -28,7 +28,7 @@ public class RobotsManager extends Thread {
 		this.robots = robots;
 		this.connectionHandlers = new PCConnectionHandler[robots.length];
 		for (int i = 0; i < robots.length; i++)
-			this.connectionHandlers[i] = new PCConnectionHandler(robots[i].name);
+			this.connectionHandlers[i] = new PCConnectionHandler(robots[i].getName());
 
 		this.jobs = jobs;
 		this.pathFinder = pathFinder;
