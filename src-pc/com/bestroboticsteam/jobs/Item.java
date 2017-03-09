@@ -41,7 +41,7 @@ public class Item {
 		return code.hashCode();
 	}
 
-	public boolean equals(Item i) {
-		return (this.code.equals(i.getCode()));
+	public boolean equals(Object i) {
+		return (this.code.equals(((Item) i).getCode()));
 	}
 }

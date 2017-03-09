@@ -13,7 +13,7 @@ public class Order implements Comparable<Order> {
 	// do you prefer another type of map?
 	private ConcurrentMap<Item, Integer> orderTable;
 	private int id;
-	private int cancelationNumb;
+	private int cancelationNumb = 0;
 	private float totalReward = 0f;
 
 	public Order(int _id, ConcurrentMap<Item, Integer> ot) {
@@ -62,6 +62,11 @@ public class Order implements Comparable<Order> {
 		for (Item e : orderTable.keySet()) {
 			totalReward += e.getReward() * orderTable.get(e);
 		}
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		return (this.id == ((Order) o).getId());
 	}
 
 	@Override
