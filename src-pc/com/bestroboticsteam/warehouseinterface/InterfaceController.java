@@ -1,13 +1,10 @@
 package com.bestroboticsteam.warehouseinterface;
-
 import org.apache.log4j.Logger;
 import com.bestroboticsteam.jobs.*;
-
 public class InterfaceController extends Thread {
 	final static Logger logger = Logger.getLogger(InterfaceController.class);
 	private InterfaceView warehouseInterface;
 	private JobSelection incomingJobs;
-
 	public InterfaceController(JobSelection incomingJobs) {
 		this.warehouseInterface = new InterfaceView();
 		this.incomingJobs = incomingJobs;
@@ -25,22 +22,20 @@ public class InterfaceController extends Thread {
 				logger.debug("not enough jobs");
 				break;
 			}
-			
-			jobsText = jobsText + "\n" + job.toString();
+			String inputJob = job.toString();
+			jobsText = jobsText + " : " + inputJob;
 		}
 		
 		warehouseInterface.setJobList(jobsText);
 		logger.debug("get jobs list " + jobsText);
 	}
-
 	public void run() {
 		logger.info("warehouse interface running");
 		while (true) {
-			try {
-				Thread.sleep(1000);
+			try {			
 				// while running keep updating jobs
 				getTenJobs();
-				InterfaceController.sleep(5000);
+				Thread.sleep(5000);
 				// empty the string jobListText so that an updated 10 items can be added
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
