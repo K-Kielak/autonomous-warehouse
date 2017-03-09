@@ -19,24 +19,29 @@ public class InterfaceController extends Thread {
 		String status = connection.getStatus();
 		warehouseInterface.commLabel.setText(status);
 	} */
-	public void getCurrentJobs(){
+	public void setCurrentJobs(){
 		String jobsText = "";
 		int length = assign.getCurrentOrders().size();
 		logger.debug(length);
-		for (int i = 0; i < length; i++){
-			warehouseInterface.emptyProgList();
-			Order job = assign.getCurrentOrders().get(i);
-			if (job.equals(null)){
-				logger.error("No jobs in progress");
-			} else {
-				jobsText = jobsText + " : " + job.toString();
+		if (length == 0){
+			jobsText = "No jobs are currently in progress";
+		} else { 
+			for (int i = 0; i < length; i++){
+				warehouseInterface.emptyProgList();
+				Order job = assign.getCurrentOrders().get(i);
+				if (job.equals(null)){
+					logger.error("No jobs left");
+					break;
+				} else {
+					jobsText = jobsText + " : " + job.toString();
+				}
 			}
 		}
 		warehouseInterface.setInProgList(jobsText);
 		logger.debug(jobsText);
 	}
 	
-	public void getTenJobs() {
+	public void setTenJobs() {
 		//get input for jobsList
 		//get the first ten jobs from JobSelection and output them to displayText in IView
 		String jobsText = "";
@@ -50,8 +55,7 @@ public class InterfaceController extends Thread {
 			}
 			String inputJob = job.toString();
 			jobsText = jobsText + " : " + inputJob;
-		}
-		
+		}		
 		warehouseInterface.setJobList(jobsText);
 		logger.debug("get jobs list " + jobsText);
 	}
@@ -61,8 +65,8 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {			
 				// while running keep updating jobs
-				getTenJobs();
-				getCurrentJobs();
+				setTenJobs();
+				setCurrentJobs();
 //				setRobotStatus();
 				Thread.sleep(5000);
 				// empty the string jobListText so that an updated 10 items can be added

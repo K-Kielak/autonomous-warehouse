@@ -22,10 +22,9 @@ public class InterfaceView extends JFrame {
 	public JPanel jobListPanel = new JPanel();
 
 	// left hand panel - map
-	public GridMap map = MapUtils.createRealWarehouse();
-	public MapBasedSimulation sim = new MapBasedSimulation(map);
+	
 	// create visualisation of graph
-	public GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
+	GridMapVisualisation mapVis = CreateSimRobots.robots();
 
 	public JPanel test = new JPanel();
 	public JLabel commLabel = new JLabel();
@@ -122,7 +121,10 @@ public class InterfaceView extends JFrame {
 	// job in progress list methods
 	public void setInProgList(String jobProgText) {
 		String newline = "\n";
-		text2.append(jobProgText + newline);
+		String[] parts = jobProgText.split(" : ");
+		for (int i = 0; i < parts.length; i++) {
+			text2.append(parts[i] + newline);
+		}
 	}
 
 	public void emptyProgList() {
