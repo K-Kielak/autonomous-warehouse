@@ -47,7 +47,8 @@ public class Order implements Comparable<Order> {
 			JobInfo info = new JobInfo(i.getCode(), i.getPosition(), orderTable.get(i), id);
 			list.add(info);
 		}
-		return null;
+		
+		return list;
 	}
 
 	public ConcurrentMap<Item, Integer> getOrderTable() {
@@ -73,11 +74,18 @@ public class Order implements Comparable<Order> {
 	public int compareTo(Order compareOrder) {
 		float compareReward = compareOrder.getTotalReward();
 
-		if (this.totalReward - compareReward > 0)
+		if (this.totalReward - compareReward < 0)
 			return 1;
 		else if (this.totalReward - compareReward == 0)
 			return 0;
 		else
 			return -1;
+	}
+	
+	@Override
+	public String toString(){
+		//toString method -> used in InterfaceController
+		return "Job ID: " + getId() + " " + "Job Reward: " + getTotalReward();
+		
 	}
 }

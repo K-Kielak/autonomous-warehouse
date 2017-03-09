@@ -25,25 +25,27 @@ public class JobSelection {
 		setList(list);
 	}
 
-	public LinkedList<Point> getDropLocation() {
+	public synchronized LinkedList<Point> getDropLocation() {
 		return dropLocation;
 	}
 
-	public Collection<Item> getItemList() {
+	public synchronized Collection<Item> getItemList() {
 		return itemList;
 	}
 
-	public Order take() {
-
+	public synchronized Order take() {
 		return list.pop();
 	}
 
-	public Order viewOrder(int i) {
+	public synchronized Order viewOrder(int i) {
+		if(i >= list.size())
+			return null;
+		
 		return list.get(i);
 
 	}
 
-	private void setList(Collection<Order> orderList) {
+	private synchronized void setList(Collection<Order> orderList) {
 
 		Comparator<Order> comparator = new Comparator<Order>() {
 			@Override

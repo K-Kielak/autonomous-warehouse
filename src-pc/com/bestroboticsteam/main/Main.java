@@ -10,7 +10,7 @@ import com.bestroboticsteam.warehouseinterface.InterfaceController;
 
 public class Main {
 
-	private static final String PATH = "../assets/production";
+	private static final String PATH = "../central-system/assets/production";
 	private static final RobotInfo[] robots = { 
 			new RobotInfo("robot1", new Point(0, 0), Direction.FORWARD)
 		};

@@ -16,14 +16,21 @@ public class InterfaceController extends Thread {
 	public void getTenJobs() {
 		//get input for jobsList
 		//get the first ten jobs from JobSelection and output them to displayText in IView
-		logger.debug(incomingJobs);
+		String jobsText = "";
 		for (int i = 0; i < 10; i++) {
 			logger.debug("index position " + i);
 			Order job = incomingJobs.viewOrder(i);
-			logger.debug("order:  " + job);
-			warehouseInterface.setJobList(job, i);
-			logger.debug("get jobs list " + warehouseInterface.getJobList());
+			logger.debug("job: " + job);
+			if(job == null){
+				logger.debug("not enough jobs");
+				break;
+			}
+			
+			jobsText = jobsText + "\n" + job.toString();
 		}
+		
+		warehouseInterface.setJobList(jobsText);
+		logger.debug("get jobs list " + jobsText);
 	}
 
 	public void run() {

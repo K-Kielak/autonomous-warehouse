@@ -44,7 +44,7 @@ public class ReadData {
 
 			String line;
 
-			while ((line = reader.readLine()) != null) {
+			while ((line = reader.readLine()) != null && !line.isEmpty()) {
 				Point p = new Point();
 				p.x = Integer.parseInt(line.substring(0, line.indexOf(',')));
 				p.y = Integer.parseInt(line.substring(line.indexOf(',') + 1));
