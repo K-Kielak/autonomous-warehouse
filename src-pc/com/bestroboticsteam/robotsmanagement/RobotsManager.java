@@ -36,11 +36,11 @@ public class RobotsManager extends Thread {
 	}
 
 	public void run() {
-		for(int i = 0; i < connectionHandlers.length; i++){
+		for (int i = 0; i < connectionHandlers.length; i++) {
 			connectionHandlers[i].run();
 		}
-		
-		while(true){
+
+		while (true) {
 			for (RobotInfo r : robots) {
 				if (r.finished()) {
 					JobInfo nextJob = jobs.getNextJob();
@@ -48,9 +48,9 @@ public class RobotsManager extends Thread {
 					r.setCurrentJob(nextJob, path);
 				}
 			}
-			
+
 			// TODO Check connection status
-	
+
 			for (int i = 0; i < connectionHandlers.length; i++) {
 				try {
 					connectionHandlers[i].sendObject(robots[i]);
@@ -58,7 +58,7 @@ public class RobotsManager extends Thread {
 					logger.error("Connection to robot " + i + " not established", e);
 				}
 			}
-			
+
 			for (int i = 0; i < connectionHandlers.length; i++) {
 				try {
 					connectionHandlers[i].receiveObject(robots[i]);
@@ -66,11 +66,11 @@ public class RobotsManager extends Thread {
 					logger.error("Connection to robot " + i + " not established", e);
 				} // TODO Fix blocking
 			}
-	
+
 			try {
 				Thread.sleep(MS_DELAY);
 			} catch (InterruptedException e) {
-				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 	}
