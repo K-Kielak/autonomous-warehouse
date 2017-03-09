@@ -1,8 +1,5 @@
 package com.bestroboticsteam.communication;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.communication.BaseConnectionHandler;
@@ -71,8 +68,8 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 			if (sucessful) {
 				this.status = CONNECTED;
 				logger.info("Connection Established via" + this.protocol);
-				input = new DataInputStream(conn.getInputStream());
-				output = new DataOutputStream(conn.getOutputStream());
+				input = new MyDataInputStream(conn.getInputStream());
+				output = new MyDataOutputStream(conn.getOutputStream());
 				return;
 			} else {
 				this.status = BaseConnectionHandler.RETRYING;
@@ -84,4 +81,13 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		logger.error("Error connecting");
 	}
 
+	public Communicatable receiveObject(Communicatable obj) throws ConnectionNotEstablishedException {
+		logger.info("Receiving: " + obj.toString());
+		return super.receiveObject(obj);
+	}
+
+	public void sendObject(Communicatable obj) throws ConnectionNotEstablishedException {
+		logger.info("Sending: " + obj.toString());
+		super.sendObject(obj);
+	}
 }

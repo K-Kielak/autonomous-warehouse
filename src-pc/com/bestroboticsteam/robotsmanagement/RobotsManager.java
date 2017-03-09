@@ -42,8 +42,24 @@ public class RobotsManager extends Thread {
 				r.setCurrentJob(nextJob, path);
 			}
 		}
-	
-		//TODO communication
+		
+		// TODO Check connection status
+
+		for (int i = 0; i < connectionHandlers.length; i++) {
+			connectionHandlers[i].run();
+			try {
+				connectionHandlers[i].sendObject(robots[i]);
+			} catch (ConnectionNotEstablishedException e) {
+				logger.error("Connection to robot " + i + " not established", e);
+			}
+		}
+		for (int i = 0; i < connectionHandlers.length; i++) {
+			try {
+				connectionHandlers[i].receiveObject(robots[i]);
+			} catch (ConnectionNotEstablishedException e) {
+				logger.error("Connection to robot " + i + " not established", e);
+			} // TODO Fix blocking
+		}
 
 		try {
 			Thread.sleep(MS_DELAY);
