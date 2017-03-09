@@ -57,7 +57,7 @@ public class RobotInfo implements Communicatable {
 	}
 
 	public boolean finished() {
-		return currentJob == null;
+		return currentJob == null || currentJob.getQuantity() <= 0;
 	}
 	
 	public String getName(){
