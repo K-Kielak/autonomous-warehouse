@@ -5,10 +5,10 @@ import org.junit.Test;
 
 public class InterfaceTest {
 	InterfaceView view = new InterfaceView();
+	InterfaceController controller = new InterfaceController(null, null);
 
 	@Test
 	public void jobListTest() {
-
 		// add to job list
 		view.setJobList("job1 : job2 : job3 : job4");
 		String actualJob = view.getJobList();
@@ -26,6 +26,22 @@ public class InterfaceTest {
 		actualJob = view.getJobList();
 		expectedOutput = "";
 		assertEquals(expectedOutput, actualJob);
+	}
+
+	@Test
+	public void jobProgressTest() {
+		// add to job list
+		view.setInProgList("job1 : job2 : job3 : job4");
+		String actualJob = view.getInProgList();
+		String expectedOutput = "job1\njob2\njob3\njob4\n";
+		assertEquals(expectedOutput, actualJob);
+
+		// empty job list
+		view.emptyProgList();
+		actualJob = view.getInProgList();
+		expectedOutput = "";
+		assertEquals(expectedOutput, actualJob);
 
 	}
+
 }
