@@ -9,6 +9,7 @@ import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
 import lejos.nxt.Button;
+import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
@@ -60,9 +61,11 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
 	}
 	
 	private void printInfo(){
+		JobInfo job = info.getCurrentJob();
+		LCD.clear();
 		System.out.println(info.getName());
-		System.out.println("Current job code: " + info.getCurrentJob().getJobCode());
-		System.out.println("Destination: " + "(" + info.getPosition().getX() + ", " + info.getPosition().getY() + ")");
+		System.out.println("Current job code: " + job.getJobCode());
+		System.out.println("Destination: " + "(" + job.getPosition().getX() + ", " + job.getPosition().getY() + ")");
 		System.out.println("Items left to pick: " + info.getCurrentJob().getQuantity());
 	}
 

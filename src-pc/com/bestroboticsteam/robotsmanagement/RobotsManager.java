@@ -36,36 +36,42 @@ public class RobotsManager extends Thread {
 	}
 
 	public void run() {
-		for (RobotInfo r : robots) {
-			if (r.finished()) {
-				JobInfo nextJob = jobs.getNextJob();
-				LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(r.getPosition(), nextJob.getPosition()));
-				r.setCurrentJob(nextJob, path);
-			}
+		for(int i = 0; i < connectionHandlers.length; i++){
+			connectionHandlers[i].run();
 		}
 		
-		// TODO Check connection status
-
-		for (int i = 0; i < connectionHandlers.length; i++) {
-			connectionHandlers[i].run();
-			try {
-				connectionHandlers[i].sendObject(robots[i]);
-			} catch (ConnectionNotEstablishedException e) {
-				logger.error("Connection to robot " + i + " not established", e);
+		while(true){
+			for (RobotInfo r : robots) {
+				if (r.finished()) {
+					JobInfo nextJob = jobs.getNextJob();
+					LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(r.getPosition(), nextJob.getPosition()));
+					r.setCurrentJob(nextJob, path);
+				}
 			}
-		}
-		for (int i = 0; i < connectionHandlers.length; i++) {
+			
+			// TODO Check connection status
+	
+			for (int i = 0; i < connectionHandlers.length; i++) {
+				try {
+					connectionHandlers[i].sendObject(robots[i]);
+				} catch (ConnectionNotEstablishedException e) {
+					logger.error("Connection to robot " + i + " not established", e);
+				}
+			}
+			
+			for (int i = 0; i < connectionHandlers.length; i++) {
+				try {
+					connectionHandlers[i].receiveObject(robots[i]);
+				} catch (ConnectionNotEstablishedException e) {
+					logger.error("Connection to robot " + i + " not established", e);
+				} // TODO Fix blocking
+			}
+	
 			try {
-				connectionHandlers[i].receiveObject(robots[i]);
-			} catch (ConnectionNotEstablishedException e) {
-				logger.error("Connection to robot " + i + " not established", e);
-			} // TODO Fix blocking
-		}
-
-		try {
-			Thread.sleep(MS_DELAY);
-		} catch (InterruptedException e) {
-			System.out.println(e.getMessage());
+				Thread.sleep(MS_DELAY);
+			} catch (InterruptedException e) {
+				System.out.println(e.getMessage());
+			}
 		}
 	}
 
