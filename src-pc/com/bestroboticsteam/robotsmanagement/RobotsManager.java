@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 import rp.util.Pair;
 
-import com.bestroboticsteam.jobs.JobAssignmentTest;
+import com.bestroboticsteam.jobs.JobAssignment;
 import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.pathfinding.AStar;
 import com.bestroboticsteam.communication.PCConnectionHandler;
@@ -19,7 +19,7 @@ public class RobotsManager extends Thread {
 	private final int MS_DELAY = 500;
 	private RobotInfo[] robots;
 	private PCConnectionHandler[] connectionHandlers;
-	private JobAssignmentTest jobs;
+	private JobAssignment jobs;
 	private AStar pathFinder;
 
 	final Logger logger = Logger.getLogger(RobotsManager.class);
