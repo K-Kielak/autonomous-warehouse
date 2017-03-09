@@ -25,7 +25,7 @@ public class JobInfo implements Communicatable {
 	public JobInfo(String code, Point position) {
 		this.itemCode = code;
 		this.position = position;
-		this.quantity = 0;
+		this.quantity = 1;
 		this.jobCode = 0;
 	}
 

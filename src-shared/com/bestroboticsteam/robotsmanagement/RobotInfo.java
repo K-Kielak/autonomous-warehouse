@@ -11,7 +11,7 @@ import com.bestroboticsteam.communication.Communicatable;
 import com.bestroboticsteam.jobs.JobInfo;
 
 public class RobotInfo implements Communicatable {
-	public String name;
+	private String name;
 	private Point position;
 	private Direction direction;
 	private JobInfo currentJob = null;
@@ -25,6 +25,9 @@ public class RobotInfo implements Communicatable {
 
 	// returns null whole path was finished
 	public Direction move() {
+		if(currentPath.isEmpty())
+			return null;
+			
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
@@ -52,6 +55,10 @@ public class RobotInfo implements Communicatable {
 
 	public boolean finished() {
 		return currentJob == null;
+	}
+	
+	public String getName(){
+		return name;
 	}
 
 	public Point getPosition() {
