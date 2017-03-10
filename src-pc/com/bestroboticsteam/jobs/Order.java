@@ -39,8 +39,10 @@ public class Order implements Comparable<Order> {
 		return orderTable.get(j);
 	}
 
-	LinkedList<JobInfo> toJobInfos() { // ? Made package private
-
+	public LinkedList<JobInfo> toJobInfos() { 
+		
+		//break the order into different JobInfos
+		
 		LinkedList<JobInfo> list = new LinkedList<JobInfo>();
 
 		for (Item i : orderTable.keySet()) {
@@ -59,7 +61,7 @@ public class Order implements Comparable<Order> {
 		return totalReward;
 	}
 
-	private void setTotalReward() { // ?
+	private void setTotalReward() {
 		for (Item e : orderTable.keySet()) {
 			totalReward += e.getReward() * orderTable.get(e);
 		}
@@ -72,6 +74,7 @@ public class Order implements Comparable<Order> {
 
 	@Override
 	public int compareTo(Order compareOrder) {
+		//used to sort the LinkedList by reward
 		float compareReward = compareOrder.getTotalReward();
 
 		if (this.totalReward - compareReward < 0)
