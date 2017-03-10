@@ -9,8 +9,10 @@ import com.bestroboticsteam.jobs.JobInfo;
 public class JobAssignment {
 
 	private final JobSelection selection;
+	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
 
+	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
 	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
 	private LinkedList<Order> currentOrders = new LinkedList<Order>();
 
@@ -27,6 +29,7 @@ public class JobAssignment {
 	}
 
 	private void setInfoJobs(){
+		//In case there is no subJob in the list, get the next Order and break it
 		Order nextOrder = selection.take();
 		if(nextOrder == null){
 			logger.info("No more jobs!");
