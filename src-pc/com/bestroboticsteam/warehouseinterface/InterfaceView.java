@@ -119,7 +119,8 @@ public class InterfaceView extends JFrame {
 	}
 
 	// job in progress list methods
-	public void setInProgList(String jobProgText) {
+	public void setInProgList(String jobProgText){
+		emptyProgList();
 		String newline = "\n";
 		String[] parts = jobProgText.split(" : ");
 		for (int i = 0; i < parts.length; i++) {
