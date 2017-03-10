@@ -1,27 +1,30 @@
 package com.bestroboticsteam.robotsmanagement;
 
 import java.awt.Point;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.bestroboticsteam.communication.Communicatable;
+import com.bestroboticsteam.communication.MyDataInputStream;
+import com.bestroboticsteam.communication.MyDataOutputStream;
 import com.bestroboticsteam.jobs.JobInfo;
 
 public class RobotInfo implements Communicatable {
 	private String name;
 	private Point position;
 	private Direction direction;
-	private JobInfo currentJob = null;
+	private JobInfo currentJob = new JobInfo();;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
 
 	public RobotInfo(String name, Point position, Direction direction) {
+		super();
 		this.name = name;
 		this.position = position;
 		this.direction = direction;
 	}
+	
+	public RobotInfo() {}
 
 	// returns null whole path was finished
 	public Direction move() {
@@ -49,12 +52,10 @@ public class RobotInfo implements Communicatable {
 
 	public void click() {
 		currentJob.decreaseQuantity();
-		if(currentJob.getQuantity() <= 0)
-			currentJob = null;
 	}
 
 	public boolean finished() {
-		return currentJob == null;
+		return currentJob == null || currentJob.getQuantity() <= 0;
 	}
 	
 	public String getName(){
@@ -95,34 +96,54 @@ public class RobotInfo implements Communicatable {
 	}
 
 	@Override
-	public void sendObject(DataOutputStream o) throws IOException {
+	public void sendObject(MyDataOutputStream o) throws IOException {
 		// this.name
-		this.writeString(o, this.name);
+		o.writeString(this.name);
 		// this.position
-		this.writePoint(o, this.position);
+		o.writePoint(this.position);
 		// this.direction
 		o.writeInt(this.direction.ordinal());
 		// this.currentJob
-		this.currentJob.sendObject(o);
+		if (this.currentJob == null) {
+			// We tell other side that this is null
+			o.writeInt(0);
+		}
+		else {
+			// We tell other side that this is not null
+			o.writeInt(1);
+			this.currentJob.sendObject(o);
+		}
+
 		// this.currentPath
 		o.writeInt(this.currentPath.size());
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
 			Point point = (Point) iterator.next();
-			this.writePoint(o, point);
+			System.out.println(point);
+			//Button.waitForAnyPress();
+			o.writePoint(point);
 		}
 	}
 
 	@Override
-	public RobotInfo receiveObject(DataInputStream i) throws IOException {
-		this.name = this.readString(i);
-		this.position = this.readPoint(i);
+	public RobotInfo receiveObject(MyDataInputStream i) throws IOException {
+		this.name = i.readString();
+		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];
-		this.currentJob.receiveObject(i);
+		int currentJobIsNotNull = i.readInt();
+		if (currentJobIsNotNull == 1) {
+			// currentJob received is not null
+			this.currentJob.receiveObject(i);
+		}
+		else {
+			// currentJob received is null
+			System.out.println("Setting currentJob to null");
+			this.currentJob = null;
+		}
 		// currentPath
 		int pathSize = i.readInt();
 		this.currentPath.clear();
 		for (int j = 0; j < pathSize; j++) {
-			this.currentPath.add(j, this.readPoint(i));
+			this.currentPath.add(j, i.readPoint());
 		}
 		return this;
 	}

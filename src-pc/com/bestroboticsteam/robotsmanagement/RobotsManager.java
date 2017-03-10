@@ -12,6 +12,7 @@ import rp.util.Pair;
 import com.bestroboticsteam.jobs.JobAssignment;
 import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.pathfinding.AStar;
+import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.PCConnectionHandler;
 
 public class RobotsManager extends Thread {
@@ -35,20 +36,42 @@ public class RobotsManager extends Thread {
 	}
 
 	public void run() {
-		for (RobotInfo r : robots) {
-			if (r.finished()) {
-				JobInfo nextJob = jobs.getNextJob();
-				LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(r.getPosition(), nextJob.getPosition()));
-				r.setCurrentJob(nextJob, path);
-			}
+		for (int i = 0; i < connectionHandlers.length; i++) {
+			connectionHandlers[i].run();
 		}
-	
-		//TODO communication
 
-		try {
-			Thread.sleep(MS_DELAY);
-		} catch (InterruptedException e) {
-			System.out.println(e.getMessage());
+		while (true) {
+			for (RobotInfo r : robots) {
+				if (r.finished()) {
+					JobInfo nextJob = jobs.getNextJob();
+					LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(r.getPosition(), nextJob.getPosition()));
+					r.setCurrentJob(nextJob, path);
+				}
+			}
+
+			// TODO Check connection status
+
+			for (int i = 0; i < connectionHandlers.length; i++) {
+				try {
+					connectionHandlers[i].sendObject(robots[i]);
+				} catch (ConnectionNotEstablishedException e) {
+					logger.error("Connection to robot " + i + " not established", e);
+				}
+			}
+
+			for (int i = 0; i < connectionHandlers.length; i++) {
+				try {
+					connectionHandlers[i].receiveObject(robots[i]);
+				} catch (ConnectionNotEstablishedException e) {
+					logger.error("Connection to robot " + i + " not established", e);
+				} // TODO Fix blocking
+			}
+
+			try {
+				Thread.sleep(MS_DELAY);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}
 		}
 	}
 
