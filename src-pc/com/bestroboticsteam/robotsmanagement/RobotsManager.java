@@ -43,6 +43,7 @@ public class RobotsManager extends Thread {
 		while (true) {
 			for (RobotInfo r : robots) {
 				if (r.finished()) {
+					logger.info(r.getName() + " finished his job, assigning new one");
 					JobInfo nextJob = jobs.getNextJob();
 					LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(r.getPosition(), nextJob.getPosition()));
 					r.setCurrentJob(nextJob, path);
@@ -51,6 +52,7 @@ public class RobotsManager extends Thread {
 
 			// TODO Check connection status
 
+			logger.info("Sending information to robots");
 			for (int i = 0; i < connectionHandlers.length; i++) {
 				try {
 					connectionHandlers[i].sendObject(robots[i]);
@@ -59,6 +61,7 @@ public class RobotsManager extends Thread {
 				}
 			}
 
+			logger.info("Receiving information from robots");
 			for (int i = 0; i < connectionHandlers.length; i++) {
 				try {
 					connectionHandlers[i].receiveObject(robots[i]);
