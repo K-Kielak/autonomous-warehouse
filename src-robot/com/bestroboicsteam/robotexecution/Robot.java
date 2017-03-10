@@ -80,6 +80,7 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
 	public void receiveInfo() { // Note: Block
 		try {
 			this.info = (RobotInfo) this.comms.receiveObject(this.info);
+			// TODO Check for null
 		} catch (ConnectionNotEstablishedException e) {
 			e.printStackTrace();
 		}
