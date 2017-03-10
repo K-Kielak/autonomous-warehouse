@@ -35,7 +35,12 @@ public class InterfaceTest {
 		String actualJob = view.getInProgList();
 		String expectedOutput = "job1\njob2\njob3\njob4\n";
 		assertEquals(expectedOutput, actualJob);
-
+		
+		view.setInProgList("newJob");
+		actualJob = view.getInProgList();
+		expectedOutput = "newJob\n";
+		assertEquals(expectedOutput, actualJob);
+		
 		// empty job list
 		view.emptyProgList();
 		actualJob = view.getInProgList();
