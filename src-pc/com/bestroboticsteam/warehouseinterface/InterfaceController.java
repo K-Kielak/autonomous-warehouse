@@ -1,6 +1,7 @@
 package com.bestroboticsteam.warehouseinterface;
 import org.apache.log4j.Logger;
 
+import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.*;
 
 public class InterfaceController extends Thread {
@@ -8,6 +9,7 @@ public class InterfaceController extends Thread {
 	private InterfaceView warehouseInterface;
 	private JobSelection incomingJobs;
 	private JobAssignment assign;
+	private PCConnectionHandler connection;
 
 	public InterfaceController(JobSelection incomingJobs, JobAssignment assign) {
 		this.warehouseInterface = new InterfaceView();
@@ -15,10 +17,11 @@ public class InterfaceController extends Thread {
 		this.assign = assign;
 	}
 	
-/*	public void setRobotStatus(){
+	public void setRobotStatus(){
 		String status = connection.getStatus();
 		warehouseInterface.commLabel.setText(status);
-	} */
+	}
+	
 	public void setCurrentJobs(){
 		String jobsText = "";
 		int length = assign.getCurrentOrders().size();
@@ -65,9 +68,9 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {			
 				// while running keep updating jobs
+				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-//				setRobotStatus();
 				Thread.sleep(5000);
 				// empty the string jobListText so that an updated 10 items can be added
 				
