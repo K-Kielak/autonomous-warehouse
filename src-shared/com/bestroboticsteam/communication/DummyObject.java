@@ -1,7 +1,5 @@
 package com.bestroboticsteam.communication;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class DummyObject implements Communicatable {
@@ -12,13 +10,13 @@ public class DummyObject implements Communicatable {
 	}
 
 	@Override
-	public void sendObject(DataOutputStream o) throws IOException {
+	public void sendObject(MyDataOutputStream o) throws IOException {
 		System.out.println("Writing: " + this.num);
 		o.writeInt(this.num);
 	}
 
 	@Override
-	public Object receiveObject(DataInputStream o) throws IOException {
+	public Object receiveObject(MyDataInputStream o) throws IOException {
 
 		System.out.println("Reading");
 		this.num = o.readInt();

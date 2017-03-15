@@ -21,13 +21,16 @@ public class ReadData {
 	private LinkedList<Point> dropLocations = new LinkedList<Point>();
 
 	public Collection<Item> readItemData(String path) {
+		
+		//First read the specification and than the positions
 		readItemSpecification(path + "/items.csv");
 		readItemLocation(path + "/locations.csv");
 		return itemList;
 	}
 
 	public LinkedList<Order> readOrderData(String path) {
-		// i'll finish these...
+		
+		//First read the specifications and than the cancellations
 		readOrderSpecification(path + "/jobs.csv");
 		readOrderCancelation(path + "/cancellations.csv");
 		return orderList;
@@ -101,9 +104,6 @@ public class ReadData {
 		}
 	}
 
-	// i don't understand the file cancellation... is it for learning machine or
-	// just the list with the job that will be canceled
-	// the functionality of this one does not affect the project..
 	private void readOrderCancelation(String file) {
 		try {
 			BufferedReader reader = readAFile(file);

@@ -1,18 +1,13 @@
-package com.bestroboicsteam.robotexecution;
+package com.bestroboticsteam.robotexecution;
 
 import com.bestroboticsteam.robotsmanagement.Direction;
 
 import lejos.nxt.LightSensor;
-import lejos.nxt.SensorPort;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 
 public class Movement {
-<<<<<<< Updated upstream
-	private final int ERROR = 7;
-=======
-	private final int ERROR = 6;
->>>>>>> Stashed changes
+	final int ERROR = 6;
 	private final float SPEED = 0.2f;
 	private final int CALIBRATED_VALUE;
 	private final LightSensor leftSensor;

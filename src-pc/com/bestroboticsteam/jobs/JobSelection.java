@@ -21,10 +21,13 @@ public class JobSelection {
 
 	public JobSelection(String path) {
 
+		// Read all the data
+		
 		ReadData reader = new ReadData();
 		itemList = reader.readItemData(path);
 		dropLocation = reader.readDropData(path);
 
+		//Create a LinkedList of Orders and sort it
 		list = reader.readOrderData(path);
 		setList(list);
 	}
@@ -43,11 +46,16 @@ public class JobSelection {
 
 	public synchronized Order viewOrder(int i) {
 		if(i >= list.size()){
+			logger.error("Null in Order collection!");
 			return null;
 		}
 		
 		return list.get(i);
 
+	}
+	
+	public void cancelOrder(Order order){
+		list.remove(order);
 	}
 
 	private synchronized void setList(Collection<Order> orderList) {
