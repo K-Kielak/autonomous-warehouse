@@ -10,7 +10,7 @@ import com.bestroboticsteam.jobs.JobInfo;
 public class JobAssignment {
 
 	private final JobSelection selection;
-	private Point position;
+	private Point position = new Point(0, 0);
 	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
 
@@ -20,8 +20,6 @@ public class JobAssignment {
 
 	public JobAssignment(JobSelection selection) {
 		this.selection = selection;
-		position.x = 0;
-		position.y = 0;
 	}
 
 	public synchronized JobInfo getNextJob() {
@@ -40,8 +38,9 @@ public class JobAssignment {
 		}
 		
 		currentOrders.add(nextOrder);
-		jobPath.addAll(nextOrder.toJobInfos());
+		jobPath.addAll(orderPath(nextOrder.toJobInfos()));
 		jobPath.add(new JobInfo("DropBox", selection.getDropLocation().getFirst()));
+		position = selection.getDropLocation().getFirst();
 	}
 
 	public LinkedList<Order> getCurrentOrders() {
@@ -58,9 +57,6 @@ public class JobAssignment {
 		currentOrders.remove(order);
 	}
 	
-	
-	
-
 	
 	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path){
 		
