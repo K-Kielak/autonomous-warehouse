@@ -27,7 +27,7 @@ public class RobotInfo implements Communicatable {
 	public RobotInfo() {}
 
 	// returns null whole path was finished
-	public Direction move() {
+	public synchronized Direction move() {
 		if(currentPath.isEmpty())
 			return null;
 			
@@ -50,7 +50,7 @@ public class RobotInfo implements Communicatable {
 		return turn(newDir);
 	}
 
-	public void click() {
+	public synchronized void click() {
 		currentJob.decreaseQuantity();
 	}
 
@@ -66,7 +66,7 @@ public class RobotInfo implements Communicatable {
 		return position;
 	}
 
-	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
+	public synchronized void setCurrentJob(JobInfo job, LinkedList<Point> path) {
 		currentJob = job;
 		currentPath = path;
 	}
@@ -96,7 +96,7 @@ public class RobotInfo implements Communicatable {
 	}
 
 	@Override
-	public void sendObject(MyDataOutputStream o) throws IOException {
+	public synchronized void sendObject(MyDataOutputStream o) throws IOException {
 		// this.name
 		o.writeString(this.name);
 		// this.position
@@ -125,7 +125,7 @@ public class RobotInfo implements Communicatable {
 	}
 
 	@Override
-	public RobotInfo receiveObject(MyDataInputStream i) throws IOException {
+	public synchronized RobotInfo receiveObject(MyDataInputStream i) throws IOException {
 		this.name = i.readString();
 		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];
