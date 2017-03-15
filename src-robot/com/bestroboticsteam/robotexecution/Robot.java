@@ -1,4 +1,4 @@
-package com.bestroboicsteam.robotexecution;
+package com.bestroboticsteam.robotexecution;
 
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.RobotCommunicationHandler;
