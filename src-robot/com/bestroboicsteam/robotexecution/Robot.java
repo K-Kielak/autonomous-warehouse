@@ -5,16 +5,15 @@ import java.util.LinkedList;
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.RobotCommunicationHandler;
 import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.robot.RobotConfig;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
-import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.robotics.navigation.DifferentialPilot;
-import rp.config.RobotConfigs;
 import rp.config.WheeledRobotConfiguration;
 import rp.systems.RobotProgrammingDemo;
 import rp.systems.StoppableRunnable;
@@ -117,9 +116,7 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
 //		path.add(new Point(11, 6));
 //		JobInfo job = new JobInfo("", new Point(11, 6));
 //		info.setCurrentJob(job, path);
-		WheeledRobotConfiguration config = new WheeledRobotConfiguration(RobotConfigs.EXPRESS_BOT.getWheelDiameter(),
-				RobotConfigs.EXPRESS_BOT.getTrackWidth(), (float) RobotConfigs.EXPRESS_BOT.getRobotLength(), Motor.C,
-				Motor.B);
+		WheeledRobotConfiguration config = RobotConfig.CUSTOM_EXPRESS_BOT;
 		RobotProgrammingDemo demo = new Robot(SensorPort.S2, SensorPort.S3, config);
 		demo.run();
 	}
