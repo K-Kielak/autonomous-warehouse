@@ -1,12 +1,10 @@
-//TODO integrate
-
 package com.bestroboticsteam.robotsmanagement;
 
 import com.bestroboticsteam.jobs.JobAssignment;
 import com.bestroboticsteam.pathfinding.AStar;
 import org.apache.log4j.Logger;
 
-public class RobotsManager {
+public class RobotsManager extends Thread{
 
 	//private final int MS_DELAY = 500;
 	private Robot[] robots;
@@ -20,11 +18,10 @@ public class RobotsManager {
 			this.robots[i] = new Robot(robotInfos[i], jobs);
 
 		this.pathFinder = pathFinder;
-		
 		logger.info("robots manager initialised");
 	}
 
-	public void start() {
+	public void run() {
 		for (int i = 0; i < robots.length; i++){
 			this.robots[i].start();
 			logger.info("robot " + robots[i].getInfo().getName() + " initialised");

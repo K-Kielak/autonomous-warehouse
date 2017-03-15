@@ -19,9 +19,10 @@ public class Robot extends Thread{
 	private JobAssignment jobs;
 	private PCConnectionHandler connectionHandler;
 	
-	final Logger logger = Logger.getLogger(RobotsManager.class);
+	final Logger logger = Logger.getLogger(Robot.class);
 	
 	public Robot(RobotInfo info, JobAssignment jobs){
+		this.info = info;
 		this.jobs = jobs;
 		this.connectionHandler = new PCConnectionHandler(info.getName());
 	}
