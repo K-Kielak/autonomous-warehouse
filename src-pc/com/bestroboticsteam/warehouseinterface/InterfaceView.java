@@ -2,6 +2,8 @@ package com.bestroboticsteam.warehouseinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
 import rp.robotics.simulation.MapBasedSimulation;
@@ -31,12 +33,16 @@ public class InterfaceView extends JFrame {
 	public JTextArea text = new JTextArea();
 	// will display orders in progress -> from jobAssignment via iC
 	public JTextArea text2 = new JTextArea();
-	public JButton cancel;
-	public JPanel buttonPanel = new JPanel();
+	
+	public JTextArea text3 = new JTextArea();
+    public JButton cancel = new JButton();
+	public JTextArea text4 = new JTextArea();
+    public JButton cancel2 = new JButton();
+	//public JPanel buttonPanel = new JPanel();
 	
 	public InterfaceView() {
 		this.setTitle("Warehouse Management Interface");
-		this.setSize(1200, 700);// set size of frame
+		this.setSize(1200, 600);// set size of frame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// right hand panel - jobs
@@ -47,7 +53,7 @@ public class InterfaceView extends JFrame {
 		// list of jobs in progress
 		toDoLabel.setPreferredSize(new Dimension(150, 20));
 		toDoLabel.setOpaque(true);
-		text2.setPreferredSize(new Dimension(270, 350));
+		text2.setPreferredSize(new Dimension(220, 350));
 		text2.setOpaque(true);
 		text2.setEditable(false);
 
@@ -60,30 +66,39 @@ public class InterfaceView extends JFrame {
 
 		jobInProgPanel.setPreferredSize(new Dimension(300, 400));
 		jobListPanel.setPreferredSize(new Dimension(300, 400));
-		buttonPanel.setPreferredSize(new Dimension(50,350));
-		
+			
 		robotStatus.setPreferredSize(new Dimension(600, 50));
-
+		
+		cancel.setPreferredSize(new Dimension(30,20));
+		text3.setPreferredSize(new Dimension(25, 30));
+		text3.setOpaque(true);
+		text3.setBorder(BorderFactory.createLineBorder(Color.black));
+		cancel2.setPreferredSize(new Dimension(30,20));
+		text4.setPreferredSize(new Dimension(25, 30));
+		text4.setOpaque(true);
+		text4.setBorder(BorderFactory.createLineBorder(Color.black));
+		
 		// this is just for testing - ignore it
 		jobInProgPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
-		jobListPanel.setBorder(BorderFactory.createLineBorder(Color.green));
-		text.setBorder(BorderFactory.createLineBorder(Color.pink));
-		text2.setBorder(BorderFactory.createLineBorder(Color.red));
-		buttonPanel.setBorder(BorderFactory.createLineBorder(Color.yellow));
+		jobListPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
+		text.setBorder(BorderFactory.createLineBorder(Color.green));
+		text2.setBorder(BorderFactory.createLineBorder(Color.green));
 		text.setBackground(null);
 		text2.setBackground(null);
 		robotStatus.setBorder(BorderFactory.createLineBorder(Color.cyan));
 		
 		jobListPanel.add(toDoLabel);
 		jobListPanel.add(text);
-		jobListPanel.add(buttonPanel);
+		jobListPanel.add(text3);
+		jobListPanel.add(cancel);
 		jobInProgPanel.add(doingLabel);
 		jobInProgPanel.add(text2);
+		jobInProgPanel.add(text4);
+		jobInProgPanel.add(cancel2);
 		jobPanel.add(jobListPanel);
 		jobPanel.add(jobInProgPanel);
 		robotStatus.add(commLabel);
 		jobPanel.add(robotStatus);
-		buttonPanel.setVisible(true);
 		jobListPanel.setVisible(true);
 		jobInProgPanel.setVisible(true);
 		jobPanel.setVisible(true);
@@ -100,13 +115,6 @@ public class InterfaceView extends JFrame {
 		this.add(split);
 		this.setVisible(true);
 	}
-
-	private JButton addButton() {
-		cancel = new JButton();
-		cancel.setPreferredSize(new Dimension(30,20));
-		buttonPanel.add(cancel);
-		return cancel;
-	}
 	
 	// job list methods
 	public void setJobList(String jobs) {	
@@ -116,7 +124,6 @@ public class InterfaceView extends JFrame {
 		for (int i = 0; i < parts.length; i++) {
 			logger.debug("order adding to list: " + parts[i]);
 			text.append(parts[i] + newline);
-			addButton();
 		}
 	}
 
@@ -150,5 +157,10 @@ public class InterfaceView extends JFrame {
 	public String getInProgList() {
 		return text2.getText();
 	}
+	
+	 public void addCancelListener(ActionListener listen){
+			cancel.addActionListener(listen);
+			cancel2.addActionListener(listen);
+	 }
 
 }
