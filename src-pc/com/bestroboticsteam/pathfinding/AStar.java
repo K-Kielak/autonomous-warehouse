@@ -4,9 +4,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
@@ -44,7 +46,12 @@ public class AStar {
 	public static LinkedList<Point> AStarPath(Pair<Point, Point> locationDestinationPair, HashMap<TimePoint, Boolean> timedReservationTable){ //Follows a basic implementation of the A* pathfinding algorithm.
 		GridMap map = MapUtils.createRealWarehouse();
 		
-		ArrayList<AStarNode> openList  = new ArrayList<AStarNode>();
+		PriorityQueue<AStarNode> openList  = new PriorityQueue<AStarNode>(10, new Comparator<AStarNode>() {
+			@Override
+			public int compare(AStarNode o1, AStarNode o2) {
+				return o2.fCost-o1.fCost;
+			};
+		});
 		ArrayList<AStarNode> closedList = new ArrayList<AStarNode>();
 		boolean[][] openListLocations = new boolean[map.getXSize()][map.getYSize()];
 		boolean[][] closedListLocations = new boolean[map.getXSize()][map.getYSize()]; //Lists to show if a certain cell is on either of the lists to make looking them up easier.
@@ -69,12 +76,13 @@ public class AStar {
 				}//Stops pathfinding when all possible paths have been examined and no path is possible.
 			int lowestFCost=Integer.MAX_VALUE;
 			AStarNode currentNode = null;
-			for(AStarNode n : openList){
+			/*for(AStarNode n : openList){
 				if(n.fCost<=lowestFCost){ // Makes the node with the lowest fCost on the openList the current node.
 					lowestFCost=n.fCost;
 					currentNode=n;
 				}
-			}
+			}*/
+			currentNode = openList.poll();
 			if(currentNode.location.x==doorPosition.x && currentNode.location.y==doorPosition.y){ //Stops pathfinding when a path has been found.
 				closedList.add(currentNode);
 				break;
@@ -82,7 +90,7 @@ public class AStar {
 			int nodeX = currentNode.location.x;
 			int nodeY = currentNode.location.y;
 			closedList.add(currentNode);
-			openList.remove(currentNode);
+			//openList.remove(currentNode);
 			openListLocations[nodeX][nodeY] = false;
 			closedListLocations[nodeX][nodeY] = true;
 			
@@ -115,7 +123,7 @@ public class AStar {
 	}
 	
 	//Adds a point to the openList if it is not blocked
-	private static ArrayList<AStarNode> addToOpenList(Point location, AStarNode currentNode, boolean[][] openListLocations, ArrayList<AStarNode> openList, boolean[][] closedListLocations, Point doorPosition, HashMap<TimePoint, Boolean> timedReservationTable){
+	private static PriorityQueue<AStarNode> addToOpenList(Point location, AStarNode currentNode, boolean[][] openListLocations, PriorityQueue<AStarNode> openList, boolean[][] closedListLocations, Point doorPosition, HashMap<TimePoint, Boolean> timedReservationTable){
 		GridMap map = MapUtils.createRealWarehouse();
 		//Calculates the TimePoint for the current node based on its gCost
 		TimePoint nodeTimePoint = new TimePoint(new Point(currentNode.location.x, currentNode.location.y), currentNode.gCost);
