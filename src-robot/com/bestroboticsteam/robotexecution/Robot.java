@@ -1,6 +1,4 @@
-package com.bestroboicsteam.robotexecution;
-
-import java.util.LinkedList;
+package com.bestroboticsteam.robotexecution;
 
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.RobotCommunicationHandler;
@@ -86,36 +84,9 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
 	}
 
 	public static void main(String[] args) {
-		LinkedList<Integer> p = new LinkedList<Integer>();
-		int direction = Button.waitForAnyPress();
-		while (direction != Button.ID_ENTER) {
-			p.add(direction);
-			direction = Button.waitForAnyPress();
-		}
-
-//		RobotInfo info = new RobotInfo("xd", new Point(0, 0), Direction.FORWARD);
-//		LinkedList<Point> path = new LinkedList<Point>();
-//		path.add(new Point(1, 0));
-//		path.add(new Point(2, 0));
-//		path.add(new Point(3, 0));
-//		path.add(new Point(4, 0));
-//		path.add(new Point(5, 0));
-//		path.add(new Point(6, 0));
-//		path.add(new Point(6, 1));
-//		path.add(new Point(6, 2));
-//		path.add(new Point(6, 3));
-//		path.add(new Point(6, 4));
-//		path.add(new Point(6, 5));
-//		path.add(new Point(6, 6));
-//		path.add(new Point(7, 6));
-//		path.add(new Point(8, 6));
-//		path.add(new Point(9, 6));
-//		path.add(new Point(10, 6));
-//		path.add(new Point(11, 6));
-//		path.add(new Point(11, 7));
-//		path.add(new Point(11, 6));
-//		JobInfo job = new JobInfo("", new Point(11, 6));
-//		info.setCurrentJob(job, path);
+		System.out.println("Press Enter to calibrate");
+		Button.waitForAnyPress();
+		LCD.clear();
 		WheeledRobotConfiguration config = RobotConfig.CUSTOM_EXPRESS_BOT;
 		RobotProgrammingDemo demo = new Robot(SensorPort.S2, SensorPort.S3, config);
 		demo.run();
