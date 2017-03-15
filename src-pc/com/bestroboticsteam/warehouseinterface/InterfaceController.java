@@ -15,7 +15,7 @@ public class InterfaceController extends Thread {
 	private JobSelection incomingJobs;
 	private JobAssignment assign;
 	private PCConnectionHandler connection;
-	private ConcurrentMap<Integer, Order> currentJobMap = new ConcurrentHashMap<Integer, Order>();
+	private ConcurrentMap<Integer, Order> tenJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private ConcurrentMap<Integer, Order> progJobsMap = new ConcurrentHashMap<Integer, Order>();
 	
 	public InterfaceController(JobSelection incomingJobs, JobAssignment assign) {
@@ -66,7 +66,7 @@ public class InterfaceController extends Thread {
 				break;
 			}
 			String inputJob = job.toString();
-			currentJobMap.put(i, job);
+			tenJobsMap.put(i, job);
 			jobsText = jobsText + " : " + inputJob;
 		}
 		warehouseInterface.setJobList(jobsText);
@@ -78,7 +78,7 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {
 				// while running keep updating jobs
-				setRobotStatus();
+			//	setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
 				Thread.sleep(5000);
@@ -93,15 +93,20 @@ public class InterfaceController extends Thread {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == warehouseInterface.cancel) {
+				logger.debug("cancel1 has been pressed");
 				if(warehouseInterface.text3.getText()  == null){
 					logger.error("No inputted job to cancel" );
 				} else {
 					String text = warehouseInterface.text3.getText();
 					int itemToCancel = Integer.parseInt(text);
-					Order cancelJob = currentJobMap.get(itemToCancel);
-					assign.cancelOrder(cancelJob);
+					Order cancelJob = tenJobsMap.get(itemToCancel);
+					logger.debug(cancelJob);
+					//assign.cancelOrder(cancelJob);
+					//tenJobsMap.remove(itemToCancel);
+					warehouseInterface.text3.setText("");
 				}
 			} else if (e.getSource() == warehouseInterface.cancel2) {
+				logger.debug("cancel2 has been pressed");
 				if(warehouseInterface.text4.getText()  == null){
 					logger.error("No inputted job to cancel" );
 				} else {
@@ -110,6 +115,8 @@ public class InterfaceController extends Thread {
 					Order cancelJob = progJobsMap.get(itemToCancel);
 					assign.removeFromCurrentOrder(cancelJob);
 					assign.cancelOrder(cancelJob);
+					progJobsMap.remove(itemToCancel);
+					warehouseInterface.text4.setText("");
 				}
 			}
 		}
