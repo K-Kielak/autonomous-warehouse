@@ -38,9 +38,8 @@ public class JobAssignment {
 		}
 		
 		currentOrders.add(nextOrder);
-		jobPath.addAll(orderPath(nextOrder.toJobInfos()));
+		jobPath.addAll(nextOrder.toJobInfos());
 		jobPath.add(new JobInfo("DropBox", selection.getDropLocation().getFirst()));
-		position = selection.getDropLocation().getFirst();
 	}
 
 	public LinkedList<Order> getCurrentOrders() {
@@ -153,7 +152,7 @@ public class JobAssignment {
 			
 		}
 		
-		return aux;
+		return ress;
 	}
 
 	private int averageDistance(Point point, Point point2) {
