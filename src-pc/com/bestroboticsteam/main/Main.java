@@ -13,7 +13,6 @@ public class Main {
 
 	private static final String PATH = "../central-system/assets/production";
 	
-	
 	private static final RobotInfo[] robots = {  //TODO For loop
 			new RobotInfo(ROBOT_1_NAME, new Point(0, 0), Direction.FORWARD)
 		};
@@ -30,5 +29,4 @@ public class Main {
 		InterfaceController warehouseInterface = new InterfaceController(jobsSelect, jobsAssign);
 		warehouseInterface.start();
 	}
-
 }
