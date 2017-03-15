@@ -53,6 +53,10 @@ public class JobSelection {
 		return list.get(i);
 
 	}
+	
+	public void cancelOrder(Order order){
+		list.remove(order);
+	}
 
 	private synchronized void setList(Collection<Order> orderList) {
 
