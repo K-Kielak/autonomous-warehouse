@@ -101,8 +101,8 @@ public class InterfaceController extends Thread {
 					int itemToCancel = Integer.parseInt(text);
 					Order cancelJob = tenJobsMap.get(itemToCancel);
 					logger.debug(cancelJob);
-					//assign.cancelOrder(cancelJob);
-					//tenJobsMap.remove(itemToCancel);
+					incomingJobs.cancelOrder(cancelJob);
+					tenJobsMap.remove(itemToCancel);
 					warehouseInterface.text3.setText("");
 				}
 			} else if (e.getSource() == warehouseInterface.cancel2) {
