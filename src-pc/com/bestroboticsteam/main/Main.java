@@ -13,7 +13,7 @@ public class Main {
 
 	private static final String PATH = "../central-system/assets/production";
 	private static final RobotInfo[] robots = { 
-			new RobotInfo(ROBOT_2_NAME, new Point(0, 0), Direction.FORWARD)
+			new RobotInfo(ROBOT_1_NAME, new Point(0, 0), Direction.FORWARD)
 		};
 	
 	

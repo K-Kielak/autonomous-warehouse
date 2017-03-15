@@ -40,9 +40,9 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		 * 
 		 */
 
-		if (this.robotName.equals("")) { // TODO Remove
-			return;
-		}
+//		if (this.robotName.equals("")) { // TODO Remove
+//			return;
+//		}
 
 		logger.info("Attempting connection to: " + this.robotName);
 
