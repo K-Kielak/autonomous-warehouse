@@ -63,7 +63,7 @@ public class Order implements Comparable<Order> {
 
 	private void setTotalReward() {
 		for (Item e : orderTable.keySet()) {
-			totalReward += e.getReward() * orderTable.get(e);
+			totalReward += (e.getReward() * orderTable.get(e))/(e.getWeight()*orderTable.get(e));
 		}
 	}
 	
