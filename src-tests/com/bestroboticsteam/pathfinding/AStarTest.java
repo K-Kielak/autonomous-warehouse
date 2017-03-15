@@ -3,10 +3,16 @@ package com.bestroboticsteam.pathfinding;
 import static org.junit.Assert.*;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.pathfinding.AStar;
 
@@ -14,14 +20,23 @@ import rp.util.Pair;
 
 public class AStarTest {
 
+	@BeforeClass
+	public static void removeDelay() {
+		// The first time these objects are created there is a small delay
+		// (~100ms in total)
+		// so they are first declared here to get accurate test times.
+		new AStar();
+		new Rectangle();
+		Logger logger = Logger.getLogger(AStar.class);
+	}
+
 	@Test
-	public void testSingleGetPath(){
+	public void testSingleGetPath() {
 		List<Point> path;
 		path = AStar.singleGetPath(Pair.makePair(new Point(0, 3), new Point(0, 2)));
 		List<Point> actualPath = new LinkedList<Point>();
 		actualPath.add(new Point(0, 2));
 		assertEquals(path, actualPath);
-		
 
 		path = AStar.singleGetPath(Pair.makePair(new Point(0, 3), new Point(2, 3)));
 		actualPath = new LinkedList<Point>();
@@ -34,11 +49,11 @@ public class AStarTest {
 		actualPath.add(new Point(2, 2));
 		actualPath.add(new Point(2, 3));
 		assertEquals(path, actualPath);
-		
+
 		path = AStar.singleGetPath(Pair.makePair(new Point(0, 3), new Point(1, 3)));
-		//Should return null when no path is found
+		// Should return null when no path is found
 		assertNull(path);
-		
+
 		path = AStar.singleGetPath(Pair.makePair(new Point(1, 6), new Point(5, 5)));
 		actualPath = new LinkedList<Point>();
 		actualPath.add(new Point(2, 6));
@@ -47,36 +62,48 @@ public class AStarTest {
 		actualPath.add(new Point(5, 6));
 		actualPath.add(new Point(5, 5));
 		assertEquals(path, actualPath);
-		
-		path = AStar.singleGetPath(Pair.makePair(new Point(-1, 6), new Point(5, 5)));
-		//Should return null when no path is found
-		assertNull(path);
-		
-		path = AStar.singleGetPath(Pair.makePair(new Point(1, 6), new Point(-5, 5)));
-		//Should return null when no path is found
-		assertNull(path);
-	}
-	
-	@Test
-	public void testMultiGetPath(){
-		Point[][] path;
-		Pair[] locationDetinationPairs = {Pair.makePair(new Point(0, 3), new Point(0, 2))};
-		path = AStar.multiGetPath(locationDetinationPairs);
-		Point[][] actualPath = {{new Point(0, 2)}};
-		assertArrayEquals(path, actualPath);
-		
 
-		locationDetinationPairs = new Pair[]{Pair.makePair(new Point(0, 3), new Point(0, 1)), Pair.makePair(new Point(0, 1), new Point(0, 3))};
-		path = AStar.multiGetPath(locationDetinationPairs);
-		for(Point[] pa : path){
-			for(Point point : pa){
-				System.out.println(point);
-			}
-			System.out.println();
-		}
-		actualPath = new Point[][]{{new Point(0, 2)}};
+		path = AStar.singleGetPath(Pair.makePair(new Point(-1, 6), new Point(5, 5)));
+		// Should return null when no path is found
+		assertNull(path);
+
+		path = AStar.singleGetPath(Pair.makePair(new Point(1, 6), new Point(-5, 5)));
+		// Should return null when no path is found
+		assertNull(path);
+	}
+
+	@Test
+	public void testMultiGetPath() {
+
+		AStar aStar = new AStar();
+
+		new Rectangle();
+
+		Point[] path;
+		Pair locationDetinationPair = Pair.makePair(new Point(0, 3), new Point(0, 2));
+		path = AStar.multiGetPath(locationDetinationPair, new Point[][] { new Point[0], new Point[0] });
+		Point[] actualPath = { new Point(0, 2) };
 		assertArrayEquals(path, actualPath);
 		
+		locationDetinationPair = Pair.makePair(new Point(-1, 3), new Point(1, 2));
+		path = AStar.multiGetPath(locationDetinationPair, new Point[][] {  });
+		assertNull(path);
+
+		Pair[] locationDetinationPairs = new Pair[] { Pair.makePair(new Point(0, 3), new Point(0, 1)),
+		                                              Pair.makePair(new Point(0, 1), new Point(0, 3)) };
+		Point[][] paths = new Point[][]{new Point[]{}, new Point[]{}};
+
+		for (int i = 0; i<locationDetinationPairs.length; i++) {
+			path = AStar.multiGetPath(locationDetinationPairs[i], paths);
+			paths[i] = path;
+		}
+
+		Point[][] actualPaths = new Point[][] { { new Point(0, 2), new Point(0, 1) },
+				{ new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(2, 1), new Point(2, 2), new Point(2, 3),
+						new Point(2, 4), new Point(2, 5), new Point(2, 6), new Point(1, 6), new Point(0, 6),
+						new Point(0, 5), new Point(0, 4), new Point(0, 3), } };
+		assertArrayEquals(paths, actualPaths);
+
 	}
-	
+
 }

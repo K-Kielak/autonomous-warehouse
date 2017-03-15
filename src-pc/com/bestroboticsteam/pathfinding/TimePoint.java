@@ -24,7 +24,7 @@ public class TimePoint {
 	// Needed to store in Map
 	@Override
 	public int hashCode() {
-		return location.hashCode() + 31 * ((Integer) time).hashCode();
+		return location.x + 71 * location.y + 31 * ((Integer) time).hashCode();
 	}
 
 	@Override

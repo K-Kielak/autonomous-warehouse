@@ -2,7 +2,6 @@ package com.bestroboticsteam.pathfinding;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,27 +15,25 @@ import rp.util.Pair;
 import org.apache.log4j.Logger;
 
 public class AStar {
-
-	boolean[][] cells; // A 2D boolean array of state of cells in the grid (e.g. if a cell has a wall in it the value for that location will be true.)
 	
 	final static Logger logger = Logger.getLogger(AStar.class);
 	
-	
 	// multi robot AStar
-	public static Point[][] multiGetPath(Pair<Point, Point>[] locationDestinationPairs) {
-		System.out.println("New calculation");
+	public static Point[] multiGetPath(Pair<Point, Point> locationDestinationPair, Point[][] otherRobotPaths) {
 		HashMap<TimePoint, Boolean> timedReservationTable = new HashMap<>(100);
-		List<Point[]> paths = new ArrayList<>();
-		for(Pair<Point, Point> locationDestinationPair : locationDestinationPairs){
-			List<Point> path = AStarPath(locationDestinationPair, timedReservationTable);
-			for(int i = 0; i<path.size(); i++){
-				timedReservationTable.put(new TimePoint(path.get(i), i), true);
+		//Set up the timesReservationTable to avoid collisions with other robots
+		for(Point[] path : otherRobotPaths){
+			if(path != null){
+				for(int i = 0; i<path.length; i++){
+					timedReservationTable.put(new TimePoint(path[i], i+1), true);
+					//This is needed because the other robots may have already started to move to the next position
+					timedReservationTable.put(new TimePoint(path[i], i), true);
+				}
 			}
-			System.out.println(timedReservationTable.containsKey(new TimePoint(new Point(0, 3), 1)));
-			paths.add(path.toArray(new Point[path.size()]));
 		}
+		List<Point> path = AStarPath(locationDestinationPair, timedReservationTable);
 		
-		return paths.toArray(new Point[paths.size()][]);
+		return path==null ? null : path.toArray(new Point[path.size()]);
 	}
 	
 	public static LinkedList<Point> singleGetPath(Pair<Point, Point> locationDestinationPair){
