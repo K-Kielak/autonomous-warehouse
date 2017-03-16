@@ -93,8 +93,6 @@ public class InterfaceController extends Thread {
 
 	public class cancelListener implements ActionListener {
 		@Override
-		//return id's not order
-		//enter job id to cancel it -> might not be displayed
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == warehouseInterface.cancel) {
 				logger.debug("cancel1 has been pressed");
