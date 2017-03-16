@@ -11,6 +11,8 @@ public class JobAssignment {
 
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
+	private final float MAX_WEIGHT = 50f;
+	private float weight = 0f;
 	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
 
@@ -39,8 +41,6 @@ public class JobAssignment {
 		
 		currentOrders.add(nextOrder);
 		jobPath.addAll(nextOrder.toJobInfos());
-		jobPath.add(new JobInfo("DropBox", selection.getDropLocation().getFirst()));
-		position.setLocation(selection.getDropLocation().getFirst());
 	}
 
 	public LinkedList<Order> getCurrentOrders() {
@@ -153,14 +153,61 @@ public class JobAssignment {
 			ress.add(index, info1);
 			aux.remove(info1);
 			
-		} 
+		}
 		
+		for(int i = 0; i < ress.size(); i++){
+			float value = ress.get(i).getWeight()*ress.get(i).getQuantity();
+			if(this.weight + value == this.MAX_WEIGHT){
+				
+				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i))));
+				this.weight = 0f;
+				
+			}else if(this.weight + value > this.MAX_WEIGHT){
+				
+				int quantity = (int)(value/(this.MAX_WEIGHT-weight));
+				
+				JobInfo info = ress.get(i);
+				
+				ress.remove(i);
+				
+				ress.add(i, new JobInfo(info.getItem(), info.getPosition(), quantity, info.getJobCode(), info.getWeight()));
+				
+				ress.add(++i, new JobInfo("DropBox", this.getDrop(ress.get(i-1))));
+				
+				ress.add(++i, new JobInfo(info.getItem(), info.getPosition(), info.getQuantity() - quantity, info.getJobCode(), info.getWeight()));
+				
+				this.weight = 0f;
+			
+			} else {
+				weight += value;
+			}
+		}
+		
+		position.setLocation(ress.getLast().getPosition());
 		return ress;
 	}
-
+	
 	private int averageDistance(Point point, Point point2) {
 		
 		return Math.abs(point.x - point2.x) + Math.abs(point.y - point2.y);
+	}
+	
+	private Point getDrop(JobInfo info){
+		
+		Point point = new Point(-1,-1);
+		int distance = Integer.MAX_VALUE;
+		
+		for(Point p: selection.getDropLocation()){
+			
+			int x = averageDistance(p, info.getPosition());
+			if( x < distance){
+				point = p;
+				distance = x;
+			}
+				
+		}
+			
+		return point;
 	}
 
 
