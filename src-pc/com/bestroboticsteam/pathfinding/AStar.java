@@ -23,7 +23,7 @@ public class AStar {
 	final static Logger logger = Logger.getLogger(AStar.class);
 	
 	// multi robot AStar
-	public static Point[] multiGetPath(Pair<Point, Point> locationDestinationPair, RobotInfo[] otherRobots) {
+	public static LinkedList<Point> multiGetPath(Pair<Point, Point> locationDestinationPair, RobotInfo[] otherRobots) {
 		HashMap<TimePoint, Boolean> timedReservationTable = new HashMap<>(100);
 		//Set up the timesReservationTable to avoid collisions with other robots
 		for(RobotInfo robot : otherRobots){
@@ -53,7 +53,7 @@ public class AStar {
 		}
 		List<Point> path = AStarPath(locationDestinationPair, timedReservationTable);
 		
-		return path==null ? null : path.toArray(new Point[path.size()]);
+		return (LinkedList<Point>) path;
 	}
 	
 	public static LinkedList<Point> singleGetPath(Pair<Point, Point> locationDestinationPair){
