@@ -28,8 +28,24 @@ public class InterfaceController extends Thread {
 	public void setRobotStatus() {
 		String status = connection.getStatus();
 		warehouseInterface.commLabel.setText(status);
+		
 	}
-
+	
+	public void setFinishedJobs(){
+		String jobsText = "";
+		for (int i = 0; i < 5; i++){
+			Order job = assign.viewFinishedOrder(i);
+			if (job == null) {
+				logger.error("No jobs completed");
+				break;
+			} else {
+				jobsText = jobsText + " : " + job.toString();
+			}
+		}
+		warehouseInterface.setFinishedList(jobsText);
+	}
+	
+	
 	public void setCurrentJobs() {
 		String jobsText = "";
 		int length = assign.getCurrentOrders().size();
@@ -83,6 +99,7 @@ public class InterfaceController extends Thread {
 				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
+				setFinishedJobs();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
