@@ -54,9 +54,9 @@ public class JobSelection {
 
 	}
 	
-	public void cancelOrder(String order){
+	public void cancelOrder(int order){
 		for(Order element: list){
-			if(Integer.toString(element.getId()).equals(order)){
+			if(element.getId() == order){
 				list.remove(element);
 				break;
 			}

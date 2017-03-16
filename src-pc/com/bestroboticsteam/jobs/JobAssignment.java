@@ -51,8 +51,8 @@ public class JobAssignment {
 		currentOrders.remove(order);
 	}
 	
-	public void cancelOrder(String order){
-		while(Integer.toString(jobPath.getFirst().getJobCode()).equals(order))
+	public void cancelOrder(int order){
+		while(jobPath.getFirst().getJobCode() == order)
 			jobPath.removeFirst();
 		currentOrders.remove(order);
 	}
