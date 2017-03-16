@@ -40,9 +40,9 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		 * 
 		 */
 
-		if (this.robotName.equals("")) { // TODO Remove
-			return;
-		}
+//		if (this.robotName.equals("")) { // TODO Remove
+//			return;
+//		}
 
 		logger.info("Attempting connection to: " + this.robotName);
 
@@ -61,19 +61,29 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 			}
 
 		});
+		
+		int time_delay = 1000;
 
 		for (int retry = 0; retry < PCConnectionHandler.NUM_RETRYS; retry++) {
 			boolean sucessful = conn.connectTo(this.protocol + this.robotName);
 
 			if (sucessful) {
 				this.status = CONNECTED;
-				logger.info("Connection Established via" + this.protocol);
+				logger.info("Connection Established via " + this.protocol);
 				input = new MyDataInputStream(conn.getInputStream());
 				output = new MyDataOutputStream(conn.getOutputStream());
 				return;
 			} else {
 				this.status = BaseConnectionHandler.RETRYING;
-				logger.info("Retrying connection...");
+				logger.info("Retrying connection in " + time_delay/1000 + " seconds...");
+				try {
+					Thread.sleep(time_delay);
+				} catch (InterruptedException e) {
+					logger.info("Communication thread interrupted", e);
+					logger.info("Cleaning Up...");
+					return;
+				}
+				time_delay *= 2;
 			}
 		}
 

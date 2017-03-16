@@ -33,7 +33,7 @@ public class CommunicationTest {
 
 		Thread t = new Thread(p);
 		t.start();
-		Thread.sleep(10); // Wait a bit so the other thread can run
+		Thread.sleep(100); // Wait a bit so the other thread can run
 		// Probably not the best option
 		assertEquals(p.getStatus(), PCConnectionHandler.CONNECTING);
 		try {

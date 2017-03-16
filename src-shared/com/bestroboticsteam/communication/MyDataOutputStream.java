@@ -17,8 +17,15 @@ public class MyDataOutputStream extends DataOutputStream {
 	}
 	
 	public void writePoint(Point p) throws IOException {
-		this.writeInt(p.x);
-		this.writeInt(p.y);
+		if (p == null) {
+			this.writeInt(0);
+		}
+		else {
+			this.writeInt(1);
+			this.writeInt(p.x);
+			this.writeInt(p.y);
+		}
+
 	}
 
 }

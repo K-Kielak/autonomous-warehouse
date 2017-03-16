@@ -12,8 +12,10 @@ import com.bestroboticsteam.warehouseinterface.InterfaceController;
 public class Main {
 
 	private static final String PATH = "../central-system/assets/production";
-	private static final RobotInfo[] robots = { 
-			new RobotInfo(ROBOT_2_NAME, new Point(0, 0), Direction.FORWARD)
+	
+	private static final RobotInfo[] robots = {  //TODO For loop
+			new RobotInfo(ROBOT_1_NAME, new Point(0, 0), Direction.FORWARD),
+			new RobotInfo(ROBOT_2_NAME, new Point(11, 7), Direction.FORWARD)
 		};
 	
 	
@@ -28,5 +30,4 @@ public class Main {
 		InterfaceController warehouseInterface = new InterfaceController(jobsSelect, jobsAssign);
 		warehouseInterface.start();
 	}
-
 }
