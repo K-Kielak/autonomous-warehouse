@@ -52,13 +52,20 @@ public class JobAssignment {
 		currentOrders.remove(order);
 	}
 	
+	public boolean isCurrentJob(int order){
+		
+		for(Order o: currentOrders)
+			if(o.getId() == order)
+				return true;
+		return false;
+	}
+	
 	public void cancelOrder(int order){
 		while(jobPath.getFirst().getJobCode() == order)
 			jobPath.removeFirst();
 		for(Order o: currentOrders){
 			if(o.getId() == order){
 				currentOrders.remove(o);
-				selection.addCancelled(o);
 				break;
 			}
 		}

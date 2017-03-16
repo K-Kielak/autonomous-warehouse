@@ -17,8 +17,6 @@ public class JobSelection {
 	private LinkedList<Order> list;
 	private Collection<Item> itemList;
 	private LinkedList<Point> dropLocation;
-	private HashMap<Integer, Order> cancelledOrders = new HashMap<Integer, Order>(); 
-
 	
 	final Logger logger = Logger.getLogger(JobSelection.class);
 
@@ -61,7 +59,6 @@ public class JobSelection {
 		for(Order element: list){
 			if(element.getId() == order){
 				list.remove(element);
-				this.addCancelled(element);
 				break;
 			}
 		}
@@ -79,13 +76,4 @@ public class JobSelection {
 		logger.info("Sorting list.");
 		list.sort(comparator);
 	}
-
-	public void addCancelled(Order o) {
-		cancelledOrders.put(o.getId(), o);		
-	}
-	
-	public Order viewCancelled(int o){
-		return cancelledOrders.get(o);
-	}
-
 }
