@@ -24,7 +24,7 @@ public class Main {
 		JobAssignment jobsAssign = new JobAssignment(jobsSelect);
 		AStar pathFinder = new AStar();
 
-		RobotsManager manager = new RobotsManager(robots, jobsAssign, pathFinder);
+		RobotsManager manager = new RobotsManager(robots, jobsAssign);
 		manager.start();
 		
 		InterfaceController warehouseInterface = new InterfaceController(jobsSelect, jobsAssign);
