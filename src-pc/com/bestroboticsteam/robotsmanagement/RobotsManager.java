@@ -36,15 +36,12 @@ public class RobotsManager extends Thread{
 		
 		while(true){
 			for (int i = 0; i < robots.length; i++){
-				if(robots[i].getInfo().finished()){
-					JobInfo job = jobs.getNextJob();
-					RobotInfo currRobotInfo = robots[i].getInfo();
-					RobotInfo[] otherRobotsInfos = getOtherRobotsInfos(currRobotInfo);
-					Point start = currRobotInfo.getPosition();
-					Point goal = job.getPosition();
-					LinkedList<Point> path = AStar.multiGetPath(Pair.makePair(start, goal), otherRobotsInfos);
-					robots[i].assignNewJob(job, path);
-				}
+				RobotInfo robotInfo = robots[i].getInfo();
+				if(!jobs.isCurrentJob(robotInfo.getCurrentJob().getJobCode()))
+					robotInfo.cancelJob();
+				
+				if(robots[i].getInfo().finished())
+					assignNewJobTo(robots[i]);
 			}
 			
 			try {
@@ -61,6 +58,16 @@ public class RobotsManager extends Thread{
 			robotInfos[i] = robots[i].getInfo();
 		
 		return robotInfos;
+	}
+	
+	private void assignNewJobTo(Robot robot){
+		JobInfo job = jobs.getNextJob();
+		RobotInfo currRobotInfo = robot.getInfo();
+		RobotInfo[] otherRobotsInfos = getOtherRobotsInfos(currRobotInfo);
+		Point start = currRobotInfo.getPosition();
+		Point goal = job.getPosition();
+		LinkedList<Point> path = AStar.multiGetPath(Pair.makePair(start, goal), otherRobotsInfos);
+		robot.assignNewJob(job, path);
 	}
 	
 	private RobotInfo[] getOtherRobotsInfos(RobotInfo robotInfo){
