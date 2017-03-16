@@ -80,7 +80,7 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {
 				// while running keep updating jobs
-			//	setRobotStatus();
+				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
 				Thread.sleep(5000);
