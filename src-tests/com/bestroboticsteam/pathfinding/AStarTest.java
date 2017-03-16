@@ -4,17 +4,19 @@ import static org.junit.Assert.*;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.apache.log4j.Logger;
 
+import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.pathfinding.AStar;
+import com.bestroboticsteam.robotsmanagement.Direction;
+import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
 import rp.util.Pair;
 
@@ -29,6 +31,7 @@ public class AStarTest {
 		new Rectangle();
 		Logger logger = Logger.getLogger(AStar.class);
 	}
+
 
 	@Test
 	public void testSingleGetPath() {
@@ -80,21 +83,24 @@ public class AStarTest {
 		new Rectangle();
 
 		Point[] path;
-		Pair locationDetinationPair = Pair.makePair(new Point(0, 3), new Point(0, 2));
-		path = AStar.multiGetPath(locationDetinationPair, new Point[][] { new Point[0], new Point[0] });
+		Pair<Point, Point> locationDetinationPair = Pair.makePair(new Point(0, 3), new Point(0, 2));
+		RobotInfo robotInfo = new RobotInfo("John CENA", new Point(0, 5), Direction.RIGHT);
+		path = AStar.multiGetPath(locationDetinationPair, new RobotInfo[] { robotInfo });
 		Point[] actualPath = { new Point(0, 2) };
 		assertArrayEquals(path, actualPath);
-		
+
 		locationDetinationPair = Pair.makePair(new Point(-1, 3), new Point(1, 2));
-		path = AStar.multiGetPath(locationDetinationPair, new Point[][] {  });
+		path = AStar.multiGetPath(locationDetinationPair, new RobotInfo[] {});
 		assertNull(path);
 
 		Pair[] locationDetinationPairs = new Pair[] { Pair.makePair(new Point(0, 3), new Point(0, 1)),
-		                                              Pair.makePair(new Point(0, 1), new Point(0, 3)) };
-		Point[][] paths = new Point[][]{new Point[]{}, new Point[]{}};
+				Pair.makePair(new Point(0, 1), new Point(0, 3)) };
+		RobotInfo[] robots = new RobotInfo[] { new RobotInfo("John Cena", new Point(0, 3), Direction.BACKWARD) , new RobotInfo("John Cena2", new Point(0, 1), Direction.BACKWARD) };
 
-		for (int i = 0; i<locationDetinationPairs.length; i++) {
-			path = AStar.multiGetPath(locationDetinationPairs[i], paths);
+		Point[][] paths  = new Point[2][];
+		for (int i = 0; i < locationDetinationPairs.length; i++) {
+			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
+			robots[i].setCurrentJob(new JobInfo("", new Point(0, 0)), new LinkedList<Point>(Arrays.asList(path)));
 			paths[i] = path;
 		}
 
@@ -103,7 +109,24 @@ public class AStarTest {
 						new Point(2, 4), new Point(2, 5), new Point(2, 6), new Point(1, 6), new Point(0, 6),
 						new Point(0, 5), new Point(0, 4), new Point(0, 3), } };
 		assertArrayEquals(paths, actualPaths);
+		
+		
+		
+		locationDetinationPairs = new Pair[] { Pair.makePair(new Point(5, 0), new Point(2, 0)),
+				Pair.makePair(new Point(3, 2), new Point(5, 0)) };
+		robots = new RobotInfo[] { new RobotInfo("John Cena", new Point(5, 0), Direction.BACKWARD) , new RobotInfo("John Cena2", new Point(3, 2), Direction.BACKWARD) };
 
+		paths  = new Point[2][];
+		for (int i = 0; i < locationDetinationPairs.length; i++) {
+			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
+			robots[i].setCurrentJob(new JobInfo("", new Point(0, 0)), new LinkedList<Point>(Arrays.asList(path)));
+			paths[i] = path;
+		}
+
+		actualPaths = new Point[][] { { new Point(4, 0), new Point(3, 0), new Point(2, 0) },
+				{ new Point(3, 1), new Point(3, 1), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
+		assertArrayEquals(paths, actualPaths);
+		
 	}
 
 }
