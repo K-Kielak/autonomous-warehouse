@@ -39,11 +39,10 @@ public class RobotsManager extends Thread{
 				if(robots[i].getInfo().finished()){
 					JobInfo job = jobs.getNextJob();
 					RobotInfo currRobotInfo = robots[i].getInfo();
-					//RobotInfo[] otherRobotsInfos = getOtherRobotsInfos(currRobotInfo);
+					RobotInfo[] otherRobotsInfos = getOtherRobotsInfos(currRobotInfo);
 					Point start = currRobotInfo.getPosition();
 					Point goal = job.getPosition();
-					//TODO change to multi get path
-					LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(start, goal));
+					LinkedList<Point> path = AStar.multiGetPath(Pair.makePair(start, goal), otherRobotsInfos);
 					robots[i].assignNewJob(job, path);
 				}
 			}
