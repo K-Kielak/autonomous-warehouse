@@ -9,8 +9,6 @@ import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.JobInfo;
 
-import rp.util.Pair;
-
 public class Robot extends Thread{
 	private final int DELAY = 500;
 	private RobotInfo info;
@@ -37,18 +35,18 @@ public class Robot extends Thread{
 			} catch (ConnectionNotEstablishedException e) {
 				logger.error("Connection to robot " + info.getName() + " not established", e);
 			}
+			
+			try {
+				Thread.sleep(DELAY);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}
 	
 			logger.info("Receiving information from robot " + info.getName());
 			try {
 				connectionHandler.receiveObject(info);
 			} catch (ConnectionNotEstablishedException e) {
 				logger.error("Connection to robot " + info.getName() + " not established", e);
-			}
-	
-			try {
-				Thread.sleep(DELAY);
-			} catch (InterruptedException e) {
-				logger.error(e.getMessage());
 			}
 		}
 	}

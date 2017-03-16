@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 public class RobotsManager extends Thread{
 
-	private final int MS_DELAY = 500;
+	private final int DELAY = 500;
 	private Robot[] robots;
 	private JobAssignment jobs;
 
@@ -46,6 +46,12 @@ public class RobotsManager extends Thread{
 					LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(start, goal));
 					robots[i].assignNewJob(job, path);
 				}
+			}
+			
+			try {
+				Thread.sleep(DELAY);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
 			}
 		}
 	}
