@@ -1,6 +1,7 @@
 package com.bestroboticsteam.jobs;
 
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
@@ -11,13 +12,15 @@ public class JobAssignment {
 
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
+	private final float MAX_WEIGHT = 50f;
+	private float weight = 0f;
 	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
 
 	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
 	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
 	private LinkedList<Order> currentOrders = new LinkedList<Order>();
-
+	
 	public JobAssignment(JobSelection selection) {
 		this.selection = selection;
 	}
@@ -35,15 +38,13 @@ public class JobAssignment {
 		Order nextOrder = selection.take();
 		if(nextOrder == null){
 			logger.info("No more jobs!");
+		}else{
+			currentOrders.add(nextOrder);
+			jobPath.addAll(nextOrder.toJobInfos());
 		}
-		
-		currentOrders.add(nextOrder);
-		jobPath.addAll(nextOrder.toJobInfos());
-		jobPath.add(new JobInfo("DropBox", selection.getDropLocation().getFirst()));
-		position.setLocation(selection.getDropLocation().getFirst());
 	}
 
-	public LinkedList<Order> getCurrentOrders() {
+	public LinkedList<Order> getCurrentOrders(){
 		return currentOrders;
 	}
 
@@ -51,10 +52,24 @@ public class JobAssignment {
 		currentOrders.remove(order);
 	}
 	
+	public boolean isCurrentJob(int order){
+		
+		for(Order o: currentOrders)
+			if(o.getId() == order)
+				return true;
+		return false;
+	}
+	
 	public void cancelOrder(int order){
 		while(jobPath.getFirst().getJobCode() == order)
 			jobPath.removeFirst();
-		currentOrders.remove(order);
+		for(Order o: currentOrders){
+			if(o.getId() == order){
+				currentOrders.remove(o);
+				break;
+			}
+		}
+		
 	}
 	
 	
@@ -69,7 +84,7 @@ public class JobAssignment {
 		int index = 0;
 		
 		
-		//Compute all the distances between the items
+		//Compute all the distances
 		for(int i = 0; i < jobNumb; i ++)
 			for(int j = i; j < jobNumb; j++){
 				if(i == j)
@@ -153,14 +168,62 @@ public class JobAssignment {
 			ress.add(index, info1);
 			aux.remove(info1);
 			
-		} 
+		}
 		
+		//add the drop-boxes
+		for(int i = 0; i < ress.size(); i++){
+			float value = ress.get(i).getWeight()*ress.get(i).getQuantity();
+			if(this.weight + value == this.MAX_WEIGHT){
+				
+				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i))));
+				this.weight = 0f;
+				
+			}else if(this.weight + value > this.MAX_WEIGHT){
+				
+				int quantity = (int)(value/(this.MAX_WEIGHT-weight));
+				
+				JobInfo info = ress.get(i);
+				
+				ress.remove(i);
+				
+				ress.add(i, new JobInfo(info.getItem(), info.getPosition(), quantity, info.getJobCode(), info.getWeight()));
+				
+				ress.add(++i, new JobInfo("DropBox", this.getDrop(ress.get(i-1))));
+				
+				ress.add(++i, new JobInfo(info.getItem(), info.getPosition(), info.getQuantity() - quantity, info.getJobCode(), info.getWeight()));
+				
+				this.weight = 0f;
+			
+			} else {
+				weight += value;
+			}
+		}
+		
+		position.setLocation(ress.getLast().getPosition());
 		return ress;
 	}
-
+	
 	private int averageDistance(Point point, Point point2) {
 		
 		return Math.abs(point.x - point2.x) + Math.abs(point.y - point2.y);
+	}
+	
+	private Point getDrop(JobInfo info){
+		
+		Point point = new Point(-1,-1);
+		int distance = Integer.MAX_VALUE;
+		
+		for(Point p: selection.getDropLocation()){
+			
+			int x = averageDistance(p, info.getPosition());
+			if( x < distance){
+				point = p;
+				distance = x;
+			}
+				
+		}
+			
+		return point;
 	}
 
 

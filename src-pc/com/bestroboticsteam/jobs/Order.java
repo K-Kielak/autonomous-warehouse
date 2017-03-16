@@ -46,7 +46,7 @@ public class Order implements Comparable<Order> {
 		LinkedList<JobInfo> list = new LinkedList<JobInfo>();
 
 		for (Item i : orderTable.keySet()) {
-			JobInfo info = new JobInfo(i.getCode(), i.getPosition(), orderTable.get(i), id);
+			JobInfo info = new JobInfo(i.getCode(), i.getPosition(), orderTable.get(i), id, i.getWeight());
 			list.add(info);
 		}
 		
