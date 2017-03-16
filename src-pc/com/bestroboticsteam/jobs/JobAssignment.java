@@ -20,6 +20,7 @@ public class JobAssignment {
 	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
 	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
 	private LinkedList<Order> currentOrders = new LinkedList<Order>();
+	private LinkedList<Order> finishedOrders = new LinkedList<Order>();
 	
 	public JobAssignment(JobSelection selection) {
 		this.selection = selection;
@@ -28,11 +29,15 @@ public class JobAssignment {
 	public synchronized JobInfo getNextJob() {
 
 		if (jobPath.isEmpty()){
-			currentOrders.removeFirst();
+			finishedOrders.addFirst((currentOrders.pollFirst()));
 			setInfoJobs();
 		}
 
 		return jobPath.pop();
+	}
+	
+	public Order viewFinishedOrder(int index){
+		return finishedOrders.get(index);
 	}
 
 	private void setInfoJobs(){
@@ -54,6 +59,8 @@ public class JobAssignment {
 		currentOrders.remove(order);
 	}
 	
+	
+	
 	public boolean isCurrentJob(int order){
 		
 		for(Order o: currentOrders)
@@ -73,7 +80,6 @@ public class JobAssignment {
 		}
 		
 	}
-	
 	
 	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path){
 		
