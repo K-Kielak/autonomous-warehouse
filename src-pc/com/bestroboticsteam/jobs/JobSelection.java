@@ -54,8 +54,13 @@ public class JobSelection {
 
 	}
 	
-	public void cancelOrder(Order order){
-		list.remove(order);
+	public void cancelOrder(int order){
+		for(Order element: list){
+			if(element.getId() == order){
+				list.remove(element);
+				break;
+			}
+		}
 	}
 
 	private synchronized void setList(Collection<Order> orderList) {

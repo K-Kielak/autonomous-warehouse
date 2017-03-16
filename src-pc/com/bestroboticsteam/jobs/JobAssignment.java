@@ -38,9 +38,9 @@ public class JobAssignment {
 		}
 		
 		currentOrders.add(nextOrder);
-		jobPath.addAll(orderPath(nextOrder.toJobInfos()));
+		jobPath.addAll(nextOrder.toJobInfos());
 		jobPath.add(new JobInfo("DropBox", selection.getDropLocation().getFirst()));
-		position = selection.getDropLocation().getFirst();
+		position.setLocation(selection.getDropLocation().getFirst());
 	}
 
 	public LinkedList<Order> getCurrentOrders() {
@@ -51,8 +51,8 @@ public class JobAssignment {
 		currentOrders.remove(order);
 	}
 	
-	public void cancelOrder(Order order){
-		while(jobPath.getFirst().getJobCode() == order.getId())
+	public void cancelOrder(int order){
+		while(jobPath.getFirst().getJobCode() == order)
 			jobPath.removeFirst();
 		currentOrders.remove(order);
 	}
@@ -60,7 +60,7 @@ public class JobAssignment {
 	
 	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path){
 		
-		LinkedList<JobInfo> aux = path;
+		LinkedList<JobInfo> aux = (LinkedList<JobInfo>) path.clone();
 		int jobNumb = path.size();
 		int[][] itemToItem = new int[jobNumb][jobNumb];
 		int[] itemToDrop = new int[jobNumb];
@@ -100,7 +100,6 @@ public class JobAssignment {
 		ress.add(aux.get(index));
 		aux.remove(index);
 		
-		
 		//order the list
 		while(!aux.isEmpty()){
 			
@@ -114,13 +113,13 @@ public class JobAssignment {
 				JobInfo info2 = null;
 				
 				for(int j = 0; j < ress.size(); j++){
+				
 					int value = itemToItem[path.indexOf(aux.get(i))][path.indexOf(ress.get(j))];
 					if(d2 > value){
-						value = d2;
+						d2 = value;
 						info2 = aux.get(i);
 					}
 				}
-				
 				
 				if(d1 > d2){
 					d1 = d2;
@@ -133,9 +132,10 @@ public class JobAssignment {
 			index = 0;
 			
 			for(int k = 0; k < ress.size()+1; k++){
-				LinkedList<JobInfo> test = ress;
-				test.add(k, info1);
+				LinkedList<JobInfo> test = (LinkedList<JobInfo>) ress.clone();
 				
+				test.add(k, info1);
+
 				int d2 = robotToItem[path.indexOf(test.getFirst())];
 				d2 += itemToDrop[path.indexOf(test.getLast())];
 				
@@ -148,12 +148,14 @@ public class JobAssignment {
 				}
 			}
 			
+			
+			
 			ress.add(index, info1);
 			aux.remove(info1);
 			
-		}
+		} 
 		
-		return aux;
+		return ress;
 	}
 
 	private int averageDistance(Point point, Point point2) {
