@@ -85,7 +85,7 @@ public class ReadData {
 
 					if (line.indexOf(',') > 0) {
 						quantity = Integer.parseInt(line.substring(0, line.indexOf(',')));
-						line = line.substring(i + 1);
+						line = line.substring(line.indexOf(',') + 1);
 					} else
 						quantity = Integer.parseInt(line);
 

@@ -28,6 +28,7 @@ public class JobAssignmentTest {
 		assertEquals(info.getQuantity(), 5);
 		assertEquals(info.getPosition().x, 1);
 		assertEquals(info.getPosition().y, 1);
+		
 	}
 	
 }
