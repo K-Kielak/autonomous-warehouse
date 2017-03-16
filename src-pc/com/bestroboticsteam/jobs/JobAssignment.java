@@ -1,6 +1,7 @@
 package com.bestroboticsteam.jobs;
 
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
@@ -19,7 +20,7 @@ public class JobAssignment {
 	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
 	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
 	private LinkedList<Order> currentOrders = new LinkedList<Order>();
-
+	
 	public JobAssignment(JobSelection selection) {
 		this.selection = selection;
 	}
@@ -37,13 +38,13 @@ public class JobAssignment {
 		Order nextOrder = selection.take();
 		if(nextOrder == null){
 			logger.info("No more jobs!");
+		}else{
+			currentOrders.add(nextOrder);
+			jobPath.addAll(nextOrder.toJobInfos());
 		}
-		
-		currentOrders.add(nextOrder);
-		jobPath.addAll(nextOrder.toJobInfos());
 	}
 
-	public LinkedList<Order> getCurrentOrders() {
+	public LinkedList<Order> getCurrentOrders(){
 		return currentOrders;
 	}
 
@@ -54,7 +55,14 @@ public class JobAssignment {
 	public void cancelOrder(int order){
 		while(jobPath.getFirst().getJobCode() == order)
 			jobPath.removeFirst();
-		currentOrders.remove(order);
+		for(Order o: currentOrders){
+			if(o.getId() == order){
+				currentOrders.remove(o);
+				selection.addCancelled(o);
+				break;
+			}
+		}
+		
 	}
 	
 	
@@ -69,7 +77,7 @@ public class JobAssignment {
 		int index = 0;
 		
 		
-		//Compute all the distances between the items
+		//Compute all the distances
 		for(int i = 0; i < jobNumb; i ++)
 			for(int j = i; j < jobNumb; j++){
 				if(i == j)
@@ -155,6 +163,7 @@ public class JobAssignment {
 			
 		}
 		
+		//add the drop-boxes
 		for(int i = 0; i < ress.size(); i++){
 			float value = ress.get(i).getWeight()*ress.get(i).getQuantity();
 			if(this.weight + value == this.MAX_WEIGHT){
