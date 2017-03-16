@@ -117,7 +117,7 @@ public class InterfaceController extends Thread {
 					String text = warehouseInterface.text4.getText();
 					int itemID = Integer.parseInt(text);
 					Order cancelJob = progJobsMap.get(itemID);
-					assign.removeFromCurrentOrder(itemID);
+					assign.removeFromCurrentOrder(cancelJob);
 					assign.cancelOrder(itemID);
 					progJobsMap.remove(itemID);
 					warehouseInterface.text4.setText("");
