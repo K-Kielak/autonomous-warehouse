@@ -52,7 +52,7 @@ public class JobAssignment {
 	}
 	
 	public void cancelOrder(String order){
-		while(Float.toString(jobPath.getFirst().getJobCode()).equals(order))
+		while(Integer.toString(jobPath.getFirst().getJobCode()).equals(order))
 			jobPath.removeFirst();
 		currentOrders.remove(order);
 	}
