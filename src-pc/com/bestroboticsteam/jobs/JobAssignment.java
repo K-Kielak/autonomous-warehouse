@@ -27,8 +27,10 @@ public class JobAssignment {
 
 	public synchronized JobInfo getNextJob() {
 
-		if (jobPath.isEmpty())
+		if (jobPath.isEmpty()){
+			currentOrders.removeFirst();
 			setInfoJobs();
+		}
 
 		return jobPath.pop();
 	}
@@ -40,7 +42,7 @@ public class JobAssignment {
 			logger.info("No more jobs!");
 		}else{
 			currentOrders.add(nextOrder);
-			jobPath.addAll(nextOrder.toJobInfos());
+			jobPath.addAll(this.orderPath(nextOrder.toJobInfos()));
 		}
 	}
 
