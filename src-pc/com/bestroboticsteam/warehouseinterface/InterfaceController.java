@@ -45,7 +45,8 @@ public class InterfaceController extends Thread {
 					break;
 				} else {
 					jobsText = jobsText + " : " + job.toString();
-					progJobsMap.put(i, job);
+					int jobID = job.getId();
+					progJobsMap.put(jobID, job);
 				}
 			}
 		}
@@ -66,7 +67,8 @@ public class InterfaceController extends Thread {
 				break;
 			}
 			String inputJob = job.toString();
-			tenJobsMap.put(i, job);
+			int jobID = job.getId();
+			tenJobsMap.put(jobID, job);
 			jobsText = jobsText + " : " + inputJob;
 		}
 		warehouseInterface.setJobList(jobsText);
@@ -91,6 +93,8 @@ public class InterfaceController extends Thread {
 
 	public class cancelListener implements ActionListener {
 		@Override
+		//return id's not order
+		//enter job id to cancel it -> might not be displayed
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == warehouseInterface.cancel) {
 				logger.debug("cancel1 has been pressed");
@@ -98,11 +102,11 @@ public class InterfaceController extends Thread {
 					logger.error("No inputted job to cancel" );
 				} else {
 					String text = warehouseInterface.text3.getText();
-					int itemToCancel = Integer.parseInt(text);
-					Order cancelJob = tenJobsMap.get(itemToCancel);
+					int itemID = Integer.parseInt(text);
+					Order cancelJob = tenJobsMap.get(itemID);
 					logger.debug(cancelJob);
-					incomingJobs.cancelOrder(cancelJob);
-					tenJobsMap.remove(itemToCancel);
+					incomingJobs.cancelOrder(itemID);
+					tenJobsMap.remove(itemID);
 					warehouseInterface.text3.setText("");
 				}
 			} else if (e.getSource() == warehouseInterface.cancel2) {
@@ -111,11 +115,11 @@ public class InterfaceController extends Thread {
 					logger.error("No inputted job to cancel" );
 				} else {
 					String text = warehouseInterface.text4.getText();
-					int itemToCancel = Integer.parseInt(text);
-					Order cancelJob = progJobsMap.get(itemToCancel);
+					int itemID = Integer.parseInt(text);
+					Order cancelJob = progJobsMap.get(itemID);
 					assign.removeFromCurrentOrder(cancelJob);
-					assign.cancelOrder(cancelJob);
-					progJobsMap.remove(itemToCancel);
+					assign.cancelOrder(itemID);
+					progJobsMap.remove(itemID);
 					warehouseInterface.text4.setText("");
 				}
 			}
