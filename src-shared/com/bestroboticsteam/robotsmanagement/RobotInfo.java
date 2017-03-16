@@ -14,7 +14,7 @@ public class RobotInfo implements Communicatable {
 	private String name;
 	private Point position;
 	private Direction direction;
-	private JobInfo currentJob = new JobInfo();;
+	private JobInfo currentJob = new JobInfo();
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
 
 	public RobotInfo(String name, Point position, Direction direction) {
