@@ -17,6 +17,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 
+import com.bestroboticsteam.robotsmanagement.RobotsManager;
+
 public class InterfaceView extends JFrame {
 	final static Logger logger = Logger.getLogger(InterfaceView.class);
 
@@ -26,8 +28,7 @@ public class InterfaceView extends JFrame {
 	public JPanel jobFinishedPanel = new JPanel();
 	public JTextArea text5 = new JTextArea();
 	// create visualisation of graph
-	GridMapVisualisation mapVis = CreateSimRobots.robots();
-
+	GridMapVisualisation mapVis;
 	public JPanel robotStatus = new JPanel();
 	public JLabel commLabel = new JLabel();
 	// will display list of orders -> from JobSelection class via interfaceController
@@ -41,7 +42,8 @@ public class InterfaceView extends JFrame {
     public JButton cancel2 = new JButton();
 	//public JPanel buttonPanel = new JPanel();
 	
-	public InterfaceView() {
+	public InterfaceView(RobotsManager robots) {
+		mapVis = CreateSimRobots.robots(robots);
 		this.setTitle("Warehouse Management Interface");
 		this.setSize(1300, 600);// set size of frame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
