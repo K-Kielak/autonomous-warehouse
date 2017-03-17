@@ -28,8 +28,24 @@ public class InterfaceController extends Thread {
 	public void setRobotStatus() {
 		String status = connection.getStatus();
 		warehouseInterface.commLabel.setText(status);
+		
 	}
-
+	
+	public void setFinishedJobs(){
+		String jobsText = "";
+		for (int i = 0; i < 5; i++){
+			Order job = assign.viewFinishedOrder(i);
+			if (job == null) {
+				logger.error("No jobs completed");
+				break;
+			} else {
+				jobsText = jobsText + " : " + job.toString();
+			}
+		}
+		warehouseInterface.setFinishedList(jobsText);
+	}
+	
+	
 	public void setCurrentJobs() {
 		String jobsText = "";
 		int length = assign.getCurrentOrders().size();
@@ -80,9 +96,10 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {
 				// while running keep updating jobs
-			//	setRobotStatus();
+				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
+				setFinishedJobs();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
@@ -93,8 +110,6 @@ public class InterfaceController extends Thread {
 
 	public class cancelListener implements ActionListener {
 		@Override
-		//return id's not order
-		//enter job id to cancel it -> might not be displayed
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == warehouseInterface.cancel) {
 				logger.debug("cancel1 has been pressed");

@@ -1,22 +1,16 @@
 package com.bestroboticsteam.jobs;
-
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.LinkedList;
-
 import org.apache.log4j.Logger;
-
 import com.bestroboticsteam.jobs.JobInfo;
-
 public class JobAssignment {
-
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
 	private final float MAX_WEIGHT = 50f;
 	private float weight = 0f;
 	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
-
 	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
 	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
 	private LinkedList<Order> currentOrders = new LinkedList<Order>();
@@ -25,21 +19,17 @@ public class JobAssignment {
 	public JobAssignment(JobSelection selection) {
 		this.selection = selection;
 	}
-
 	public synchronized JobInfo getNextJob() {
-
 		if (jobPath.isEmpty()){
 			finishedOrders.addFirst((currentOrders.pollFirst()));
 			setInfoJobs();
 		}
-
 		return jobPath.pop();
 	}
 	
 	public Order viewFinishedOrder(int index){
 		return finishedOrders.get(index);
 	}
-
 	private void setInfoJobs(){
 		//In case there is no subJob in the list, get the next Order and break it
 		Order nextOrder = selection.take();
@@ -50,11 +40,9 @@ public class JobAssignment {
 			jobPath.addAll(this.orderPath(nextOrder.toJobInfos()));
 		}
 	}
-
 	public LinkedList<Order> getCurrentOrders(){
 		return currentOrders;
 	}
-
 	public void removeFromCurrentOrder(Order order) {
 		currentOrders.remove(order);
 	}
@@ -158,7 +146,6 @@ public class JobAssignment {
 				LinkedList<JobInfo> test = (LinkedList<JobInfo>) ress.clone();
 				
 				test.add(k, info1);
-
 				int d2 = robotToItem[path.indexOf(test.getFirst())];
 				d2 += itemToDrop[path.indexOf(test.getLast())];
 				
@@ -233,6 +220,4 @@ public class JobAssignment {
 			
 		return point;
 	}
-
-
 }
