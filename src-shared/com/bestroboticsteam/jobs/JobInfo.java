@@ -37,6 +37,10 @@ public class JobInfo implements Communicatable {
 		this.quantity = 0;
 		this.jobCode = 0;
 	}
+	
+	public boolean isGoingToDropPoint() {
+		return itemCode.equals("DropBox");
+	}
 
 	public String getItem() {
 		return itemCode;
@@ -78,5 +82,4 @@ public class JobInfo implements Communicatable {
 		this.jobCode = i.readInt();
 		return this;
 	}
-
 }

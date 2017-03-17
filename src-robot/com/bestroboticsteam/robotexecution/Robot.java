@@ -20,15 +20,7 @@ import lejos.nxt.LCD;
 import lejos.util.Delay;
 import com.bestroboticsteam.communication.*;
 
-import java.util.LinkedList;
-
 import com.bestroboticsteam.communication.RobotCommunicationHandler;
-import com.bestroboticsteam.jobs.JobInfo;
-import com.bestroboticsteam.robotsmanagement.Direction;
-import com.bestroboticsteam.robotsmanagement.RobotInfo;
-
-import lejos.nxt.Button;
-import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
@@ -38,7 +30,6 @@ import rp.config.WheeledRobotConfiguration;
 import rp.systems.RobotProgrammingDemo;
 import rp.systems.StoppableRunnable;
 import rp.systems.WheeledRobotSystem;
-import lejos.util.Delay;
 
 public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 	private Movement movement;
@@ -73,7 +64,7 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 			Direction direction = info.move();
 			if(direction != null){
 				movement.move(direction);
-				if(info.getCurrentJob().goingToDropPoint() == true){
+				if(info.getCurrentJob().isGoingToDropPoint()){
 					robotInterface.printMovingToDropPointMessage(info.getName(),info.getCurrentJob().getJobCode(),info.getCurrentJob().getPosition());
 				}
 				else 
