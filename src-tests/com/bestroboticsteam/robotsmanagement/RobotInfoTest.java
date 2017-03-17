@@ -13,7 +13,7 @@ public class RobotInfoTest {
 
 	@Test
 	public void moveTest() {
-		RobotInfo info = new RobotInfo("xd", new Point(0, 0), Direction.FORWARD);
+		RobotInfo info = new RobotInfo("xd", new Point(0, 0), Direction.FORWARD, 20);
 		LinkedList<Point> path = new LinkedList<Point>();
 		path.add(new Point(1, 0)); path.add(new Point(2, 0)); path.add(new Point(3, 0)); path.add(new Point(3, 1));
 		path.add(new Point(3, 0));
