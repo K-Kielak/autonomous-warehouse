@@ -7,34 +7,26 @@ import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.PCConnectionHandler;
-import com.bestroboticsteam.jobs.JobAssignment;
 import com.bestroboticsteam.jobs.JobInfo;
-import com.bestroboticsteam.pathfinding.AStar;
-
-import rp.util.Pair;
 
 public class Robot extends Thread{
 	private final int DELAY = 500;
 	private RobotInfo info;
-	private JobAssignment jobs;
 	private PCConnectionHandler connectionHandler;
 	
 	final Logger logger = Logger.getLogger(Robot.class);
 	
-	public Robot(RobotInfo info, JobAssignment jobs){
+	public Robot(RobotInfo info){
 		this.info = info;
-		this.jobs = jobs;
 		this.connectionHandler = new PCConnectionHandler(info.getName());
 	}
 	
 	public void run(){
 		connectionHandler.run();
 		while(true){
-			if(info.finished()){
-				logger.info(info.getName() + " finished his job, assigning new one");
-				JobInfo nextJob = jobs.getNextJob();
-				LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(info.getPosition(), nextJob.getPosition()));
-				info.setCurrentJob(nextJob, path);
+			//wait for assignment of new job
+			while(info.finished()){
+				logger.info(info.getName() + " waiting for job...");
 			}
 		
 			logger.info("Sending information to robot " + info.getName());
@@ -43,6 +35,12 @@ public class Robot extends Thread{
 			} catch (ConnectionNotEstablishedException e) {
 				logger.error("Connection to robot " + info.getName() + " not established", e);
 			}
+			
+			try {
+				Thread.sleep(DELAY);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}
 	
 			logger.info("Receiving information from robot " + info.getName());
 			try {
@@ -50,13 +48,11 @@ public class Robot extends Thread{
 			} catch (ConnectionNotEstablishedException e) {
 				logger.error("Connection to robot " + info.getName() + " not established", e);
 			}
-	
-			try {
-				Thread.sleep(DELAY);
-			} catch (InterruptedException e) {
-				logger.error(e.getMessage());
-			}
 		}
+	}
+	
+	public void assignNewJob(JobInfo job, LinkedList<Point> path){
+		info.setCurrentJob(job, path);
 	}
 	
 	public synchronized RobotInfo getInfo(){
