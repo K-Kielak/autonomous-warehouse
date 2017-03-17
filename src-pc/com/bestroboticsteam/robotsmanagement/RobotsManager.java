@@ -1,74 +1,56 @@
 package com.bestroboticsteam.robotsmanagement;
 
 import com.bestroboticsteam.jobs.JobAssignment;
+import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.pathfinding.AStar;
+
+import rp.util.Pair;
+
+import java.awt.Point;
+import java.util.LinkedList;
+
 import org.apache.log4j.Logger;
 
 public class RobotsManager extends Thread{
 
-	//private final int MS_DELAY = 500;
+	private final int DELAY = 500;
 	private Robot[] robots;
-	private AStar pathFinder;
+	private JobAssignment jobs;
 
 	final Logger logger = Logger.getLogger(RobotsManager.class);
 
-	public RobotsManager(RobotInfo[] robotInfos, JobAssignment jobs, AStar pathFinder) {
+	public RobotsManager(RobotInfo[] robotInfos, JobAssignment jobs) {
 		this.robots = new Robot[robotInfos.length];
 		for (int i = 0; i < robotInfos.length; i++)
-			this.robots[i] = new Robot(robotInfos[i], jobs);
+			this.robots[i] = new Robot(robotInfos[i]);
 
-		this.pathFinder = pathFinder;
+		this.jobs = jobs;
 		logger.info("robots manager initialised");
 	}
 
 	public void run() {
 		for (int i = 0; i < robots.length; i++){
-			this.robots[i].start();
+			robots[i].start();
 			logger.info("robot " + robots[i].getInfo().getName() + " initialised");
 		}
-	}
-	/*
-		for (int i = 0; i < connectionHandlers.length; i++) {
-			connectionHandlers[i].run();
-		}
-
-		while (true) {
-			for (RobotInfo r : robots) {
-				if (r.finished()) {
-					logger.info(r.getName() + " finished his job, assigning new one");
-					JobInfo nextJob = jobs.getNextJob();
-					LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(r.getPosition(), nextJob.getPosition()));
-					r.setCurrentJob(nextJob, path);
-				}
+		
+		while(true){
+			for (int i = 0; i < robots.length; i++){
+				RobotInfo robotInfo = robots[i].getInfo();
+				if(!jobs.isCurrentJob(robotInfo.getCurrentJob().getJobCode()))
+					robotInfo.cancelJob();
+				
+				if(robots[i].getInfo().finished())
+					assignNewJobTo(robots[i]);
 			}
-
-			// TODO Check connection status
-
-			logger.info("Sending information to robots");
-			for (int i = 0; i < connectionHandlers.length; i++) {
-				try {
-					connectionHandlers[i].sendObject(robots[i]);
-				} catch (ConnectionNotEstablishedException e) {
-					logger.error("Connection to robot " + i + " not established", e);
-				}
-			}
-
-			logger.info("Receiving information from robots");
-			for (int i = 0; i < connectionHandlers.length; i++) {
-				try {
-					connectionHandlers[i].receiveObject(robots[i]);
-				} catch (ConnectionNotEstablishedException e) {
-					logger.error("Connection to robot " + i + " not established", e);
-				} // TODO Fix blocking
-			}
-
+			
 			try {
-				Thread.sleep(MS_DELAY);
+				Thread.sleep(DELAY);
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage());
 			}
 		}
-	}*/
+	}
 
 	public RobotInfo[] getRobotInfos() {
 		RobotInfo[] robotInfos = new RobotInfo[robots.length];
@@ -76,6 +58,30 @@ public class RobotsManager extends Thread{
 			robotInfos[i] = robots[i].getInfo();
 		
 		return robotInfos;
+	}
+	
+	private void assignNewJobTo(Robot robot){
+		JobInfo job = jobs.getNextJob();
+		RobotInfo currRobotInfo = robot.getInfo();
+		RobotInfo[] otherRobotsInfos = getOtherRobotsInfos(currRobotInfo);
+		Point start = currRobotInfo.getPosition();
+		Point goal = job.getPosition();
+		LinkedList<Point> path = AStar.multiGetPath(Pair.makePair(start, goal), otherRobotsInfos);
+		robot.assignNewJob(job, path);
+	}
+	
+	private RobotInfo[] getOtherRobotsInfos(RobotInfo robotInfo){
+		RobotInfo[] robotInfos = getRobotInfos();
+		RobotInfo[] otherRobotsInfos = new RobotInfo[robotInfos.length-1];
+		int othersI = 0;
+		for(int i=0; i<robots.length; i++){
+			if(robotInfos[i] != robotInfo){
+				otherRobotsInfos[othersI] = robotInfos[i];
+				othersI++;
+			}
+		}
+		
+		return otherRobotsInfos;
 	}
 
 }

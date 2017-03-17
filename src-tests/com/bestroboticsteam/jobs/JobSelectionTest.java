@@ -32,7 +32,7 @@ public class JobSelectionTest {
 		value = (3*0.11111f)/(3*1f) + (1*10f)/(1*23.3f);
 		assertEquals(selector.viewOrder(2).getTotalReward(), value, 0.001f);
 		
-		selector.cancelOrder("1001");
+		selector.cancelOrder(1001);
 		assertFalse(selector.viewOrder(0).getId() == 1001);
 	
 	}
