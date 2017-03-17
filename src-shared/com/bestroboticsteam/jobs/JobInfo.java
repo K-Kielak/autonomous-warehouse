@@ -13,13 +13,15 @@ public class JobInfo implements Communicatable {
 	private Point position;
 	private int quantity;
 	private int jobCode;
+	private float weight;
 
-	public JobInfo(String code, Point position, int _quantity, int _jobCode) {
+	public JobInfo(String code, Point position, int _quantity, int _jobCode, float weight) {
 
 		this.itemCode = code;
 		this.position = position;
 		this.quantity = _quantity;
 		this.jobCode = _jobCode;
+		this.weight = weight;
 	}
 
 	public JobInfo(String code, Point position) {
@@ -35,6 +37,10 @@ public class JobInfo implements Communicatable {
 		this.quantity = 0;
 		this.jobCode = 0;
 	}
+	
+	public boolean isGoingToDropPoint() {
+		return itemCode.equals("DropBox");
+	}
 
 	public String getItem() {
 		return itemCode;
@@ -42,6 +48,10 @@ public class JobInfo implements Communicatable {
 
 	public Point getPosition() {
 		return position;
+	}
+	
+	public float getWeight(){
+		return this.weight;
 	}
 
 	public int getQuantity() {
@@ -56,7 +66,6 @@ public class JobInfo implements Communicatable {
 		return jobCode;
 	}
 
-	@Override
 	public void sendObject(MyDataOutputStream o) throws IOException {
 		o.writeString(this.itemCode);
 		o.writePoint(this.position);
@@ -73,5 +82,4 @@ public class JobInfo implements Communicatable {
 		this.jobCode = i.readInt();
 		return this;
 	}
-
 }

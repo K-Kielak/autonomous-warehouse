@@ -23,13 +23,30 @@ public class InterfaceController extends Thread {
 		this.incomingJobs = incomingJobs;
 		this.assign = assign;
 		this.warehouseInterface.addCancelListener(new cancelListener());
+		logger.info("Warehoue interface initialised");
 	}
 
 	public void setRobotStatus() {
 		String status = connection.getStatus();
 		warehouseInterface.commLabel.setText(status);
+		
 	}
-
+	
+	public void setFinishedJobs(){
+		String jobsText = "";
+		for (int i = 0; i < 5; i++){
+			Order job = assign.viewFinishedOrder(i);
+			if (job == null) {
+				logger.error("No jobs completed");
+				break;
+			} else {
+				jobsText = jobsText + " : " + job.toString();
+			}
+		}
+		warehouseInterface.setFinishedList(jobsText);
+	}
+	
+	
 	public void setCurrentJobs() {
 		String jobsText = "";
 		int length = assign.getCurrentOrders().size();
@@ -45,7 +62,8 @@ public class InterfaceController extends Thread {
 					break;
 				} else {
 					jobsText = jobsText + " : " + job.toString();
-					progJobsMap.put(i, job);
+					int jobID = job.getId();
+					progJobsMap.put(jobID, job);
 				}
 			}
 		}
@@ -66,7 +84,8 @@ public class InterfaceController extends Thread {
 				break;
 			}
 			String inputJob = job.toString();
-			tenJobsMap.put(i, job);
+			int jobID = job.getId();
+			tenJobsMap.put(jobID, job);
 			jobsText = jobsText + " : " + inputJob;
 		}
 		warehouseInterface.setJobList(jobsText);
@@ -78,10 +97,11 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {
 				// while running keep updating jobs
-			//	setRobotStatus();
+				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-				Thread.sleep(5000);
+				setFinishedJobs();
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
 			}
@@ -98,11 +118,11 @@ public class InterfaceController extends Thread {
 					logger.error("No inputted job to cancel" );
 				} else {
 					String text = warehouseInterface.text3.getText();
-					int itemToCancel = Integer.parseInt(text);
-					Order cancelJob = tenJobsMap.get(itemToCancel);
+					int itemID = Integer.parseInt(text);
+					Order cancelJob = tenJobsMap.get(itemID);
 					logger.debug(cancelJob);
-					incomingJobs.cancelOrder(cancelJob);
-					tenJobsMap.remove(itemToCancel);
+					incomingJobs.cancelOrder(itemID);
+					tenJobsMap.remove(itemID);
 					warehouseInterface.text3.setText("");
 				}
 			} else if (e.getSource() == warehouseInterface.cancel2) {
@@ -111,11 +131,11 @@ public class InterfaceController extends Thread {
 					logger.error("No inputted job to cancel" );
 				} else {
 					String text = warehouseInterface.text4.getText();
-					int itemToCancel = Integer.parseInt(text);
-					Order cancelJob = progJobsMap.get(itemToCancel);
+					int itemID = Integer.parseInt(text);
+					Order cancelJob = progJobsMap.get(itemID);
 					assign.removeFromCurrentOrder(cancelJob);
-					assign.cancelOrder(cancelJob);
-					progJobsMap.remove(itemToCancel);
+					assign.cancelOrder(itemID);
+					progJobsMap.remove(itemID);
 					warehouseInterface.text4.setText("");
 				}
 			}
