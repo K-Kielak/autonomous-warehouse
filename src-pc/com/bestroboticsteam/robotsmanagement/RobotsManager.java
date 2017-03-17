@@ -37,11 +37,16 @@ public class RobotsManager extends Thread{
 		while(true){
 			for (int i = 0; i < robots.length; i++){
 				RobotInfo robotInfo = robots[i].getInfo();
-				if(!jobs.isCurrentJob(robotInfo.getCurrentJob().getJobCode()))
-					robotInfo.cancelJob();
-				
-				if(robots[i].getInfo().finished())
-					assignNewJobTo(robots[i]);
+				synchronized(robotInfo){
+					if(robotInfo.wasJobCancelled())
+						jobs.cancelOrder(robotInfo.getCurrentJob().getJobCode());
+						
+					if(!jobs.isCurrentJob(robotInfo.getCurrentJob().getJobCode()))
+						robotInfo.cancelJob();
+					
+					if(robotInfo.wasJobCancelled() || robotInfo.finished())
+						assignNewJobTo(robots[i]);
+				}
 			}
 			
 			try {

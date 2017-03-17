@@ -23,6 +23,7 @@ public class InterfaceController extends Thread {
 		this.incomingJobs = incomingJobs;
 		this.assign = assign;
 		this.warehouseInterface.addCancelListener(new cancelListener());
+		logger.info("Warehoue interface initialised");
 	}
 
 	public void setRobotStatus() {
@@ -100,7 +101,7 @@ public class InterfaceController extends Thread {
 				setTenJobs();
 				setCurrentJobs();
 				setFinishedJobs();
-				Thread.sleep(5000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
 			}

@@ -27,13 +27,20 @@ public class Robot extends Thread{
 			//wait for assignment of new job
 			while(info.finished()){
 				logger.info(info.getName() + " waiting for job...");
+				try {
+					Thread.sleep(DELAY);
+				} catch (InterruptedException e) {
+					logger.error(e.getMessage());
+				}
 			}
 		
-			logger.info("Sending information to robot " + info.getName());
-			try {
-				connectionHandler.sendObject(info);
-			} catch (ConnectionNotEstablishedException e) {
-				logger.error("Connection to robot " + info.getName() + " not established", e);
+			synchronized(info){
+				logger.info("Sending information to robot " + info.getName());
+				try {
+					connectionHandler.sendObject(info);
+				} catch (ConnectionNotEstablishedException e) {
+					logger.error("Connection to robot " + info.getName() + " not established", e);
+				}
 			}
 			
 			try {
@@ -42,11 +49,13 @@ public class Robot extends Thread{
 				logger.error(e.getMessage());
 			}
 	
-			logger.info("Receiving information from robot " + info.getName());
-			try {
-				connectionHandler.receiveObject(info);
-			} catch (ConnectionNotEstablishedException e) {
-				logger.error("Connection to robot " + info.getName() + " not established", e);
+			synchronized(info){
+				logger.info("Receiving information from robot " + info.getName());
+				try {
+					connectionHandler.receiveObject(info);
+				} catch (ConnectionNotEstablishedException e) {
+					logger.error("Connection to robot " + info.getName() + " not established", e);
+				}
 			}
 		}
 	}
