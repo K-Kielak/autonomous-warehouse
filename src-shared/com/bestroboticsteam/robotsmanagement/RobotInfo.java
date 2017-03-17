@@ -14,20 +14,23 @@ public class RobotInfo implements Communicatable {
 	private String name;
 	private Point position;
 	private Direction direction;
-	private JobInfo currentJob = new JobInfo();;
+	private float maxCapacity;
+	private JobInfo currentJob = new JobInfo();
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
+	
 
-	public RobotInfo(String name, Point position, Direction direction) {
+	public RobotInfo(String name, Point position, Direction direction, float maxCapacity) {
 		super();
 		this.name = name;
 		this.position = position;
 		this.direction = direction;
+		this.maxCapacity = maxCapacity;
 	}
 	
 	public RobotInfo() {}
 
 	// returns null whole path was finished
-	public synchronized Direction move() {
+	public Direction move() {
 		if(currentPath.isEmpty())
 			return null;
 			
@@ -49,8 +52,12 @@ public class RobotInfo implements Communicatable {
 		position = newPos;
 		return turn(newDir);
 	}
+	
+	public void cancelJob(){
+		currentJob = null;
+	}
 
-	public synchronized void click() {
+	public void click() {
 		currentJob.decreaseQuantity();
 	}
 
@@ -65,8 +72,12 @@ public class RobotInfo implements Communicatable {
 	public Point getPosition() {
 		return position;
 	}
+	
+	public float getMaxCapacity(){
+		return maxCapacity;
+	}
 
-	public synchronized void setCurrentJob(JobInfo job, LinkedList<Point> path) {
+	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
 		currentJob = job;
 		currentPath = path;
 	}
