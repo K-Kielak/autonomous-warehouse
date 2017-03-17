@@ -1,4 +1,24 @@
 package com.bestroboticsteam.robotexecution;
+import lejos.nxt.Sound;
+
+
+
+import com.bestroboticsteam.robotsmanagement.Direction;
+import com.bestroboticsteam.robotsmanagement.RobotInfo;
+import java.util.LinkedList;
+
+import javax.microedition.io.Connection;
+
+//import java.util.Optional;
+import com.bestroboticsteam.jobs.JobInfo;
+import java.awt.Point;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import lejos.nxt.Button;
+import lejos.nxt.LCD;
+import lejos.util.Delay;
+import com.bestroboticsteam.communication.*;
 
 import java.util.LinkedList;
 
@@ -27,72 +47,53 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable{
 	private RobotCommunicationHandler comms;
     private boolean m_run = true;
     
+    
 	public Robot(SensorPort leftSensorPort, SensorPort rightSensorPort, WheeledRobotConfiguration ExpressBot) {
 		LightSensor rightSensor = new LightSensor(rightSensorPort);
 		LightSensor leftSensor = new LightSensor(leftSensorPort);
 		DifferentialPilot pilot = new WheeledRobotSystem(ExpressBot).getPilot();
 		this.movement = new Movement(leftSensor, rightSensor, pilot);
-		this.robotInterface = new RobotInterface("TODO");
+		this.robotInterface = new RobotInterface();
 	}
 	
 	@Override
 	public void run() {	
 		
 		while(!this.comms.getStatus().equals("CONNECTED")){
-			robotInterface.bluetoothMessage();
+			robotInterface.bluetoothMessage(info.getName());
 		}
 		this.comms.run();
 		System.out.println(this.comms.getStatus());
 		
-		this.receiveInfo();
+//		this.receiveInfo();
 		
 		while(m_run){
-			this.receiveInfo();
-			int number  = 0;
-		//	printInfo();
-			
+//			this.receiveInfo();
+//			printInfo();
 			Direction direction = info.move();
 			if(direction != null){
 				movement.move(direction);
-				robotInterface.movingToPickup(info.getCurrentJob().getJobCode(),info.getCurrentJob().getItem(),info.getCurrentJob().getPosition());
-			
-			
+				if(info.getCurrentJob().goingToDropPoint() == true){
+					robotInterface.printMovingToDropPointMessage(info.getName(),info.getCurrentJob().getJobCode(),info.getCurrentJob().getPosition());
+				}
+				else 
+					robotInterface.printMovingToItemMessage(info.getName(),info.getCurrentJob().getJobCode(),info.getCurrentJob().getItem(),info.getCurrentJob().getPosition());
 			}
 			else if(!info.finished()){
+				Sound.playTone(110, 800);
+				LCD.drawString("Please press ENTER to confirm pickup location.",1,0);
 				Button.waitForAnyPress();
-				//robotInterface.load(
-				LCD.clear();
-				LCD.drawString("Please press ENTER to confirm the pick up location", 1, 0);
-				robotInterface.loadItems();
-				
-				}
-				LCD.clear();
-				while(info.getCurrentJob().getQuantity() != number){
-					robotInterface.load(info.getCurrentJob().getItem(),info.getCurrentJob().getQuantity(), number);
-					
-					if(left){
-						Delay.msDelay(100);
-						number--;
-						robotInterface.status(number);
-					}
-					
-					if(right){
-						Delay.msDelay(100);
-						number++;
-						robotInterface.status(number);
-					}
-					
-					robotInterface.load(info.getCurrentJob().getItem(),info.getCurrentJob().getQuantity(), number);
-					
+				while(info.getCurrentJob().getQuantity() != robotInterface.getItemsQuantity()){
+				    LCD.clear();
+					robotInterface.printLoadMessage(info.getName(),info.getCurrentJob().getItem(),info.getCurrentJob().getQuantity(), robotInterface.getItemsQuantity());
+					robotInterface.waitForButton();
 			}
-			
-			//TODO send to robot;
 		}
-		
-		
-		while(info.finished()){
-			
+			robotInterface.setItemsQuantity(0);
 		}
+//		while(info.finished()){
+		
+//		}
 	}
 	
 	@Override

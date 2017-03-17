@@ -1,4 +1,5 @@
 package com.bestroboticsteam.robotexecution;
+import lejos.nxt.Sound;
 
 
 
@@ -21,40 +22,43 @@ import com.bestroboticsteam.communication.*;
 
 public class RobotInterface{
 
-	private final String NAME; 
-	/*private String Confirm_pickup = "Confirm the ick up location";
+	/*private String Confirm_pickup = "Confirm the pick up location";
 	private String Confirm_drop = "Confirm the drop off location";*/
 	private int itemsQuantity = 0;
 	
-	public RobotInterface(String name){
-		this.NAME = name;
+	public void setItemsQuantity(int q){
+		itemsQuantity = q;
+	}
+	
+	public int getItemsQuantity(){
+		return itemsQuantity;
 	}
 			
-	public void bluetoothMessage(){
+	public void bluetoothMessage(String name){
 		LCD.clear();
-		LCD.drawString(NAME, 1, 0);
+		LCD.drawString(name, 1, 0);
 		LCD.drawString("Waiting for bluetooth connection", 2, 1);
 		Delay.msDelay(800);
 	}
 	
-	public void printMovingToItemMessage(int jobCode, String itemCode,Point position){
+	public void printMovingToItemMessage(String name,int jobCode, String itemCode,Point position){
 		LCD.clear();
-		LCD.drawString("Robot name: " + NAME, 1, 0);
+		LCD.drawString("Robot name: " + name, 1, 0);
 		LCD.drawString("Job code: " + jobCode, 1, 1);
 		LCD.drawString("Item code: " + itemCode, 1, 2);
 		LCD.drawString("X position: " +  position.x + " Y position: " + position.y,1,3);
 	}
 	
-	public void printLoadMessage(String itemCode, int quantity, int number){
+	public void printLoadMessage(String name,String itemCode, int quantity, int number){
 		LCD.clear();
-		LCD.drawString(NAME, 1, 0);
+		LCD.drawString(name, 1, 0);
 		LCD.drawString("Please load: " + quantity + " items " + itemCode + " into the robot",1,1);
 		LCD.drawString("There are: " + number + " items in the robot at the moment", 1, 2);
 	}
 	
-	public void printMovingToDropPointMessage(int jobCode,Point position){
+	public void printMovingToDropPointMessage(String name,int jobCode,Point position){
 		LCD.clear();
-		LCD.drawString(NAME, 1, 0);
+		LCD.drawString(name, 1, 0);
 		LCD.drawString("Job code: " + jobCode, 1, 1);
 		LCD.drawString("Destination: " + position.x + ", " + position.y, 1, 2);
 		LCD.drawString("Moving to delivery point...", 1, 3);
@@ -71,17 +75,17 @@ public class RobotInterface{
 	
 	 public void dropItems(){
 			Delay.msDelay(100);
-			itemsQuantity++;
+			itemsQuantity--;
 			LCD.clear();
 			LCD.drawString("Curent number of items is: " , 1, 0);
-			LCD.drawInt(itemsQuantity++, 2, 1);		
+			LCD.drawInt(itemsQuantity, 2, 1);		
 	}	
 	 
 	 
 	 
 	 public void waitForButton(){
 		 int pressedButtonID = Button.waitForAnyPress();
-		 if(pressedButtonID == Button.ID_RIGHT)
+		 if(pressedButtonID == Button.ID_LEFT)
 			 dropItems();
 		 else if(pressedButtonID == Button.ID_RIGHT)
 			 addItems();
