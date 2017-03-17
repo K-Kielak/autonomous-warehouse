@@ -1,7 +1,7 @@
 package com.bestroboticsteam.warehouseinterface;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import com.bestroboticsteam.robotsmanagement.RobotsManager;
-
+import java.awt.Point;
 import lejos.robotics.RangeFinder;
 import rp.robotics.MobileRobotWrapper;
 import rp.robotics.control.RandomGridWalk;
@@ -14,25 +14,47 @@ import rp.robotics.simulation.MovableRobot;
 import rp.robotics.simulation.SimulatedRobots;
 import rp.robotics.visualisation.GridMapVisualisation;
 import rp.robotics.visualisation.MapVisualisationComponent;
+
 public class CreateSimRobots {
 	public static GridMap map = MapUtils.createRealWarehouse();
 	public static MapBasedSimulation sim = new MapBasedSimulation(map);
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
-	private static RobotsManager robots;
+	private static MobileRobotWrapper<MovableRobot> wrapper;
+	private static RobotInfo[] robotArray;
 	
-	public static GridMapVisualisation robots() {
-		RobotInfo[] robotArray = new RobotInfo[robots.getRobotInfos().length];
-		robotArray = robots.getRobotInfos();
-		int numOfRobots = robotArray.length;
+	public static GridMapVisualisation robots(RobotsManager robots) {
+		System.out.println("here");
+		robotArray = new RobotInfo[robots.getRobotInfos().length];
+		int numOfRobots = getRobotNumber();
 		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(3*i, 0, Heading.PLUS_Y);
-			MobileRobotWrapper<MovableRobot> wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, true),
-					map.toPose(gridStart));
+			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));			
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;
 	}
-	 public static void main (String[] args){
-		 InterfaceView view = new InterfaceView();
-	 }
+	
+	public static int getRobotNumber(){
+		int numOfRobots = robotArray.length;
+		return numOfRobots;
+	}
+	
+	public static int getPosX(int robot){
+		Point pos = robotArray[robot].getPosition();
+		return pos.x;
+	}
+	
+	public static int getPosY(int robot){
+		Point pos = robotArray[robot].getPosition();
+		return pos.y;
+	}
+	
+	public static void moveRobot(MobileRobotWrapper<MovableRobot> wrapper, int i){
+		MovableRobot robot = wrapper.getRobot();
+		while (true){
+			int posX = getPosX(i);
+			int posY = getPosY(i);
+			robot.setPose(null);
+		}
+	}
 }

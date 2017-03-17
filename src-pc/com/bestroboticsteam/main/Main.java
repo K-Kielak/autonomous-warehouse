@@ -23,11 +23,11 @@ public class Main {
 		JobSelection jobsSelect = new JobSelection(PATH);
 		JobAssignment jobsAssign = new JobAssignment(jobsSelect);
 		AStar pathFinder = new AStar();
-
+		
 		RobotsManager manager = new RobotsManager(robots, jobsAssign, pathFinder);
 		manager.start();
 		
-		InterfaceController warehouseInterface = new InterfaceController(jobsSelect, jobsAssign);
+		InterfaceController warehouseInterface = new InterfaceController(jobsSelect, jobsAssign, manager);
 		warehouseInterface.start();
 	}
 }
