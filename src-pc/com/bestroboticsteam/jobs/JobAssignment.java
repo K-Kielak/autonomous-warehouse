@@ -1,9 +1,9 @@
 package com.bestroboticsteam.jobs;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.LinkedList;
 import org.apache.log4j.Logger;
 import com.bestroboticsteam.jobs.JobInfo;
+
 public class JobAssignment {
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
@@ -19,6 +19,7 @@ public class JobAssignment {
 	public JobAssignment(JobSelection selection) {
 		this.selection = selection;
 	}
+	
 	public synchronized JobInfo getNextJob() {
 		if (jobPath.isEmpty()){
 			finishedOrders.addFirst((currentOrders.pollFirst()));
@@ -30,26 +31,16 @@ public class JobAssignment {
 	public Order viewFinishedOrder(int index){
 		return finishedOrders.get(index);
 	}
-	private void setInfoJobs(){
-		//In case there is no subJob in the list, get the next Order and break it
-		Order nextOrder = selection.take();
-		if(nextOrder == null){
-			logger.info("No more jobs!");
-		}else{
-			currentOrders.add(nextOrder);
-			jobPath.addAll(this.orderPath(nextOrder.toJobInfos()));
-		}
-	}
+	
 	public LinkedList<Order> getCurrentOrders(){
 		return currentOrders;
 	}
+	
 	public void removeFromCurrentOrder(Order order) {
 		currentOrders.remove(order);
 	}
 	
-	
-	
-	public boolean isCurrentJob(int order){
+	public synchronized boolean isCurrentJob(int order){
 		
 		for(Order o: currentOrders)
 			if(o.getId() == order)
@@ -57,7 +48,7 @@ public class JobAssignment {
 		return false;
 	}
 	
-	public void cancelOrder(int order){
+	public synchronized void cancelOrder(int order){
 		while(jobPath.getFirst().getJobCode() == order)
 			jobPath.removeFirst();
 		for(Order o: currentOrders){
@@ -67,6 +58,17 @@ public class JobAssignment {
 			}
 		}
 		
+	}
+	
+	private void setInfoJobs(){
+		//In case there is no subJob in the list, get the next Order and break it
+		Order nextOrder = selection.take();
+		if(nextOrder == null){
+			logger.info("No more jobs!");
+		}else{
+			currentOrders.add(nextOrder);
+			jobPath.addAll(this.orderPath(nextOrder.toJobInfos()));
+		}
 	}
 	
 	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path){
