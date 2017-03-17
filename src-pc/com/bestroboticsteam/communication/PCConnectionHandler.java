@@ -40,10 +40,6 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		 * 
 		 */
 
-//		if (this.robotName.equals("")) { // TODO Remove
-//			return;
-//		}
-
 		logger.info("Attempting connection to: " + this.robotName);
 
 		this.status = BaseConnectionHandler.CONNECTING;
@@ -53,11 +49,11 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		conn.addLogListener(new NXTCommLogListener() {
 
 			public void logEvent(String message) {
-				logger.debug("Bluetooth Log Event: " + message);
+				logger.debug("Bluetooth Log Event. ROBOT: " + robotName + " " + message);
 			}
 
 			public void logEvent(Throwable throwable) {
-				logger.debug("Bluetooth Throwable: ", throwable);
+				logger.debug("Bluetooth Throwable. ROBOT: " + robotName, throwable);
 			}
 
 		});
@@ -69,7 +65,7 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 
 			if (sucessful) {
 				this.status = CONNECTED;
-				logger.info("Connection Established via " + this.protocol);
+				logger.info(this.robotName + " Connection Established via " + this.protocol);
 				input = new MyDataInputStream(conn.getInputStream());
 				output = new MyDataOutputStream(conn.getOutputStream());
 				return;
@@ -88,16 +84,16 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		}
 
 		this.status = BaseConnectionHandler.DISCONNECTED;
-		logger.error("Error connecting");
+		logger.error(this.robotName + " Error connecting");
 	}
 
 	public Communicatable receiveObject(Communicatable obj) throws ConnectionNotEstablishedException {
-		logger.info("Receiving: " + obj.toString());
+		logger.info(this.robotName + " Receiving: " + obj.toString());
 		return super.receiveObject(obj);
 	}
 
 	public void sendObject(Communicatable obj) throws ConnectionNotEstablishedException {
-		logger.info("Sending: " + obj.toString());
+		logger.info(this.robotName + " Sending: " + obj.toString());
 		super.sendObject(obj);
 	}
 }
