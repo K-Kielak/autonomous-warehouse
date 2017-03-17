@@ -14,14 +14,17 @@ public class RobotInfo implements Communicatable {
 	private String name;
 	private Point position;
 	private Direction direction;
-	private JobInfo currentJob = new JobInfo();
+	private float maxCapacity;
+	private JobInfo currentJob = new JobInfo(); //it will be null if job was cancelled
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
+	
 
-	public RobotInfo(String name, Point position, Direction direction) {
+	public RobotInfo(String name, Point position, Direction direction, float maxCapacity) {
 		super();
 		this.name = name;
 		this.position = position;
 		this.direction = direction;
+		this.maxCapacity = maxCapacity;
 	}
 	
 	public RobotInfo() {}
@@ -49,13 +52,21 @@ public class RobotInfo implements Communicatable {
 		position = newPos;
 		return turn(newDir);
 	}
+	
+	public synchronized void cancelJob(){
+		currentJob = null;
+	}
+	
+	public synchronized boolean wasJobCancelled(){
+		return currentJob == null;
+	}
 
 	public void click() {
 		currentJob.decreaseQuantity();
 	}
 
-	public boolean finished() {
-		return currentJob == null || currentJob.getQuantity() <= 0;
+	public synchronized boolean finished() {
+		return currentJob.getQuantity() <= 0;
 	}
 	
 	public String getName(){
@@ -65,13 +76,17 @@ public class RobotInfo implements Communicatable {
 	public Point getPosition() {
 		return position;
 	}
+	
+	public float getMaxCapacity(){
+		return maxCapacity;
+	}
 
 	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
 		currentJob = job;
 		currentPath = path;
 	}
 
-	public JobInfo getCurrentJob() {
+	public synchronized JobInfo getCurrentJob() {
 		return currentJob;
 	}
 
