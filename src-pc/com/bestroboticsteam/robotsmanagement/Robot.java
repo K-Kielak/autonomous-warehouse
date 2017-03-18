@@ -7,27 +7,38 @@ import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.PCConnectionHandler;
+import com.bestroboticsteam.jobs.JobAssignment;
 import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.pathfinding.AStar;
+
+import rp.util.Pair;
 
 public class Robot extends Thread{
 	private final int DELAY = 500;
 	private RobotInfo info;
+	private JobAssignment jobs;
+	private RobotInfo[] otherRobotInfos;
 	private PCConnectionHandler connectionHandler;
 	
 	final Logger logger = Logger.getLogger(Robot.class);
 	
-	public Robot(RobotInfo info){
+	public Robot(RobotInfo info, JobAssignment jobs, RobotInfo[] otherRobotInfos){
 		this.info = info;
+		this.jobs = jobs;
 		this.connectionHandler = new PCConnectionHandler(info.getName());
 	}
 	
 	public void run(){
 		connectionHandler.run();
 		while(true){
-			//wait for assignment of new job
-			while(info.finished()){
-				logger.info(info.getName() + " waiting for job...");
-			}
+			if(info.wasJobCancelled())
+				jobs.cancelOrder(info.getCurrentJob().getJobCode());
+				
+			if(!jobs.isCurrentJob(info.getCurrentJob().getJobCode()))
+				info.cancelJob();
+			
+			if(info.wasJobCancelled() || info.finished())
+				assignNewJob();
 		
 			logger.info("Sending information to robot " + info.getName());
 			try {
@@ -51,11 +62,15 @@ public class Robot extends Thread{
 		}
 	}
 	
-	public void assignNewJob(JobInfo job, LinkedList<Point> path){
-		info.setCurrentJob(job, path);
-	}
-	
 	public synchronized RobotInfo getInfo(){
 		return info;
+	}
+	
+	private void assignNewJob(){
+		JobInfo job = jobs.getNextJob();
+		Point start = info.getPosition();
+		Point goal = job.getPosition();
+		LinkedList<Point> path = AStar.multiGetPath(Pair.makePair(start, goal), otherRobotInfos);
+		info.setCurrentJob(job, path);
 	}
 }

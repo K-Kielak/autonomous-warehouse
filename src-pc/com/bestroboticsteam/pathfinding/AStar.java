@@ -88,13 +88,13 @@ public class AStar {
 		LinkedList<Point> path = new LinkedList<Point>();
 		
 		//Adds the robot's current location to the open list.
-		openList.add(new AStarNode(botPosition, new AStarNode(true), botPosition.x+botPosition.y-doorPosition.x-doorPosition.y, 0, botPosition.x+botPosition.y-doorPosition.x-doorPosition.y));
+		openList.add(new AStarNode(botPosition, true, botPosition.x+botPosition.y-doorPosition.x-doorPosition.y, 0, botPosition.x+botPosition.y-doorPosition.x-doorPosition.y));
+		closedList.add(new AStarNode(botPosition, true));
 		while(true){
 			if(openList.size()==0){
 				logger.warn("No paths found from (" + (int)botPosition.getX() + ", " + (int)botPosition.getY() + ") to (" + (int)doorPosition.getX() + ", " + (int)doorPosition.getY() + ")");
 				return null;
 				}//Stops pathfinding when all possible paths have been examined and no path is possible.
-			int lowestFCost=Integer.MAX_VALUE;
 			AStarNode currentNode = null;
 			/*for(AStarNode n : openList){
 				if(n.fCost<=lowestFCost){ // Makes the node with the lowest fCost on the openList the current node.
@@ -102,10 +102,12 @@ public class AStar {
 					currentNode=n;
 				}
 			}*/
-			currentNode = openList.peek();
-			if(!adjacentRobot(currentNode, timedReservationTable)){
-				currentNode = openList.poll();
-			}
+			currentNode = openList.poll();
+			/*if(!adjacentRobot(currentNode, timedReservationTable)){
+				System.out.println(currentNode.location + "Test locationN :" + doorPosition);
+			}else{
+				System.out.println(currentNode.location + "Test location :" + doorPosition);
+			}*/
 			if(currentNode.location.x==doorPosition.x && currentNode.location.y==doorPosition.y){ //Stops pathfinding when a path has been found.
 				closedList.add(currentNode);
 				break;
@@ -113,11 +115,12 @@ public class AStar {
 			int nodeX = currentNode.location.x;
 			int nodeY = currentNode.location.y;
 			if(!adjacentRobot(currentNode, timedReservationTable)){
-				closedList.add(currentNode);
+				closedListLocations[nodeX][nodeY] = true;
+			}else{
+				openList = addToOpenList(currentNode.location, currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			}
-			//openList.remove(currentNode);
+			closedList.add(currentNode);
 			openListLocations[nodeX][nodeY] = false;
-			closedListLocations[nodeX][nodeY] = true;
 			
 			//Add adjacent nodes to the open list
 			openList = addToOpenList(new Point(nodeX, nodeY+1), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
@@ -129,17 +132,25 @@ public class AStar {
 		
 		path = new LinkedList<Point>();
 		AStarNode currentNode = closedList.get(closedList.size()-1);
-		while(!(currentNode.location.x==botPosition.x && currentNode.location.y==botPosition.y)){
+		ArrayList<AStarNode> fullList = (ArrayList<AStarNode>) closedList.clone();
+		Collections.addAll(fullList, openList.toArray(new AStarNode[openList.size()]));
+		while(!(currentNode.isStart)){
 			path.add(currentNode.location);
-			for(AStarNode n : closedList){
-				if(n.location.x==currentNode.parentNode.location.x && n.location.y==currentNode.parentNode.location.y){
+			//System.out.println(doorPosition.toString() + " : " + path);
+			/*for(AStarNode n : fullList){
+				//System.out.println(doorPosition + "Testing" + currentNode);
+				if((currentNode.parentNode != null) && n.location.x==currentNode.parentNode.location.x && n.location.y==currentNode.parentNode.location.y && n.gCost == currentNode.parentNode.gCost){
+					//System.out.println(doorPosition + "Testing" + currentNode);
 					currentNode=n;
+					fullList.remove(currentNode);
 					break;
 				}
-			}
+			}*/
+			currentNode = currentNode.parentNode;
 		}
 		openList.clear();
 		closedList.clear();
+		fullList.clear();
 		openListLocations = new boolean[map.getXSize()][map.getYSize()];
 		closedListLocations = new boolean[map.getXSize()][map.getYSize()];
 		Collections.reverse(path);
@@ -149,11 +160,10 @@ public class AStar {
 	
 	private static boolean adjacentRobot(AStarNode currentNode, HashMap<TimePoint, Boolean> timedReservationTable) {
 		boolean adjacentRobot = false;
-		adjacentRobot &= timedReservationTable.containsKey(new TimePoint(new Point(currentNode.location.x+1, currentNode.location.y), currentNode.gCost));
-		adjacentRobot &= timedReservationTable.containsKey(new TimePoint(new Point(currentNode.location.x-1, currentNode.location.y), currentNode.gCost));
-		adjacentRobot &= timedReservationTable.containsKey(new TimePoint(new Point(currentNode.location.x, currentNode.location.y+1), currentNode.gCost));
-		adjacentRobot &= timedReservationTable.containsKey(new TimePoint(new Point(currentNode.location.x, currentNode.location.y-1), currentNode.gCost));
-		
+		adjacentRobot |= timedReservationTable.containsKey(new TimePoint(new Point(currentNode.location.x+1, currentNode.location.y), currentNode.gCost));
+		adjacentRobot |= timedReservationTable.containsKey(new TimePoint(new Point(currentNode.location.x-1, currentNode.location.y), currentNode.gCost));
+		adjacentRobot |= timedReservationTable.containsKey(new TimePoint(new Point(currentNode.location.x, currentNode.location.y+1), currentNode.gCost));
+		adjacentRobot |= timedReservationTable.containsKey(new TimePoint(new Point(currentNode.location.x, currentNode.location.y-1), currentNode.gCost));
 		
 		return adjacentRobot;
 	}
@@ -164,9 +174,12 @@ public class AStar {
 		//Calculates the TimePoint for the current node based on its gCost
 		TimePoint nodeTimePoint = new TimePoint(location, currentNode.gCost);
 		if(location.x>=0 && location.y>=0 && location.x<map.getXSize() && location.y <map.getYSize()){
+			if(location.equals(new Point(3,  0)) && doorPosition.equals(new Point(5, 0))){
+				System.out.println(currentNode + " " + adjacentRobot(currentNode, timedReservationTable));
+			}
 			if(!map.isObstructed(location.x, location.y) && !closedListLocations[location.x][location.y] && !timedReservationTable.containsKey(nodeTimePoint)){
 				if(!openListLocations[location.x][location.y]){
-					openList.add(new AStarNode(new Point(location.x,location.y), currentNode, currentNode.gCost+1+Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y), currentNode.gCost+1, location.x+location.y-doorPosition.x-doorPosition.y));
+					openList.add(new AStarNode(new Point(location.x,location.y), currentNode, currentNode.gCost+1+Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y), currentNode.gCost+1, Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y)));
 					openListLocations[location.x][location.y]=true;
 				}else{
 					for(AStarNode n : openList){

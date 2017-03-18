@@ -1,16 +1,14 @@
 package com.bestroboticsteam.jobs;
-
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.LinkedList;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
-
 import com.bestroboticsteam.jobs.JobInfo;
 
-public class JobAssignment extends Thread{
+public class JobAssignment extends Thread {
 
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
@@ -18,7 +16,6 @@ public class JobAssignment extends Thread{
 	private float weight = 0f;
 	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
-
 	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
 	private BlockingQueue<JobInfo> jobPath = new LinkedBlockingQueue<JobInfo>();
 	private LinkedList<Order> currentOrders = new LinkedList<Order>();
@@ -43,8 +40,9 @@ public class JobAssignment extends Thread{
 		
 		thread.start();
 	}
-
+	
 	public synchronized JobInfo getNextJob() {
+
 		while(true){
 			try {
 				return jobPath.take();
@@ -53,6 +51,7 @@ public class JobAssignment extends Thread{
 				e.printStackTrace();
 			}
 		}
+
 	}
 	
 	public Order viewFinishedOrder(int index){
@@ -62,12 +61,13 @@ public class JobAssignment extends Thread{
 	public LinkedList<Order> getCurrentOrders(){
 		return currentOrders;
 	}
-
+	
 	public void removeFromCurrentOrder(Order order) {
 		currentOrders.remove(order);
 	}
 	
-	public boolean isCurrentJob(int order){
+	
+	public synchronized boolean isCurrentJob(int order){
 		
 		for(Order o: currentOrders)
 			if(o.getId() == order)
@@ -75,9 +75,11 @@ public class JobAssignment extends Thread{
 		return false;
 	}
 	
-	public void cancelOrder(int order){
+	
+	public synchronized void cancelOrder(int order){
 		while(jobPath.peek().getJobCode() == order)
 			jobPath.remove();
+		
 		for(Order o: currentOrders){
 			if(o.getId() == order){
 				currentOrders.remove(o);
@@ -164,7 +166,6 @@ public class JobAssignment extends Thread{
 				LinkedList<JobInfo> test = (LinkedList<JobInfo>) ress.clone();
 				
 				test.add(k, info1);
-
 				int d2 = robotToItem[path.indexOf(test.getFirst())];
 				d2 += itemToDrop[path.indexOf(test.getLast())];
 				
@@ -239,6 +240,4 @@ public class JobAssignment extends Thread{
 			
 		return point;
 	}
-
-
 }

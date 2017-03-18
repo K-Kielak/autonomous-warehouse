@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.*;
+import com.bestroboticsteam.robotsmanagement.RobotsManager;
 
 public class InterfaceController extends Thread {
 	final static Logger logger = Logger.getLogger(InterfaceController.class);
@@ -15,21 +16,42 @@ public class InterfaceController extends Thread {
 	private JobSelection incomingJobs;
 	private JobAssignment assign;
 	private PCConnectionHandler connection;
+	private RobotsManager robots;
 	private ConcurrentMap<Integer, Order> tenJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private ConcurrentMap<Integer, Order> progJobsMap = new ConcurrentHashMap<Integer, Order>();
 	
-	public InterfaceController(JobSelection incomingJobs, JobAssignment assign) {
-		this.warehouseInterface = new InterfaceView();
+	public InterfaceController(JobSelection incomingJobs, JobAssignment assign, RobotsManager robots) {
+		this.robots = robots;
+		this.warehouseInterface = new InterfaceView(robots);
 		this.incomingJobs = incomingJobs;
 		this.assign = assign;
 		this.warehouseInterface.addCancelListener(new cancelListener());
+		logger.info("Warehoue interface initialised");
 	}
 
-	public void setRobotStatus() {
+/*	public void setRobotStatus() {
 		String status = connection.getStatus();
 		warehouseInterface.commLabel.setText(status);
+		//change this
+		
+	}*/
+	
+	public void setFinishedJobs(){
+		String jobsText = "";
+		for (int i = 0; i < 5; i++){
+			System.out.println("hello:" + assign.viewFinishedOrder(i));
+			Order job = assign.viewFinishedOrder(i);
+			if (job == null) {
+				logger.error("No jobs completed");
+				break;
+			} else {
+				jobsText = jobsText + " : " + job.toString();
+			}
+		}
+		warehouseInterface.setFinishedList(jobsText);
 	}
-
+	
+	
 	public void setCurrentJobs() {
 		String jobsText = "";
 		int length = assign.getCurrentOrders().size();
@@ -83,7 +105,8 @@ public class InterfaceController extends Thread {
 			//	setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-				Thread.sleep(5000);
+				setFinishedJobs();
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
 			}
@@ -93,8 +116,6 @@ public class InterfaceController extends Thread {
 
 	public class cancelListener implements ActionListener {
 		@Override
-		//return id's not order
-		//enter job id to cancel it -> might not be displayed
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == warehouseInterface.cancel) {
 				logger.debug("cancel1 has been pressed");
