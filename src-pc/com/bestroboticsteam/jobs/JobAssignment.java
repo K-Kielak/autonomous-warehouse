@@ -1,10 +1,13 @@
 package com.bestroboticsteam.jobs;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.robotsmanagement.RobotInfo;
+
 public class JobAssignment extends Thread {
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
@@ -12,8 +15,11 @@ public class JobAssignment extends Thread {
 	private float weight = 0f;
 	private Order currentOrder = null;
 	
+	private RobotInfo[] robots;
+	private HashMap<String, MyRobotInfo> robotInfo = new HashMap<String, MyRobotInfo>(); 
+	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
-	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
+	
 	private BlockingQueue<JobInfo> jobPath = new LinkedBlockingQueue<JobInfo>();
 	private LinkedList<Order> assignedOrders = new LinkedList<Order>();
 	private LinkedList<Order> finishedOrders = new LinkedList<Order>();
@@ -28,14 +34,51 @@ public class JobAssignment extends Thread {
 			public void run(){
 				Order nextOrder;
 				
-				while((nextOrder = selection.take()) != null){
-					assignedOrders.add(nextOrder);
-					jobPath.addAll(orderPath(nextOrder.toJobInfos()));
+					while((nextOrder = selection.take()) != null){
+					
+						while(assignedOrders.size() < 15){
+							assignedOrders.add(nextOrder);
+							jobPath.addAll(orderPath(nextOrder.toJobInfos()));
+						}
 				}
 			}
 		};
 		
 		thread.start();
+	}
+	
+	public JobAssignment(JobSelection selection, RobotInfo[] robots) {
+		this.selection = selection;
+		this.robots = robots;
+		
+		for(RobotInfo robot: robots){
+			
+			MyRobotInfo info = new MyRobotInfo(robot.getMaxCapacity(), 0f, robot.getPosition());
+			
+			robotInfo.put(robot.getName(), info);
+		}
+		
+		this.thread = new Thread(){
+			
+			@Override
+			public void run(){
+				Order nextOrder;
+				
+				while((nextOrder = selection.take()) != null){
+					
+					while(assignedOrders.size() < 15){
+						assignedOrders.add(nextOrder);
+						jobPath.addAll(orderPath(nextOrder.toJobInfos()));
+					}
+				}
+			}
+		};
+		
+		thread.start();
+	}
+	
+	public LinkedList<Order> getAssignedOrders(){
+		return assignedOrders;
 	}
 	
 	public synchronized JobInfo getNextJob() {
@@ -50,8 +93,9 @@ public class JobAssignment extends Thread {
 							currentOrder = o;
 				}else if (currentOrder.getId() != job.getJobCode()){
 					for(Order o: assignedOrders){
-						if(job.getJobCode() == currentOrder.getId()){
+						if(o.getId() == currentOrder.getId()){
 							finishedOrders.add(currentOrder);
+							assignedOrders.remove(o);
 						}
 						if(job.getJobCode() == o.getId()){
 							currentOrder = o;
