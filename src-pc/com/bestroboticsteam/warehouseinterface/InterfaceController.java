@@ -26,15 +26,14 @@ public class InterfaceController extends Thread {
 		this.incomingJobs = incomingJobs;
 		this.assign = assign;
 		this.warehouseInterface.addCancelListener(new cancelListener());
-		logger.info("Warehoue interface initialised");
 	}
 
-	public void setRobotStatus() {
+/*	public void setRobotStatus() {
 		String status = connection.getStatus();
 		warehouseInterface.commLabel.setText(status);
 		//change this
 		
-	}
+	}*/
 	
 	public void setFinishedJobs(){
 		String jobsText = "";
@@ -58,7 +57,7 @@ public class InterfaceController extends Thread {
 	public void setCurrentJobs() {
 		String jobsText = "";
 		int length = assign.getCurrentOrders().size();
-		logger.debug(length);
+		logger.debug("size of array " + length);
 		if (length == 0) {
 			jobsText = "No jobs are currently in progress";
 		} else {
@@ -102,11 +101,11 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {
 				// while running keep updating jobs
-				setRobotStatus();
+			//	setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
 				setFinishedJobs();
-				Thread.sleep(500);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
 			}
@@ -137,7 +136,6 @@ public class InterfaceController extends Thread {
 					String text = warehouseInterface.text4.getText();
 					int itemID = Integer.parseInt(text);
 					Order cancelJob = progJobsMap.get(itemID);
-					assign.removeFromCurrentOrder(cancelJob);
 					assign.cancelOrder(itemID);
 					progJobsMap.remove(itemID);
 					warehouseInterface.text4.setText("");
