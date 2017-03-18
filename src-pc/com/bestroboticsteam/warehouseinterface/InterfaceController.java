@@ -2,6 +2,7 @@ package com.bestroboticsteam.warehouseinterface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.apache.log4j.Logger;
@@ -82,8 +83,11 @@ public class InterfaceController extends Thread {
 		// get input for jobsList
 		// get the first ten jobs from JobSelection and output them to displayText in IView
 		String jobsText = "";
+		LinkedList<Order> jobs = assign.getAssignedOrders();
+		logger.info("size of list " + jobs.size());
 		for (int i = 0; i < 10; i++) {
-			Order job = incomingJobs.viewOrder(i);
+			Order job = jobs.get(i);
+			logger.info("the job: " + job);
 			if (job == null) {
 				logger.debug("Not enough jobs left");
 				break;
@@ -91,7 +95,9 @@ public class InterfaceController extends Thread {
 			String inputJob = job.toString();
 			int jobID = job.getId();
 			tenJobsMap.put(jobID, job);
+			logger.debug("input job " + inputJob);
 			jobsText = jobsText + " : " + inputJob;
+			logger.info("job text " + jobsText);
 		}
 		warehouseInterface.setJobList(jobsText);
 	}

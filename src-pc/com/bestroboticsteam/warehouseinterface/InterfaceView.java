@@ -135,7 +135,6 @@ public class InterfaceView extends JFrame {
 		String[] parts = jobs.split(" : ");
 		logger.info(parts.length);
 		for (int i = 0; i < parts.length; i++) {
-			logger.info(parts[i]);
 			text.append(parts[i] + newline);
 		}
 	}

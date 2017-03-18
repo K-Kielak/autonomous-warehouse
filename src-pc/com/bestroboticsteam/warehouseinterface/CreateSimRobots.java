@@ -21,16 +21,17 @@ public class CreateSimRobots {
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
+	private static RobotInfo robotInfo;
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {
 		robotArray = new RobotInfo[robots.getRobotInfos().length];
 		int numOfRobots = getRobotNumber();
 		for (int i = 0; i< numOfRobots; i++){
-			GridPose gridStart = new GridPose(3*i, 0, Heading.PLUS_Y);
+			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
-			//RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart);
+			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, robotInfo);
 
-			//new Thread(controller).start();
+			new Thread(controller).start();
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;
