@@ -2,9 +2,15 @@ package com.bestroboticsteam.jobs;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.apache.log4j.Logger;
+
 import com.bestroboticsteam.jobs.JobInfo;
-public class JobAssignment {
+
+public class JobAssignment extends Thread{
+
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
 	private final float MAX_WEIGHT = 50f;
@@ -12,42 +18,50 @@ public class JobAssignment {
 	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
 	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
-	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
+	private BlockingQueue<JobInfo> jobPath = new LinkedBlockingQueue<JobInfo>();
 	private LinkedList<Order> currentOrders = new LinkedList<Order>();
 	private LinkedList<Order> finishedOrders = new LinkedList<Order>();
+	private Thread thread;
 	
 	public JobAssignment(JobSelection selection) {
 		this.selection = selection;
+		
+		this.thread = new Thread(){
+			
+			@Override
+			public void run(){
+				Order nextOrder;
+				
+				while((nextOrder = selection.take()) != null){
+					currentOrders.add(nextOrder);
+					jobPath.addAll(orderPath(nextOrder.toJobInfos()));
+				}
+			}
+		};
+		
+		thread.start();
 	}
 	public synchronized JobInfo getNextJob() {
-		if (jobPath.isEmpty()){
-			finishedOrders.addFirst((currentOrders.pollFirst()));
-			setInfoJobs();
+		while(true){
+			try {
+				return jobPath.take();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return jobPath.pop();
 	}
 	
 	public Order viewFinishedOrder(int index){
 		return finishedOrders.get(index);
 	}
-	private void setInfoJobs(){
-		//In case there is no subJob in the list, get the next Order and break it
-		Order nextOrder = selection.take();
-		if(nextOrder == null){
-			logger.info("No more jobs!");
-		}else{
-			currentOrders.add(nextOrder);
-			jobPath.addAll(this.orderPath(nextOrder.toJobInfos()));
-		}
-	}
+	
 	public LinkedList<Order> getCurrentOrders(){
 		return currentOrders;
 	}
 	public void removeFromCurrentOrder(Order order) {
 		currentOrders.remove(order);
 	}
-	
-	
 	
 	public boolean isCurrentJob(int order){
 		
@@ -58,8 +72,8 @@ public class JobAssignment {
 	}
 	
 	public void cancelOrder(int order){
-		while(jobPath.getFirst().getJobCode() == order)
-			jobPath.removeFirst();
+		while(jobPath.peek().getJobCode() == order)
+			jobPath.remove();
 		for(Order o: currentOrders){
 			if(o.getId() == order){
 				currentOrders.remove(o);
