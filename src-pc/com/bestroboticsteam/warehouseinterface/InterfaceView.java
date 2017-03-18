@@ -3,10 +3,6 @@ package com.bestroboticsteam.warehouseinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-
-import rp.robotics.mapping.GridMap;
-import rp.robotics.mapping.MapUtils;
-import rp.robotics.simulation.MapBasedSimulation;
 import rp.robotics.visualisation.GridMapVisualisation;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
