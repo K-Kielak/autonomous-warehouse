@@ -1,11 +1,11 @@
 package com.bestroboticsteam.jobs;
 import java.awt.Point;
 import java.util.LinkedList;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
+
 import com.bestroboticsteam.jobs.JobInfo;
 
 public class JobAssignment extends Thread {
@@ -43,7 +43,6 @@ public class JobAssignment extends Thread {
 	}
 	
 	public synchronized JobInfo getNextJob() {
-
 		while(true){
 			try {
 				
@@ -69,13 +68,12 @@ public class JobAssignment extends Thread {
 				e.printStackTrace();
 			}
 		}
-
 	}
 	
 	public Order viewFinishedOrder(int index){
 		return finishedOrders.get(index);
 	}
-
+	
 	public LinkedList<Order> getCurrentOrders(){
 		LinkedList<Order> currentOrders = new LinkedList<>();
 		currentOrders.add(currentOrder);

@@ -82,7 +82,7 @@ public class InterfaceView extends JFrame {
 		text4.setPreferredSize(new Dimension(50, 30));
 		text4.setOpaque(true);
 		text4.setBorder(BorderFactory.createLineBorder(Color.black));
-		//
+		
 		text5.setPreferredSize(new Dimension(500, 150));
 		text5.setOpaque(true);
 		text5.setEditable(false);
@@ -130,11 +130,9 @@ public class InterfaceView extends JFrame {
 	
 	// job list methods
 	public void setJobList(String jobs) {	
-		logger.debug("Input fron IC " + jobs);
 		String newline = "\n";
 		String[] parts = jobs.split(" : ");
 		for (int i = 0; i < parts.length; i++) {
-			logger.debug("order adding to list: " + parts[i]);
 			text.append(parts[i] + newline);
 		}
 	}
