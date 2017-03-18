@@ -50,7 +50,9 @@ public class JobAssignment extends Thread {
 				JobInfo job = jobPath.take();
 				
 				if(currentOrder == null){
-					currentOrder = assignedOrders.getFirst();
+					for(Order o: assignedOrders)
+						if(job.getJobCode() == o.getId())
+							currentOrder = o;
 				}else if (currentOrder.getId() != job.getJobCode()){
 					for(Order o: assignedOrders){
 						if(job.getJobCode() == currentOrder.getId()){
@@ -61,7 +63,6 @@ public class JobAssignment extends Thread {
 						}
 					}
 				}
-				
 				
 				return job;
 			} catch (InterruptedException e) {
