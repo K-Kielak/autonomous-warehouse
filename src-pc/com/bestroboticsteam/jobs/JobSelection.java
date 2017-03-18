@@ -42,6 +42,8 @@ public class JobSelection {
 	}
 
 	public synchronized Order take() {
+		if(list.isEmpty())
+			return null;
 		return list.pop();
 	}
 
