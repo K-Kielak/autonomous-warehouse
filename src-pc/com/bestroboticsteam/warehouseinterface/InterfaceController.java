@@ -28,25 +28,28 @@ public class InterfaceController extends Thread {
 		this.warehouseInterface.addCancelListener(new cancelListener());
 	}
 
-/*	public void setRobotStatus() {
+	public void setRobotStatus() {
 		String status = connection.getStatus();
 		warehouseInterface.commLabel.setText(status);
 		//change this
 		
-	}*/
+	}
 	
 	public void setFinishedJobs(){
 		String jobsText = "";
-		for (int i = 0; i < 5; i++){
-			System.out.println("hello:" + assign.viewFinishedOrder(i));
-			Order job = assign.viewFinishedOrder(i);
-			if (job == null) {
-				logger.error("No jobs completed");
-				break;
-			} else {
-				jobsText = jobsText + " : " + job.toString();
+		//if (assign.viewFinishedOrder(0) == null){
+			//jobsText = "No Jobs Completed";
+		//} else {
+			for (int i = 0; i < 5; i++){
+				Order job = assign.viewFinishedOrder(i);
+				if (job == null) {
+					logger.error("No jobs left");
+					break;
+				} else {
+					jobsText = jobsText + " : " + job.toString();
+				}
 			}
-		}
+		//}
 		warehouseInterface.setFinishedList(jobsText);
 	}
 	
@@ -80,9 +83,7 @@ public class InterfaceController extends Thread {
 		// get the first ten jobs from JobSelection and output them to displayText in IView
 		String jobsText = "";
 		for (int i = 0; i < 10; i++) {
-			logger.debug("index position " + i);
 			Order job = incomingJobs.viewOrder(i);
-			logger.debug("job: " + job);
 			if (job == null) {
 				logger.debug("Not enough jobs left");
 				break;
@@ -93,7 +94,6 @@ public class InterfaceController extends Thread {
 			jobsText = jobsText + " : " + inputJob;
 		}
 		warehouseInterface.setJobList(jobsText);
-		logger.debug("get jobs list " + jobsText);
 	}
 
 	public void run() {
@@ -101,7 +101,7 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {
 				// while running keep updating jobs
-			//	setRobotStatus();
+				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
 				setFinishedJobs();
@@ -117,20 +117,19 @@ public class InterfaceController extends Thread {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == warehouseInterface.cancel) {
-				logger.debug("cancel1 has been pressed");
+				logger.info("cancel1 has been pressed");
 				if(warehouseInterface.text3.getText()  == null){
 					logger.error("No inputted job to cancel" );
 				} else {
 					String text = warehouseInterface.text3.getText();
 					int itemID = Integer.parseInt(text);
 					Order cancelJob = tenJobsMap.get(itemID);
-					logger.debug(cancelJob);
 					incomingJobs.cancelOrder(itemID);
 					tenJobsMap.remove(itemID);
 					warehouseInterface.text3.setText("");
 				}
 			} else if (e.getSource() == warehouseInterface.cancel2) {
-				logger.debug("cancel2 has been pressed");
+				logger.info("cancel2 has been pressed");
 				if(warehouseInterface.text4.getText()  == null){
 					logger.error("No inputted job to cancel" );
 				} else {

@@ -23,12 +23,14 @@ public class CreateSimRobots {
 	private static RobotInfo[] robotArray;
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {
-		System.out.println("here");
 		robotArray = new RobotInfo[robots.getRobotInfos().length];
 		int numOfRobots = getRobotNumber();
 		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(3*i, 0, Heading.PLUS_Y);
-			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));			
+			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
+			//RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart);
+
+			//new Thread(controller).start();
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;
@@ -47,14 +49,5 @@ public class CreateSimRobots {
 	public static int getPosY(int robot){
 		Point pos = robotArray[robot].getPosition();
 		return pos.y;
-	}
-	
-	public static void moveRobot(MobileRobotWrapper<MovableRobot> wrapper, int i){
-		MovableRobot robot = wrapper.getRobot();
-		while (true){
-			int posX = getPosX(i);
-			int posY = getPosY(i);
-			robot.setPose(null);
-		}
 	}
 }
