@@ -1,6 +1,5 @@
 package com.bestroboticsteam.jobs;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,17 +8,18 @@ import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.jobs.JobInfo;
 
-public class JobAssignment extends Thread{
+public class JobAssignment extends Thread {
 
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
 	private final float MAX_WEIGHT = 50f;
 	private float weight = 0f;
+	private Order currentOrder = null;
 	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
 	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
 	private BlockingQueue<JobInfo> jobPath = new LinkedBlockingQueue<JobInfo>();
-	private LinkedList<Order> currentOrders = new LinkedList<Order>();
+	private LinkedList<Order> assignedOrders = new LinkedList<Order>();
 	private LinkedList<Order> finishedOrders = new LinkedList<Order>();
 	private Thread thread;
 	
@@ -33,7 +33,7 @@ public class JobAssignment extends Thread{
 				Order nextOrder;
 				
 				while((nextOrder = selection.take()) != null){
-					currentOrders.add(nextOrder);
+					assignedOrders.add(nextOrder);
 					jobPath.addAll(orderPath(nextOrder.toJobInfos()));
 				}
 			}
@@ -41,10 +41,28 @@ public class JobAssignment extends Thread{
 		
 		thread.start();
 	}
+	
 	public synchronized JobInfo getNextJob() {
 		while(true){
 			try {
-				return jobPath.take();
+				
+				JobInfo job = jobPath.take();
+				
+				if(currentOrder == null){
+					currentOrder = assignedOrders.getFirst();
+				}else if (currentOrder.getId() != job.getJobCode()){
+					for(Order o: assignedOrders){
+						if(job.getJobCode() == currentOrder.getId()){
+							finishedOrders.add(currentOrder);
+						}
+						if(job.getJobCode() == o.getId()){
+							currentOrder = o;
+						}
+					}
+				}
+				
+				
+				return job;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -57,29 +75,24 @@ public class JobAssignment extends Thread{
 	}
 	
 	public LinkedList<Order> getCurrentOrders(){
+		LinkedList<Order> currentOrders = new LinkedList<>();
+		currentOrders.add(currentOrder);
 		return currentOrders;
 	}
-	public void removeFromCurrentOrder(Order order) {
-		currentOrders.remove(order);
-	}
 	
-	public boolean isCurrentJob(int order){
+	public synchronized boolean isCurrentJob(int order){
 		
-		for(Order o: currentOrders)
-			if(o.getId() == order)
+		if(currentOrder.getId() == order)
 				return true;
 		return false;
 	}
 	
-	public void cancelOrder(int order){
+	
+	public synchronized void cancelOrder(int order){
 		while(jobPath.peek().getJobCode() == order)
 			jobPath.remove();
-		for(Order o: currentOrders){
-			if(o.getId() == order){
-				currentOrders.remove(o);
-				break;
-			}
-		}
+		
+		currentOrder = null;
 		
 	}
 	
