@@ -43,7 +43,7 @@ public class InterfaceController extends Thread {
 			for (int i = 0; i < 5; i++){
 				Order job = assign.viewFinishedOrder(i);
 				if (job == null) {
-					logger.error("No jobs left");
+					logger.error("No jobs completed");
 					break;
 				} else {
 					jobsText = jobsText + " : " + job.toString();
@@ -65,7 +65,7 @@ public class InterfaceController extends Thread {
 				warehouseInterface.emptyProgList();
 				Order job = assign.getCurrentOrders().get(i);
 				if (job == null) {
-					logger.error("No jobs left");
+					logger.error("No jobs in progress");
 					break;
 				} else {
 					jobsText = jobsText + " : " + job.toString();
@@ -104,7 +104,7 @@ public class InterfaceController extends Thread {
 			//	setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-				setFinishedJobs();
+//				setFinishedJobs();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");

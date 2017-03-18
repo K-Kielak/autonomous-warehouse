@@ -47,7 +47,7 @@ public class InterfaceView extends JFrame {
 		this.setTitle("Warehouse Management Interface");
 		this.setSize(1300, 600);// set size of frame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
 		// right hand panel - jobs
 		JPanel jobPanel = new JPanel();
 		JLabel toDoLabel = new JLabel("Job List");
@@ -129,10 +129,13 @@ public class InterfaceView extends JFrame {
 	}
 	
 	// job list methods
-	public void setJobList(String jobs) {	
+	public void setJobList(String jobs) {
+		logger.info("here");
 		String newline = "\n";
 		String[] parts = jobs.split(" : ");
+		logger.info(parts.length);
 		for (int i = 0; i < parts.length; i++) {
+			logger.info(parts[i]);
 			text.append(parts[i] + newline);
 		}
 	}
