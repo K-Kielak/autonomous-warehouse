@@ -3,13 +3,9 @@ import java.awt.Point;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import org.apache.log4j.Logger;
-
 import com.bestroboticsteam.jobs.JobInfo;
-
 public class JobAssignment extends Thread {
-
 	private final JobSelection selection;
 	private Point position = new Point(0, 0);
 	private final float MAX_WEIGHT = 50f;
