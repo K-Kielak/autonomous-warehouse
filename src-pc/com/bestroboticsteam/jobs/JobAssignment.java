@@ -267,7 +267,7 @@ public class JobAssignment extends Thread {
 			float value = ress.get(i).getWeight()*ress.get(i).getQuantity();
 			if(weight + value == maxWeight){
 				
-				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i))));
+				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i-1))));
 				weight = 0f;;
 				
 			}else if(weight + value > maxWeight){

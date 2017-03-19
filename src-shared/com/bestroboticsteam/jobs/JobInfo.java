@@ -76,7 +76,7 @@ public class JobInfo implements Communicatable {
 	
 	@Override
 	public boolean equals(Object info){
-		JobInfo j = (JobInfo) info;
+		JobInfo j = (JobInfo)info;
 		
 		if(this.itemCode.equals(j.getItem()) && this.jobCode == j.getJobCode())
 			return true;
