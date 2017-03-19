@@ -16,7 +16,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		JobSelection jobsSelect = new JobSelection(PATH);
-		JobAssignment jobsAssign = new JobAssignment(jobsSelect);
+		JobAssignment jobsAssign = new JobAssignment(jobsSelect, robots);
 		
 		RobotsManager manager = new RobotsManager(robots, jobsAssign);
 		manager.start();
