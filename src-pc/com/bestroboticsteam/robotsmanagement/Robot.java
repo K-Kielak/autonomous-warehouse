@@ -25,6 +25,7 @@ public class Robot extends Thread{
 	public Robot(RobotInfo info, JobAssignment jobs, RobotInfo[] otherRobotInfos){
 		this.info = info;
 		this.jobs = jobs;
+		this.otherRobotInfos = otherRobotInfos;
 		this.connectionHandler = new PCConnectionHandler(info.getName());
 	}
 	

@@ -19,9 +19,11 @@ public class Main {
 		JobAssignment jobsAssign = new JobAssignment(jobsSelect);
 		
 		RobotsManager manager = new RobotsManager(robots, jobsAssign);
+		manager.setName("RobotsManager"); //setting thread name for debugging purposes
 		manager.start();
 		
 		InterfaceController warehouseInterface = new InterfaceController(jobsSelect, jobsAssign, manager);
-		warehouseInterface.start();
+		warehouseInterface.setName("WarehouseInterface"); //setting thread name for debugging purposes
+		warehouseInterface.start(); 
 	}
 }
