@@ -11,11 +11,33 @@ public class MyRobotInfo {
 	private float weight;
 	private Point position;
 	private BlockingQueue<JobInfo> jobPath = new LinkedBlockingQueue<JobInfo>();
+	private int totalCost;
+	private int numberJobsAssigned;
+	private JobInfo currentJob = null;
+	private Order currentOrder = null;
 	
 	public MyRobotInfo(float maxWeight, float weight, Point position){
 		this.MAX_WEIGHT = maxWeight;
 		this.position = position;
 		this.weight = weight;
+		this.totalCost = 0;
+		this.numberJobsAssigned = 0;
+	}
+	
+	public void setCurrentOrder(Order o){
+		currentOrder = o;
+	}
+	
+	public Order getCurrentOrder(){
+		return currentOrder;
+	}
+	
+	public void setCurrentJob(JobInfo info){
+		currentJob = info;
+	}
+	
+	public JobInfo getCurrentJob(){
+		return currentJob;
 	}
 	
 	public void setWeight(float weight){
@@ -42,6 +64,26 @@ public class MyRobotInfo {
 		return position;
 	}
 	
+	public synchronized int getCost(){
+		return totalCost;
+	}
+	
+	public int getNumberAssigned(){
+		return numberJobsAssigned;
+	}
+	
+	public void decrementNumberAssigned(){
+		numberJobsAssigned--;
+	}
+	
+	public void incementNumberAssigned(){
+		numberJobsAssigned++;
+	}
+	
+	public synchronized void setCost(int cost){
+		this.totalCost = cost;
+	}
+	
 	public JobInfo getNextJob(){
 		while(true){
 			try {
@@ -51,5 +93,10 @@ public class MyRobotInfo {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void cancelJob(int code){
+		while(jobPath.peek().getJobCode() == code)
+			jobPath.remove();
 	}
 }
