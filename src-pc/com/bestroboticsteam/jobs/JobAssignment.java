@@ -78,6 +78,7 @@ public class JobAssignment extends Thread {
 			
 			if(costs[i] < finalCost){
 				finalPath = path;
+				finalCost = costs[i];
 				index = i;
 			}
 		}
