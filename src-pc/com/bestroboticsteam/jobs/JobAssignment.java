@@ -80,6 +80,8 @@ public class JobAssignment extends Thread {
 			}
 		}
 		
+		assignedOrders.add(nextOrder);
+		
 		MyRobotInfo robot = robotMap.get(robots[index].getName());
 		
 		robot.addJobPath(finalPath);
@@ -100,11 +102,12 @@ public class JobAssignment extends Thread {
 		Order currentOrder = robot.getCurrentOrder();
 				
 		JobInfo job = robot.getNextJob();
-				
+		
 		if(currentOrder == null){
-			for(Order o: assignedOrders)
+			for(Order o: assignedOrders){
 				if(job.getJobCode() == o.getId())
 					robot.setCurrentOrder(o);
+			}
 		}else if (currentOrder.getId() != job.getJobCode()){
 			for(Order o: assignedOrders){
 				if(o.getId() == currentOrder.getId()){
@@ -136,16 +139,20 @@ public class JobAssignment extends Thread {
 	
 	public LinkedList<Order> getCurrentOrders(){
 		LinkedList<Order> currentOrders = new LinkedList<>();
-		for(int i = 0; i < robots.length; i ++)
-			currentOrders.add(robotMap.get(robots[i]).getCurrentOrder());
+		for(int i = 0; i < robots.length; i ++){
+			Order currentOrder = robotMap.get(robots[i].getName()).getCurrentOrder();
+			if(currentOrder != null)
+				currentOrders.add(currentOrder);
+		}
 		return currentOrders;
 	}
 	
 	public synchronized boolean isCurrentJob(int order){
 		
 		for(Order o: getCurrentOrders())
-			if(o.getId() == order)
+			if(o.getId() == order){
 				return true;
+			}
 		
 		return false;
 	}

@@ -28,14 +28,6 @@ public class JobInfo implements Communicatable {
 		this.weight = weight;
 	}
 	
-	public void setCost(int cost){
-		this.cost = cost;
-	}
-	
-	public int getCost(){
-		return cost;
-	}
-
 	public JobInfo(String code, Point position) {
 		this.itemCode = code;
 		this.position = position;
@@ -48,6 +40,14 @@ public class JobInfo implements Communicatable {
 		this.position = new Point();
 		this.quantity = 0;
 		this.jobCode = 0;
+	}
+	
+	public void setCost(int cost){
+		this.cost = cost;
+	}
+	
+	public int getCost(){
+		return cost;
 	}
 
 	public String getItem() {
