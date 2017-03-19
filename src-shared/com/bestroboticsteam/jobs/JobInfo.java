@@ -14,6 +14,10 @@ public class JobInfo implements Communicatable {
 	private int quantity;
 	private int jobCode;
 	private float weight;
+	
+	//THIS IS FOR ASSIGNMENT! don't touch it :D
+	private int cost;
+	//Seriously now... don't touch it
 
 	public JobInfo(String code, Point position, int _quantity, int _jobCode, float weight) {
 
@@ -23,7 +27,7 @@ public class JobInfo implements Communicatable {
 		this.jobCode = _jobCode;
 		this.weight = weight;
 	}
-
+	
 	public JobInfo(String code, Point position) {
 		this.itemCode = code;
 		this.position = position;
@@ -36,6 +40,14 @@ public class JobInfo implements Communicatable {
 		this.position = new Point();
 		this.quantity = 0;
 		this.jobCode = 0;
+	}
+	
+	public void setCost(int cost){
+		this.cost = cost;
+	}
+	
+	public int getCost(){
+		return cost;
 	}
 
 	public String getItem() {
@@ -60,6 +72,15 @@ public class JobInfo implements Communicatable {
 
 	public int getJobCode() {
 		return jobCode;
+	}
+	
+	@Override
+	public boolean equals(Object info){
+		JobInfo j = (JobInfo)info;
+		
+		if(this.itemCode.equals(j.getItem()) && this.jobCode == j.getJobCode())
+			return true;
+		else return false;
 	}
 
 	public void sendObject(MyDataOutputStream o) throws IOException {

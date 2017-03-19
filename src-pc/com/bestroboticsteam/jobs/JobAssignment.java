@@ -28,6 +28,8 @@ public class JobAssignment {
 	}
 	
 	public Order viewFinishedOrder(int index){
+		if(index > finishedOrders.size())
+			return null;
 		return finishedOrders.get(index);
 	}
 	private void setInfoJobs(){
@@ -54,6 +56,8 @@ public class JobAssignment {
 		for(Order o: currentOrders)
 			if(o.getId() == order)
 				return true;
+			}
+		
 		return false;
 	}
 	
@@ -69,13 +73,18 @@ public class JobAssignment {
 		
 	}
 	
-	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path){
+	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path, int robotIndex){
+		
+		MyRobotInfo robot = robotMap.get(robots[robotIndex].getName());
 		
 		LinkedList<JobInfo> aux = (LinkedList<JobInfo>) path.clone();
+		
 		int jobNumb = path.size();
+		
 		int[][] itemToItem = new int[jobNumb][jobNumb];
 		int[] itemToDrop = new int[jobNumb];
 		int[] robotToItem = new int[jobNumb];
+		
 		int dist = Integer.MAX_VALUE;
 		int index = 0;
 		
@@ -99,7 +108,7 @@ public class JobAssignment {
 		}
 		
 		for(int i = 0; i < jobNumb; i++){
-			robotToItem[i] = averageDistance(position, path.get(i).getPosition());
+			robotToItem[i] = averageDistance(robot.getPosition(), path.get(i).getPosition());
 			if(robotToItem[i] < dist){
 				dist = robotToItem[i];
 				index = i;
@@ -166,16 +175,19 @@ public class JobAssignment {
 		}
 		
 		//add the drop-boxes
+		float weight = robot.getWeight();
+		float maxWeight = robot.getMaxWeight();
+		
 		for(int i = 0; i < ress.size(); i++){
 			float value = ress.get(i).getWeight()*ress.get(i).getQuantity();
-			if(this.weight + value == this.MAX_WEIGHT){
+			if(weight + value == maxWeight){
 				
-				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i))));
-				this.weight = 0f;
+				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i-1))));
+				weight = 0f;;
 				
-			}else if(this.weight + value > this.MAX_WEIGHT){
+			}else if(weight + value > maxWeight){
 				
-				int quantity = (int)(value/(this.MAX_WEIGHT-weight));
+				int quantity = (int)(value / (maxWeight - weight));
 				
 				JobInfo info = ress.get(i);
 				
@@ -187,14 +199,41 @@ public class JobAssignment {
 				
 				ress.add(++i, new JobInfo(info.getItem(), info.getPosition(), info.getQuantity() - quantity, info.getJobCode(), info.getWeight()));
 				
-				this.weight = 0f;
+				weight = info.getWeight()*(info.getQuantity() - quantity);
 			
 			} else {
-				weight += value;
+				weight = weight + value;
 			}
 		}
 		
-		position.setLocation(ress.getLast().getPosition());
+		weights[robotIndex] = weight;
+		
+		//compute final cost for this path + previous costs
+		
+		costs[robotIndex] = robot.getCost();
+		
+		costs[robotIndex] += robotToItem[path.indexOf(ress.peek())];
+		ress.get(0).setCost(robotToItem[path.indexOf(ress.peek())]);
+		
+		for(int i = 1; i < ress.size(); i++){
+			if( ress.get(i).getItem().equals("DropBox") && i < ress.size()-1 ){
+				
+				ress.get(i).setCost(itemToDrop[path.indexOf(ress.get(i-1))]);
+				
+				costs[robotIndex] += itemToDrop[path.indexOf(ress.get(i-1))];
+				costs[robotIndex] += itemToDrop[path.indexOf(ress.get(++i))];
+				
+				ress.get(i).setCost(itemToDrop[path.indexOf(ress.get(i))]);
+			
+			}else if( ress.get(i).getItem().equals("DropBox") && i == ress.size()-1 ){
+				costs[robotIndex] += itemToDrop[path.indexOf(ress.get(i-1))];
+				ress.get(i).setCost(itemToDrop[path.indexOf(ress.get(i))]);
+			}else{
+				ress.get(i).setCost(itemToItem[path.indexOf(ress.get(i-1))][path.indexOf(ress.get(i))]);
+				costs[robotIndex] += itemToItem[path.indexOf(ress.get(i-1))][path.indexOf(ress.get(i))];
+			}
+		}
+		
 		return ress;
 	}
 	

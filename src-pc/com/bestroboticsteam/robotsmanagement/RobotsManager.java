@@ -20,6 +20,7 @@ public class RobotsManager extends Thread{
 
 	public void run() {
 		for (int i = 0; i < robots.length; i++){
+			robots[i].setName(robots[i].getInfo().getName()); //setting thread name for debugging purposes
 			robots[i].start();
 			logger.info("robot " + robots[i].getInfo().getName() + " initialised");
 		}

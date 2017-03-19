@@ -25,20 +25,26 @@ public class Robot extends Thread{
 	public Robot(RobotInfo info, JobAssignment jobs, RobotInfo[] otherRobotInfos){
 		this.info = info;
 		this.jobs = jobs;
+		this.otherRobotInfos = otherRobotInfos;
 		this.connectionHandler = new PCConnectionHandler(info.getName());
 	}
 	
 	public void run(){
 		connectionHandler.run();
 		while(true){
-			if(info.wasJobCancelled())
+			if(info.wasJobCancelled()){
+				logger.info("Job " + info.getCurrentJob().getJobCode() + "was cancelled on the robot side");
 				jobs.cancelOrder(info.getCurrentJob().getJobCode());
-				
-			if(!jobs.isCurrentJob(info.getCurrentJob().getJobCode()))
+			}
+			else if(!jobs.isCurrentJob(info.getCurrentJob().getJobCode())){
+				logger.info("Job " + info.getCurrentJob().getJobCode() + "was cancelled on the server side");
 				info.cancelJob();
+			}
 			
-			if(info.wasJobCancelled() || info.finished())
+			if(info.wasJobCancelled() || info.finished()){
 				assignNewJob();
+				logger.info("Got new job: " + info.getCurrentJob().getJobCode());
+			}
 		
 			logger.info("Sending information to robot " + info.getName());
 			try {
@@ -67,7 +73,7 @@ public class Robot extends Thread{
 	}
 	
 	private void assignNewJob(){
-		JobInfo job = jobs.getNextJob();
+		JobInfo job = jobs.getNextJob(info.getName());
 		Point start = info.getPosition();
 		Point goal = job.getPosition();
 		LinkedList<Point> path = AStar.multiGetPath(Pair.makePair(start, goal), otherRobotInfos);
