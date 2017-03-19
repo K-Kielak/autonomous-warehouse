@@ -2,133 +2,29 @@ package com.bestroboticsteam.jobs;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 import com.bestroboticsteam.jobs.JobInfo;
-import com.bestroboticsteam.robotsmanagement.RobotInfo;
-
-public class JobAssignment extends Thread {
+public class JobAssignment {
 	private final JobSelection selection;
-	
-	private RobotInfo[] robots;
-	private int[] costs;
-	private float[] weights;
-	private HashMap<String, MyRobotInfo> robotMap = new HashMap<String, MyRobotInfo>(); 
+	private Point position = new Point(0, 0);
+	private final float MAX_WEIGHT = 50f;
+	private float weight = 0f;
 	
 	final Logger logger = Logger.getLogger(JobAssignment.class);
-	
-	private LinkedList<Order> assignedOrders = new LinkedList<Order>();
+	//jobPath will store a collections of subJobs(resulted from breaking an Order) 
+	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
+	private LinkedList<Order> currentOrders = new LinkedList<Order>();
 	private LinkedList<Order> finishedOrders = new LinkedList<Order>();
-	private Thread thread;
 	
-	public JobAssignment(JobSelection selection, RobotInfo[] robots) {
+	public JobAssignment(JobSelection selection) {
 		this.selection = selection;
-		this.robots = robots;
-		this.costs = new int[robots.length];
-		this.weights = new float[robots.length];
-		
-		for(int i = 0; i < robots.length; i++){
-			
-			MyRobotInfo info = new MyRobotInfo(robots[i].getMaxCapacity(), 0f, robots[i].getPosition());
-			
-			robotMap.put(robots[i].getName(), info);
-			
-			costs[i] = 0;
-			
-			weights[i] = 0f;
-		}
-		
-		this.thread = new Thread(){
-			
-			@Override
-			public void run(){
-				Order nextOrder;
-				
-				while((nextOrder = selection.take()) != null){
-					
-					boolean check = false;
-					for(MyRobotInfo r: robotMap.values())
-						if(r.getNumberAssigned() == 6){
-							check = true;
-						}
-					
-					if(!check){
-						assign(nextOrder);
-					}
-				}
-			}
-		};
-		
-		thread.start();
 	}
-	
-	private void assign(Order nextOrder) {
-		
-		LinkedList<JobInfo> finalPath = null;
-		int index = 0;
-		int finalCost = Integer.MAX_VALUE;
-		
-		//compare the costs and choose the best robot for the specific path/order
-		for(int i = 0; i < robots.length; i++){
-			LinkedList<JobInfo> path = orderPath(nextOrder.toJobInfos(), i);
-			
-			if(costs[i] < finalCost){
-				finalPath = path;
-				finalCost = costs[i];
-				index = i;
-			}
+	public synchronized JobInfo getNextJob() {
+		if (jobPath.isEmpty()){
+			finishedOrders.addFirst((currentOrders.pollFirst()));
+			setInfoJobs();
 		}
-		
-		assignedOrders.add(nextOrder);
-		
-		MyRobotInfo robot = robotMap.get(robots[index].getName());
-		
-		robot.addJobPath(finalPath);
-		robot.setCost(costs[index]);
-		robot.setWeight(weights[index]);
-		robot.incementNumberAssigned();
-		robot.setPosition(finalPath.getLast().getPosition());
-		
-	}
-	
-	public LinkedList<Order> getAssignedOrders(){
-		return assignedOrders;
-	}
-	
-	public synchronized JobInfo getNextJob(String robotCode) {
-		
-		MyRobotInfo robot = robotMap.get(robotCode);
-		Order currentOrder = robot.getCurrentOrder();
-				
-		JobInfo job = robot.getNextJob();
-		
-		if(currentOrder == null){
-			for(Order o: assignedOrders){
-				if(job.getJobCode() == o.getId())
-					robot.setCurrentOrder(o);
-			}
-		}else if (currentOrder.getId() != job.getJobCode()){
-			for(Order o: assignedOrders){
-				if(o.getId() == currentOrder.getId()){
-					finishedOrders.add(currentOrder);
-					assignedOrders.remove(o);
-				}
-				if(job.getJobCode() == o.getId()){
-					robot.setCurrentOrder(o);
-				}
-			}
-		}
-		
-		if(robot.getCurrentJob() == null)
-			robot.setCurrentJob(job);
-		else{
-			int cost = robot.getCost() - robot.getCurrentJob().getCost();
-			robot.setCurrentJob(job);
-			robot.setCost(cost);
-		}
-			
-		return job;
+		return jobPath.pop();
 	}
 	
 	public Order viewFinishedOrder(int index){
@@ -136,33 +32,46 @@ public class JobAssignment extends Thread {
 			return null;
 		return finishedOrders.get(index);
 	}
-	
-	public LinkedList<Order> getCurrentOrders(){
-		LinkedList<Order> currentOrders = new LinkedList<>();
-		for(int i = 0; i < robots.length; i ++){
-			Order currentOrder = robotMap.get(robots[i].getName()).getCurrentOrder();
-			if(currentOrder != null)
-				currentOrders.add(currentOrder);
+	private void setInfoJobs(){
+		//In case there is no subJob in the list, get the next Order and break it
+		Order nextOrder = selection.take();
+		if(nextOrder == null){
+			logger.info("No more jobs!");
+		}else{
+			currentOrders.add(nextOrder);
+			jobPath.addAll(this.orderPath(nextOrder.toJobInfos()));
 		}
+	}
+	public LinkedList<Order> getCurrentOrders(){
 		return currentOrders;
 	}
+	public void removeFromCurrentOrder(Order order) {
+		currentOrders.remove(order);
+	}
 	
-	public synchronized boolean isCurrentJob(int order){
+	
+	
+	public boolean isCurrentJob(int order){
 		
-		for(Order o: getCurrentOrders())
-			if(o.getId() == order){
+		for(Order o: currentOrders)
+			if(o.getId() == order)
 				return true;
 			}
 		
 		return false;
 	}
 	
-	
-	public synchronized void cancelOrder(int order){
-		//robotMap.get(robots[0].getName()).cancelJob(order);
-		//currentOrder = null;
+	public void cancelOrder(int order){
+		while(jobPath.getFirst().getJobCode() == order)
+			jobPath.removeFirst();
+		for(Order o: currentOrders){
+			if(o.getId() == order){
+				currentOrders.remove(o);
+				break;
+			}
+		}
 		
-	} 
+	}
 	
 	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path, int robotIndex){
 		
