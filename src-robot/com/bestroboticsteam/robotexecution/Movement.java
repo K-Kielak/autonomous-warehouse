@@ -9,18 +9,25 @@ import lejos.util.Delay;
 public class Movement {
 	private final int ERROR = 5;
 	private final float SPEED = 0.2f;
-	private final int CALIBRATED_VALUE;
+	private int calibratedValue;
 	private final LightSensor leftSensor;
 	private final LightSensor rightSensor;
 	private final DifferentialPilot pilot;
 
 	public Movement(LightSensor leftSensor, LightSensor rightSensor, DifferentialPilot pilot) {
-		this.CALIBRATED_VALUE = getCalibratedValue(leftSensor, rightSensor);
 		this.leftSensor = leftSensor;
 		this.rightSensor = rightSensor;
 		this.pilot = pilot;
 
 		this.pilot.setTravelSpeed(SPEED);
+	}
+	
+	public void calibrate() {
+		Delay.msDelay(300);
+		int leftValue = leftSensor.readValue();
+		int rightValue = rightSensor.readValue();
+		Delay.msDelay(300);
+		calibratedValue = (leftValue + rightValue) / 2;
 	}
 
 	public void move(Direction direction) {
@@ -68,16 +75,7 @@ public class Movement {
 		pilot.stop();
 	}
 
-	private int getCalibratedValue(LightSensor leftSensor, LightSensor rightSensor) {
-		Delay.msDelay(300);
-		int leftValue = leftSensor.readValue();
-		int rightValue = rightSensor.readValue();
-		Delay.msDelay(300);
-		int calibratedValue = (leftValue + rightValue) / 2;
-		return calibratedValue;
-	}
-
 	private boolean isOnBlack(int sensorValue) {
-		return Math.abs(CALIBRATED_VALUE - sensorValue) > ERROR;
+		return Math.abs(calibratedValue - sensorValue) > ERROR;
 	}
 }

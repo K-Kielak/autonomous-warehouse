@@ -31,14 +31,12 @@ public class Robot implements StoppableRunnable {
 	private RobotCommunicationHandler comms;
 	private boolean m_run = true;
 	private Direction direction;
-	private LightSensor leftSensor;
-	private LightSensor rightSensor;
-	private DifferentialPilot pilot;
 
 	public Robot(SensorPort leftSensorPort, SensorPort rightSensorPort, WheeledRobotConfiguration ExpressBot) {
-		rightSensor = new LightSensor(rightSensorPort);
-		leftSensor = new LightSensor(leftSensorPort);
-		pilot = new WheeledRobotSystem(ExpressBot).getPilot();
+		LightSensor rightSensor = new LightSensor(rightSensorPort);
+		LightSensor leftSensor = new LightSensor(leftSensorPort);
+		DifferentialPilot pilot = new WheeledRobotSystem(ExpressBot).getPilot();
+		this.movement = new Movement(leftSensor, rightSensor, pilot);
 		this.robotInterface = new RobotInterface();
 		this.comms = new RobotCommunicationHandler();
 	}
@@ -46,7 +44,7 @@ public class Robot implements StoppableRunnable {
 	@Override
 	public void run() {
 		this.robotInterface.waitForSensorCalibration();
-		this.movement = new Movement(leftSensor, rightSensor, pilot);
+		this.movement.calibrate();
 		new Thread(this.comms).start();
 
 		while (!this.comms.getStatus().equals(RobotCommunicationHandler.CONNECTED)) {
