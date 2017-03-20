@@ -1,14 +1,9 @@
 package com.bestroboticsteam.jobs;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -30,6 +25,7 @@ public class JobSelection {
 
 		//Create a LinkedList of Orders and sort it
 		list = reader.readOrderData(path);
+		setPrediction(list);
 		setList(list);
 	}
 
@@ -77,5 +73,32 @@ public class JobSelection {
 		
 		logger.info("Sorting list.");
 		list.sort(comparator);
+	}
+	
+	private void setPrediction(LinkedList<Order> jobs) {
+		
+		for(Order o: jobs){
+			float yes = 0.5f;
+			float no = 0.5f;
+			
+			for(Item i: o.getOrderTable().keySet()){
+				
+				if(i.getYesProbability(o.getQuantity(i)) != 0)
+					yes = yes * i.getYesProbability(o.getQuantity(i));
+				else
+					yes = yes * 0.001f;
+				
+				if(i.getNoProbability(o.getQuantity(i)) != 0)
+					no = no * i.getNoProbability(o.getQuantity(i));
+				else
+					no = no * 0.001f;
+			}
+			
+			if(yes > no)
+				o.setPrediction(true);
+			else 
+				o.setPrediction(false);
+		}
+		
 	}
 }

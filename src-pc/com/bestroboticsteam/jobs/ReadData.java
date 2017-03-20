@@ -19,12 +19,15 @@ public class ReadData {
 	private Collection<Item> itemList = new ArrayList<Item>();
 	private LinkedList<Order> orderList = new LinkedList<Order>();
 	private LinkedList<Point> dropLocations = new LinkedList<Point>();
+	private ArrayList<Order> trainingSet = new ArrayList<Order>();
 
 	public Collection<Item> readItemData(String path) {
 		
 		//First read the specification and than the positions
 		readItemSpecification(path + "/items.csv");
 		readItemLocation(path + "/locations.csv");
+		readTrainingSet(path + "/training_jobs.csv");
+		readCancellations(path + "/cancellations.csv");
 		return itemList;
 	}
 
@@ -32,7 +35,6 @@ public class ReadData {
 		
 		//First read the specifications and than the cancellations
 		readOrderSpecification(path + "/jobs.csv");
-		readOrderCancelation(path + "/cancellations.csv");
 		return orderList;
 	}
 
@@ -104,7 +106,48 @@ public class ReadData {
 		}
 	}
 
-	private void readOrderCancelation(String file) {
+	public void readTrainingSet(String file){
+		try {
+			BufferedReader reader = readAFile(file);
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+
+				int id = Integer.parseInt(line.substring(0, line.indexOf(',')));
+				line = line.substring(line.indexOf(',') + 1);
+
+				ConcurrentHashMap<Item, Integer> orderTable = new ConcurrentHashMap<Item, Integer>();
+
+				String code;
+				int quantity;
+				int i;
+
+				while ((i = line.indexOf(',')) > 0) {
+
+					code = line.substring(0, i);
+					line = line.substring(i + 1);
+
+					if (line.indexOf(',') > 0) {
+						quantity = Integer.parseInt(line.substring(0, line.indexOf(',')));
+						line = line.substring(line.indexOf(',') + 1);
+					} else
+						quantity = Integer.parseInt(line);
+
+					for (Item item : itemList) {
+						if (item.getCode().equals(code)) {
+							orderTable.putIfAbsent(item, quantity);
+							break;
+						}
+					}
+				}
+				trainingSet.add(new Order(id, orderTable));
+			}
+			reader.close();
+		} catch (IOException e) {
+		}
+	}
+	
+	private void readCancellations(String file) {
 		try {
 			BufferedReader reader = readAFile(file);
 
@@ -115,15 +158,23 @@ public class ReadData {
 				int codeOrder = Integer.parseInt(line.substring(0, line.indexOf(',')));
 				int value = Integer.parseInt(line.substring(line.indexOf(',') + 1));
 
-				for (Order o : orderList) {
-					if (o.getId() == codeOrder)
-						o.setCancelation(value);
+				for (Order o : trainingSet) {
+					if (o.getId() == codeOrder){
+						
+						for(Item i: o.getOrderTable().keySet()){
+							if(value == 1){
+								i.incrementYesProbability(o.getQuantity(i));
+							}else{
+								i.incrementNoProbability(o.getQuantity(i));
+							}
+							i.incrementOccurrence();
+						}
+					}
 				}
 
 			}
 			reader.close();
 		} catch (IOException e) {
-			logger.error("I/O error: ", e);
 		}
 	}
 

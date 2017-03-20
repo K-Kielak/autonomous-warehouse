@@ -1,9 +1,8 @@
 package com.bestroboticsteam.jobs;
+
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
