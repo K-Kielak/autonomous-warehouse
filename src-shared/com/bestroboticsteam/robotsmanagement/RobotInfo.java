@@ -14,19 +14,23 @@ public class RobotInfo implements Communicatable {
 	private String name;
 	private Point position;
 	private Direction direction;
-	private JobInfo currentJob = new JobInfo();;
+	private float maxCapacity;
+	private JobInfo currentJob = new JobInfo();
+	private boolean wasJobCancelled = false;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
+	
 
-	public RobotInfo(String name, Point position, Direction direction) {
+	public RobotInfo(String name, Point position, Direction direction, float maxCapacity) {
 		super();
 		this.name = name;
 		this.position = position;
 		this.direction = direction;
+		this.maxCapacity = maxCapacity;
 	}
 	
 	public RobotInfo() {}
 
-	// returns null whole path was finished
+	// returns null if whole path was finished
 	public Direction move() {
 		if(currentPath.isEmpty())
 			return null;
@@ -34,6 +38,9 @@ public class RobotInfo implements Communicatable {
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
+		if(position.equals(newPos))
+			return null; //doesn't have directon
+		
 		if(position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
 		
@@ -49,13 +56,21 @@ public class RobotInfo implements Communicatable {
 		position = newPos;
 		return turn(newDir);
 	}
-
-	public void click() {
-		currentJob.decreaseQuantity();
+	
+	public synchronized void cancelJob(){
+		wasJobCancelled = true;
+	}
+	
+	public synchronized boolean wasJobCancelled(){
+		return wasJobCancelled;
 	}
 
-	public boolean finished() {
-		return currentJob == null || currentJob.getQuantity() <= 0;
+	public synchronized void pickAll(){
+		currentJob.pickAll();
+	}
+
+	public synchronized boolean finished() {
+		return currentJob.getQuantity() <= 0;
 	}
 	
 	public String getName(){
@@ -65,13 +80,18 @@ public class RobotInfo implements Communicatable {
 	public Point getPosition() {
 		return position;
 	}
+	
+	public float getMaxCapacity(){
+		return maxCapacity;
+	}
 
 	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
+		wasJobCancelled = false;
 		currentJob = job;
 		currentPath = path;
 	}
 
-	public JobInfo getCurrentJob() {
+	public synchronized JobInfo getCurrentJob() {
 		return currentJob;
 	}
 
@@ -96,7 +116,7 @@ public class RobotInfo implements Communicatable {
 	}
 
 	@Override
-	public void sendObject(MyDataOutputStream o) throws IOException {
+	public synchronized void sendObject(MyDataOutputStream o) throws IOException {
 		// this.name
 		o.writeString(this.name);
 		// this.position
@@ -118,14 +138,14 @@ public class RobotInfo implements Communicatable {
 		o.writeInt(this.currentPath.size());
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
 			Point point = (Point) iterator.next();
-			System.out.println(point);
+//			System.out.println(point);
 			//Button.waitForAnyPress();
 			o.writePoint(point);
 		}
 	}
 
 	@Override
-	public RobotInfo receiveObject(MyDataInputStream i) throws IOException {
+	public synchronized RobotInfo receiveObject(MyDataInputStream i) throws IOException {
 		this.name = i.readString();
 		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];

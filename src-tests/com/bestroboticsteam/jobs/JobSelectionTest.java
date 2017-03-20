@@ -23,9 +23,6 @@ public class JobSelectionTest {
 	@Test
 	public void TestReward(){
 		
-		assertEquals(selector.viewOrder(0).getTotalReward(), 9764.969f, 0.001f);
-		assertEquals(selector.viewOrder(1).getTotalReward(), 6509.8682f, 0.001f);
-		assertEquals(selector.viewOrder(2).getTotalReward(), 10.33333f, 0.001f);
 	
 	}
 

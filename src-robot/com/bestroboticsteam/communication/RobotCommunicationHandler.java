@@ -23,7 +23,6 @@ public class RobotCommunicationHandler extends BaseConnectionHandler {
 		} else {
 			this.connection = USB.waitForConnection();
 		}
-		// System.out.println("Connection" + this.connection);
 
 		this.status = CONNECTED;
 
