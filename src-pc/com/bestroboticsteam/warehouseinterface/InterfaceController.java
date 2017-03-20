@@ -78,7 +78,8 @@ public class InterfaceController extends Thread {
 		// get the first ten jobs from JobSelection and output them to displayText in IView
 		String jobsText = "";
 		LinkedList<Order> jobs = assign.getAssignedOrders();
-		for (int i = 0; i < 10; i++) {
+		System.out.println("TEST " + jobs.size());
+		for (int i = 0; i < jobs.size(); i++) {
 			Order job = jobs.get(i);
 			if (job == null) {
 				logger.debug("Not enough jobs left");
@@ -100,7 +101,7 @@ public class InterfaceController extends Thread {
 			//	setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-				setFinishedJobs();
+			//	setFinishedJobs();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
