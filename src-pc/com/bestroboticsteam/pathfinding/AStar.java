@@ -56,8 +56,8 @@ public class AStar {
 		return (LinkedList<Point>) path;
 	}
 	
-	public static LinkedList<Point> singleGetPath(Pair<Point, Point> locationDestinationPair){
-		return AStarPath(locationDestinationPair, new HashMap<TimePoint, Boolean>());
+	public static LinkedList<Point> singleGetPath(Point location, Point destination){
+		return AStarPath(Pair.makePair(location, destination), new HashMap<TimePoint, Boolean>());
 	}
 	
 	//Single robot AStar

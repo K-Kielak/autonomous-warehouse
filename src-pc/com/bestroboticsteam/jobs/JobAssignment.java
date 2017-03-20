@@ -1,11 +1,13 @@
 package com.bestroboticsteam.jobs;
+
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+
 import org.apache.log4j.Logger;
+
 import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.pathfinding.AStar;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
 public class JobAssignment extends Thread {
@@ -22,8 +24,8 @@ public class JobAssignment extends Thread {
 	private LinkedList<Order> finishedOrders = new LinkedList<Order>();
 	private Thread thread;
 	
-	public JobAssignment(JobSelection selection, RobotInfo[] robots) {
-		this.selection = selection;
+	public JobAssignment(JobSelection selector, RobotInfo[] robots) {
+		this.selection = selector;
 		this.robots = robots;
 		this.costs = new int[robots.length];
 		this.weights = new float[robots.length];
@@ -93,7 +95,14 @@ public class JobAssignment extends Thread {
 	}
 	
 	public LinkedList<Order> getAssignedOrders(){
-		return assignedOrders;
+		LinkedList<Order> result = new LinkedList<Order>();
+		LinkedList<Order> currentOrder = getCurrentOrders();
+		
+		for(Order o: result)
+			if(!currentOrder.contains(o))
+				result.add(o);
+		
+		return result;
 	}
 	
 	public synchronized JobInfo getNextJob(String robotCode) {
@@ -168,7 +177,7 @@ public class JobAssignment extends Thread {
 		
 		MyRobotInfo robot = robotMap.get(robots[robotIndex].getName());
 		
-		LinkedList<JobInfo> aux = (LinkedList<JobInfo>) path.clone();
+		LinkedList<JobInfo> aux = (LinkedList<JobInfo>)path.clone();
 		
 		int jobNumb = path.size();
 		
@@ -330,7 +339,7 @@ public class JobAssignment extends Thread {
 	
 	private int averageDistance(Point point, Point point2) {
 		
-		return Math.abs(point.x - point2.x) + Math.abs(point.y - point2.y);
+		return AStar.singleGetPath(point, point2).size();
 	}
 	
 	private Point getDrop(JobInfo info){
