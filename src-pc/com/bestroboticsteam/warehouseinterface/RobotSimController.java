@@ -26,44 +26,36 @@ public class RobotSimController implements StoppableRunnable {
 
 	@Override
 	public void run() {
-		boolean inPositionY = false;
-		boolean inPositionX = false;
-		while (!inPositionX) {
+		while (true) {
 			int xDifference = (actualRobotX() - getPosX());
-			while (!inPositionY) {
-				int yDifference = (actualRobotY() - getPosY());
-				if (yDifference > 0) {
-					for (int i = 0; i < yDifference; i++) {
-						pilot.moveForward();
-						inPositionY = true;
-					}
-				} else if (yDifference < 0) {
-					pilot.rotatePositive();
-					pilot.rotatePositive();
-					for (int i = 0; i < yDifference; i++) {
-						pilot.moveForward();
-						inPositionY = true;
-					}
-				} else {
-					break;
+			int yDifference = (actualRobotY() - getPosY());
+			if (yDifference > 0) {
+				for (int i = 0; i < yDifference; i++) {
+					pilot.moveForward();
 				}
+			} else if (yDifference < 0) {
+				pilot.rotatePositive();
+				pilot.rotatePositive();
+				for (int i = 0; i < yDifference; i++) {
+					pilot.moveForward();
+				}
+			} else {
+				break;
 			}
 			if (xDifference > 0) {
 				pilot.rotateNegative();
 				for (int i = 0; i < xDifference; i++) {
 					pilot.moveForward();
-					inPositionX = true;
 				}
 			} else if (xDifference < 0) {
 				pilot.rotatePositive();
 				for (int i = 0; i < xDifference; i++) {
 					pilot.moveForward();
-					inPositionX = true;
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
