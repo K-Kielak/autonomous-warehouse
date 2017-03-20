@@ -2,7 +2,6 @@ package com.bestroboticsteam.robotexecution;
 
 import java.awt.Point;
 
-import com.bestroboticsteam.communication.RobotCommunicationHandler;
 import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
@@ -50,8 +49,7 @@ public class RobotInterface {
 		LCD.drawString(robot.getName(), 1, 0);
 		JobInfo j = robot.getCurrentJob();
 		LCD.drawString("Please load: ", 1, 1);
-		LCD.drawInt(j.getQuantity(), 1, 2);
-		LCD.drawInt(this.getItemsQuantity(), 1, 3);
+		LCD.drawString(Integer.toString(j.getQuantity()-this.getItemsQuantity()) + " items", 1, 2);
 		this.waitForButton();
 	}
 

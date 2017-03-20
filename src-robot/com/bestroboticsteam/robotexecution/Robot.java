@@ -6,7 +6,6 @@ import com.bestroboticsteam.robot.RobotConfig;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
-import lejos.nxt.ADSensorPort;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
@@ -54,7 +53,6 @@ public class Robot implements StoppableRunnable {
 		try {
 			connection.join(); // Thread has ended
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -64,6 +62,7 @@ public class Robot implements StoppableRunnable {
 			// Going to destination
 			direction = info.move();
 			if (direction != null) {
+				System.out.println("moving to: " + direction);
 				// If we get a direction move to it. This means that we have not arrived yet.
 				movement.move(direction);
 				if (info.getCurrentJob().isGoingToDropPoint()) { // Is the current route going to a drop off point?
