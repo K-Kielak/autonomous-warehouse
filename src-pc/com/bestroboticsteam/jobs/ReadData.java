@@ -167,7 +167,7 @@ public class ReadData {
 							}else{
 								i.incrementNoProbability(o.getQuantity(i));
 							}
-							i.incrementOccurrence();
+							i.incrementOccurrence(o.getQuantity(i));
 						}
 					}
 				}

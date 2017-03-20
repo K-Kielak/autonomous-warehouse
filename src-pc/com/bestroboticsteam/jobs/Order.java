@@ -12,11 +12,13 @@ public class Order implements Comparable<Order> {
 	private int id;
 	private boolean prediction;
 	private float totalReward = 0f;
+	private float orverallReward = 0f;
 
 	public Order(int _id, ConcurrentMap<Item, Integer> ot) {
 		orderTable = ot;
 		id = _id;
 		setTotalReward();
+		setOverallReward();
 	}
 
 	public void setPrediction(boolean x){
@@ -59,6 +61,12 @@ public class Order implements Comparable<Order> {
 
 	private void setTotalReward() {
 		for (Item e : orderTable.keySet()) {
+			totalReward += e.getReward();
+		}
+	}
+	
+	private void setOverallReward() {
+		for (Item e : orderTable.keySet()) {
 			totalReward += (e.getReward() * orderTable.get(e))/(e.getWeight()*orderTable.get(e));
 		}
 	}
@@ -75,18 +83,18 @@ public class Order implements Comparable<Order> {
 
 		if(this.prediction == true){
 			if (compareOrder.getPrediction() == true)
-				if (this.totalReward - compareReward < 0)
+				if (this.orverallReward - compareReward < 0)
 					return 1;
-				else if (this.totalReward - compareReward == 0)
+				else if (this.orverallReward - compareReward == 0)
 					return 0;
 				else
 					return -1;
 			else return 1;
 		} else{
 			if (compareOrder.getPrediction() == false)
-				if (this.totalReward - compareReward < 0)
+				if (this.orverallReward - compareReward < 0)
 					return 1;
-				else if (this.totalReward - compareReward == 0)
+				else if (this.orverallReward - compareReward == 0)
 					return 0;
 				else
 					return -1;

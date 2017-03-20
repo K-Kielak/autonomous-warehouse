@@ -3,8 +3,11 @@ package com.bestroboticsteam.jobs;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.LinkedList;
+
 import org.apache.log4j.Logger;
+
 import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.pathfinding.AStar;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
 public class JobAssignment extends Thread {

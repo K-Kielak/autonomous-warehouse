@@ -11,7 +11,6 @@ public class Item {
 	private final float reward;
 	private Point position;
 	private int[][] probability = new int[50][3];
-	private int occurrence = 0;
 	
 	public Item(String _code, float _reward, float _weight) {
 		this.code = _code;
@@ -28,19 +27,19 @@ public class Item {
 	}
 	
 	public float getYesProbability(int quantity){
-		return (float)probability[quantity][1]/occurrence;
+		return (float)probability[quantity][1]/probability[quantity][0];
 	}
 
 	public float getNoProbability(int quantity){
-		return (float)probability[quantity][2]/occurrence;
+		return (float)probability[quantity][2]/probability[quantity][0];
 	}
 	
-	public void incrementOccurrence(){
-		occurrence++;
+	public void incrementOccurrence(int quantity){
+		probability[quantity][0]++;
 	}
 	
-	public int getOccurrence(){
-		return occurrence;
+	public int getOccurrence(int quantity){
+		return probability[quantity][0];
 	}
 
 	public void setPosition(Point p) {
