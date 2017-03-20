@@ -42,12 +42,18 @@ public class JobInfo implements Communicatable {
 		this.jobCode = 0;
 	}
 	
+
 	public void setCost(int cost){
 		this.cost = cost;
 	}
 	
 	public int getCost(){
 		return cost;
+	}
+
+	public boolean isGoingToDropPoint() {
+		return itemCode.equals("DropBox");
+
 	}
 
 	public String getItem() {
@@ -99,5 +105,4 @@ public class JobInfo implements Communicatable {
 		this.jobCode = i.readInt();
 		return this;
 	}
-
 }
