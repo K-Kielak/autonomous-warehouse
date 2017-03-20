@@ -126,10 +126,8 @@ public class InterfaceView extends JFrame {
 	
 	// job list methods
 	public void setJobList(String jobs) {
-		logger.info("here");
 		String newline = "\n";
 		String[] parts = jobs.split(" : ");
-		logger.info(parts.length);
 		for (int i = 0; i < parts.length; i++) {
 			text.append(parts[i] + newline);
 		}
