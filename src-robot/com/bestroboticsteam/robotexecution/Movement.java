@@ -24,6 +24,9 @@ public class Movement {
 	}
 
 	public void move(Direction direction) {
+		if(direction == null)
+			return; //if there is not movement order just do nothing
+		
 		switch (direction) {
 		case LEFT:
 			pilot.rotate(90);

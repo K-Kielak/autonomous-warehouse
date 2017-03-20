@@ -38,6 +38,9 @@ public class RobotInfo implements Communicatable {
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
+		if(position.equals(newPos))
+			return null; //doesn't have directon
+		
 		if(position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
 		
