@@ -100,7 +100,7 @@ public class InterfaceController extends Thread {
 			//	setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-				//setFinishedJobs();
+				setFinishedJobs();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");

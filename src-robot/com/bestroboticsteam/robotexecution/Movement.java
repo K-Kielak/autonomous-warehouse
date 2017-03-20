@@ -67,6 +67,9 @@ public class Movement {
 				isLeftOnBlack = isOnBlack(leftSensor.readValue());
 				isRightOnBlack = isOnBlack(rightSensor.readValue());
 			}
+			
+			isLeftOnBlack = isOnBlack(leftSensor.readValue());
+			isRightOnBlack = isOnBlack(rightSensor.readValue());
 		}
 
 		pilot.stop();
