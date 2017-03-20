@@ -26,7 +26,7 @@ public class InterfaceView extends JFrame {
 	// create visualisation of graph
 	GridMapVisualisation mapVis;
 	public JPanel robotStatus = new JPanel();
-	public JLabel commLabel = new JLabel();
+	public JTextArea statusText = new JTextArea();
 	// will display list of orders -> from JobSelection class via interfaceController
 	public JTextArea text = new JTextArea();
 	// will display orders in progress -> from jobAssignment via iC
@@ -36,7 +36,6 @@ public class InterfaceView extends JFrame {
     public JButton cancel = new JButton();
 	public JTextArea text4 = new JTextArea();
     public JButton cancel2 = new JButton();
-	//public JPanel buttonPanel = new JPanel();
 	
 	public InterfaceView(RobotsManager robots) {
 		mapVis = CreateSimRobots.robots(robots);
@@ -49,6 +48,7 @@ public class InterfaceView extends JFrame {
 		JLabel toDoLabel = new JLabel("Job List");
 		JLabel doingLabel = new JLabel("Jobs in Progress");
 		JLabel finLabel = new JLabel("Jobs recently completed");
+		JLabel commLabel = new JLabel("Robot Status");
 		
 		// list of jobs in progress
 		toDoLabel.setPreferredSize(new Dimension(150, 20));
@@ -68,7 +68,7 @@ public class InterfaceView extends JFrame {
 		jobInProgPanel.setPreferredSize(new Dimension(350, 200));
 		jobListPanel.setPreferredSize(new Dimension(350, 200));
 		jobFinishedPanel.setPreferredSize(new Dimension(600, 200));	
-		robotStatus.setPreferredSize(new Dimension(600, 50));
+		robotStatus.setPreferredSize(new Dimension(600, 100));
 		
 		cancel.setPreferredSize(new Dimension(30,20));
 		text3.setPreferredSize(new Dimension(50, 30));
@@ -84,6 +84,12 @@ public class InterfaceView extends JFrame {
 		text5.setEditable(false);
 		text5.setBorder(BorderFactory.createLineBorder(Color.black));
 		text5.setBackground(null);
+		
+		statusText.setPreferredSize(new Dimension(550, 60));
+		statusText.setOpaque(true);
+		statusText.setEditable(false);
+		statusText.setBorder(BorderFactory.createLineBorder(Color.black));
+		statusText.setBackground(null);
 		
 		jobInProgPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		jobListPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
@@ -106,6 +112,7 @@ public class InterfaceView extends JFrame {
 		jobPanel.add(jobInProgPanel);
 		jobPanel.add(jobFinishedPanel);
 		robotStatus.add(commLabel);
+		robotStatus.add(statusText);
 		jobPanel.add(robotStatus);
 		jobListPanel.setVisible(true);
 		jobInProgPanel.setVisible(true);
@@ -182,4 +189,13 @@ public class InterfaceView extends JFrame {
 			cancel.addActionListener(listen);
 			cancel2.addActionListener(listen);
 	 }
+
+	public void setStatusText(String robotInfo) {
+		statusText.setText("");
+		String newline = "\n";
+		String[] parts = robotInfo.split(" : ");
+		for (int i = 0; i < parts.length; i++) {
+			statusText.append(parts[i] + newline);
+		}
+	}
 }

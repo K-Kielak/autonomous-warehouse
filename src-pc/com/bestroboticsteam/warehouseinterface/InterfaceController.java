@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.*;
+import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import com.bestroboticsteam.robotsmanagement.RobotsManager;
 
 public class InterfaceController extends Thread {
@@ -16,10 +17,10 @@ public class InterfaceController extends Thread {
 	private InterfaceView warehouseInterface;
 	private JobSelection incomingJobs;
 	private JobAssignment assign;
-	private PCConnectionHandler connection;
 	private RobotsManager robots;
 	private ConcurrentMap<Integer, Order> tenJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private ConcurrentMap<Integer, Order> progJobsMap = new ConcurrentHashMap<Integer, Order>();
+	private static RobotInfo[] robotArray;
 	
 	public InterfaceController(JobSelection incomingJobs, JobAssignment assign, RobotsManager robots) {
 		this.robots = robots;
@@ -27,14 +28,19 @@ public class InterfaceController extends Thread {
 		this.incomingJobs = incomingJobs;
 		this.assign = assign;
 		this.warehouseInterface.addCancelListener(new cancelListener());
+		robotArray =  robots.getRobotInfos();
 	}
 
-/*	public void setRobotStatus() {
-		String status = connection.getStatus();
-		warehouseInterface.commLabel.setText(status);
-		//change this
-		
-	}*/
+	public void setRobotStatus() {
+		String robotInfo = "";
+		for (int i = 0; i < robotArray.length; i++){
+			String robot = robotArray[i].getName();
+			PCConnectionHandler connect = new PCConnectionHandler(robot);
+			String status = connect.getStatus();
+			robotInfo = robot + " - " + status + " : " + robotInfo;
+		}
+		warehouseInterface.setStatusText(robotInfo);
+	}
 	
 	public void setFinishedJobs(){
 		String jobsText = "No jobs have been completed";
@@ -68,7 +74,6 @@ public class InterfaceController extends Thread {
 			}
 		}
 		warehouseInterface.setInProgList(jobsText);
-		logger.debug(jobsText);
 	}
 
 	public void setTenJobs() {
@@ -95,10 +100,10 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {
 				// while running keep updating jobs
-			//	setRobotStatus();
+				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-				setFinishedJobs();
+			//	setFinishedJobs();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
