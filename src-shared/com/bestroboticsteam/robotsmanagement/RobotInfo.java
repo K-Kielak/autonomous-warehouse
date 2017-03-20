@@ -62,7 +62,7 @@ public class RobotInfo implements Communicatable {
 		return wasJobCancelled;
 	}
 
-	public void click() {
+	public synchronized void click() {
 		currentJob.decreaseQuantity();
 	}
 
@@ -113,7 +113,7 @@ public class RobotInfo implements Communicatable {
 	}
 
 	@Override
-	public void sendObject(MyDataOutputStream o) throws IOException {
+	public synchronized void sendObject(MyDataOutputStream o) throws IOException {
 		// this.name
 		o.writeString(this.name);
 		// this.position
@@ -142,7 +142,7 @@ public class RobotInfo implements Communicatable {
 	}
 
 	@Override
-	public RobotInfo receiveObject(MyDataInputStream i) throws IOException {
+	public synchronized RobotInfo receiveObject(MyDataInputStream i) throws IOException {
 		this.name = i.readString();
 		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];
