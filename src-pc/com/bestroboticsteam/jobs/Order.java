@@ -11,14 +11,10 @@ public class Order implements Comparable<Order> {
 	private ConcurrentMap<Item, Integer> orderTable;
 	private int id;
 	private boolean prediction;
-	private float totalReward = 0f;
-	private float orverallReward = 0f;
 
 	public Order(int _id, ConcurrentMap<Item, Integer> ot) {
 		orderTable = ot;
 		id = _id;
-		setTotalReward();
-		setOverallReward();
 	}
 
 	public void setPrediction(boolean x){
@@ -56,19 +52,23 @@ public class Order implements Comparable<Order> {
 	}
 
 	public float getTotalReward() {
-		return totalReward;
-	}
-
-	private void setTotalReward() {
+		float reward = 0f;
+		
 		for (Item e : orderTable.keySet()) {
-			totalReward += e.getReward();
+			reward += e.getReward();
 		}
+		
+		return reward;
 	}
 	
-	private void setOverallReward() {
+	private float getOverallReward() {
+		float reward = 0f;
+		
 		for (Item e : orderTable.keySet()) {
-			totalReward += (e.getReward() * orderTable.get(e))/(e.getWeight()*orderTable.get(e));
+			reward += (e.getReward() * orderTable.get(e))/(e.getWeight()*orderTable.get(e));
 		}
+		
+		return reward;
 	}
 	
 	@Override
@@ -79,22 +79,22 @@ public class Order implements Comparable<Order> {
 	@Override
 	public int compareTo(Order compareOrder) {
 		//used to sort the LinkedList by reward
-		float compareReward = compareOrder.getTotalReward();
+		float compareReward = compareOrder.getOverallReward();
 
 		if(this.prediction == true){
 			if (compareOrder.getPrediction() == true)
-				if (this.orverallReward - compareReward < 0)
+				if (this.getOverallReward() - compareReward < 0)
 					return 1;
-				else if (this.orverallReward - compareReward == 0)
+				else if (this.getOverallReward() - compareReward == 0)
 					return 0;
 				else
 					return -1;
 			else return 1;
 		} else{
 			if (compareOrder.getPrediction() == false)
-				if (this.orverallReward - compareReward < 0)
+				if (this.getOverallReward() - compareReward < 0)
 					return 1;
-				else if (this.orverallReward - compareReward == 0)
+				else if (this.getOverallReward() - compareReward == 0)
 					return 0;
 				else
 					return -1;

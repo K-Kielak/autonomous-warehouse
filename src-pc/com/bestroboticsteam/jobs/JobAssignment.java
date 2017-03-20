@@ -98,7 +98,7 @@ public class JobAssignment extends Thread {
 		LinkedList<Order> result = new LinkedList<Order>();
 		LinkedList<Order> currentOrder = getCurrentOrders();
 		
-		for(Order o: result)
+		for(Order o: assignedOrders)
 			if(!currentOrder.contains(o))
 				result.add(o);
 		
@@ -122,6 +122,7 @@ public class JobAssignment extends Thread {
 				if(o.getId() == currentOrder.getId()){
 					finishedOrders.add(currentOrder);
 					assignedOrders.remove(o);
+					robot.decrementNumberAssigned();
 				}
 				if(job.getJobCode() == o.getId()){
 					robot.setCurrentOrder(o);
@@ -339,7 +340,8 @@ public class JobAssignment extends Thread {
 	
 	private int averageDistance(Point point, Point point2) {
 		
-		return AStar.singleGetPath(point, point2).size();
+		return Math.abs(point.x - point2.x) + Math.abs(point.y - point2.y);
+		//return AStar.singleGetPath(point, point2).size();
 	}
 	
 	private Point getDrop(JobInfo info){
