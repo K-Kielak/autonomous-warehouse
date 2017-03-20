@@ -13,61 +13,62 @@ public class Movement {
 	private final LightSensor leftSensor;
 	private final LightSensor rightSensor;
 	private final DifferentialPilot pilot;
-	
-	public Movement(LightSensor leftSensor, LightSensor rightSensor, DifferentialPilot pilot){
+
+	public Movement(LightSensor leftSensor, LightSensor rightSensor, DifferentialPilot pilot) {
 		this.CALIBRATED_VALUE = getCalibratedValue(leftSensor, rightSensor);
 		this.leftSensor = leftSensor;
 		this.rightSensor = rightSensor;
 		this.pilot = pilot;
-		
+
 		this.pilot.setTravelSpeed(SPEED);
 	}
-	
-	public void move(Direction direction){
-		switch(direction){
-			case LEFT:
-				pilot.rotate(90);
-				break;
-			case RIGHT:
-				pilot.rotate(-90);
-				break;
-			case BACKWARD:
-				pilot.rotate(180);
-				break;
-			case FORWARD:
-				//dont't rotate
-				break;
-		}
+
+	public void move(Direction direction) {
+		if(direction == null)
+			return; //if there is not movement order just do nothing
 		
+		switch (direction) {
+		case LEFT:
+			pilot.rotate(90);
+			break;
+		case RIGHT:
+			pilot.rotate(-90);
+			break;
+		case BACKWARD:
+			pilot.rotate(180);
+			break;
+		case FORWARD:
+			// dont't rotate
+			break;
+		}
+
 		boolean isLeftOnBlack = isOnBlack(leftSensor.readValue());
 		boolean isRightOnBlack = isOnBlack(rightSensor.readValue());
-		while(!(isRightOnBlack && isLeftOnBlack)){
+		while (!(isRightOnBlack && isLeftOnBlack)) {
 			pilot.forward();
-			
-			while(isRightOnBlack && !isLeftOnBlack){
+
+			while (isRightOnBlack && !isLeftOnBlack) {
 				pilot.rotateRight();
-				
+
 				isLeftOnBlack = isOnBlack(leftSensor.readValue());
 				isRightOnBlack = isOnBlack(rightSensor.readValue());
 			}
-			
-			while(!isRightOnBlack && isLeftOnBlack){
+
+			while (!isRightOnBlack && isLeftOnBlack) {
 				pilot.rotateLeft();
-				
+
+//				Delay.msDelay(DELAY);
 				isLeftOnBlack = isOnBlack(leftSensor.readValue());
 				isRightOnBlack = isOnBlack(rightSensor.readValue());
 			}
-			
-			isLeftOnBlack = isOnBlack(leftSensor.readValue());
-			isRightOnBlack = isOnBlack(rightSensor.readValue());
 		}
-		
+
 		pilot.stop();
 		pilot.travel(0.07);
 		pilot.stop();
 	}
-	
-	private int getCalibratedValue(LightSensor leftSensor, LightSensor rightSensor){
+
+	private int getCalibratedValue(LightSensor leftSensor, LightSensor rightSensor) {
 		Delay.msDelay(300);
 		int leftValue = leftSensor.readValue();
 		int rightValue = rightSensor.readValue();
@@ -75,8 +76,8 @@ public class Movement {
 		int calibratedValue = (leftValue + rightValue) / 2;
 		return calibratedValue;
 	}
-	
-	private boolean isOnBlack(int sensorValue){
+
+	private boolean isOnBlack(int sensorValue) {
 		return Math.abs(CALIBRATED_VALUE - sensorValue) > ERROR;
 	}
 }

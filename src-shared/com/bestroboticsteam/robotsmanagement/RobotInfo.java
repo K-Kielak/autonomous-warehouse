@@ -38,6 +38,9 @@ public class RobotInfo implements Communicatable {
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
+		if(position.equals(newPos))
+			return null; //doesn't have directon
+		
 		if(position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
 		
@@ -135,7 +138,7 @@ public class RobotInfo implements Communicatable {
 		o.writeInt(this.currentPath.size());
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
 			Point point = (Point) iterator.next();
-			//System.out.println(point);
+//			System.out.println(point);
 			//Button.waitForAnyPress();
 			o.writePoint(point);
 		}
