@@ -22,11 +22,11 @@ public class RobotInterface {
 		return itemsQuantity;
 	}
 
-	public void bluetoothMessage(RobotInfo robot, RobotCommunicationHandler comms) {
+	public void bluetoothMessage(String message) {
 		LCD.clear();
 		LCD.drawString("", 1, 0);
 		LCD.drawString("Status:", 2, 1);
-		LCD.drawString(comms.getStatus(), 4, 2);
+		LCD.drawString(message, 4, 2);
 		Delay.msDelay(800);
 	}
 
@@ -49,8 +49,10 @@ public class RobotInterface {
 		LCD.clear();
 		LCD.drawString(robot.getName(), 1, 0);
 		JobInfo j = robot.getCurrentJob();
-		LCD.drawString("Please load: " + j.getQuantity() + " items " + j.getItem() + " into the robot", 1, 1);
-		LCD.drawString("There are: " + this.itemsQuantity + " items in the robot at the moment", 1, 2);
+		LCD.drawString("Please load: ", 1, 1);
+		LCD.drawInt(j.getQuantity(), 1, 2);
+		LCD.drawInt(this.getItemsQuantity(), 1, 3);
+		this.waitForButton();
 	}
 
 	//public void printMovingToDropPointMessage(String name, int jobCode, Point position) {
@@ -67,17 +69,14 @@ public class RobotInterface {
 	private void addItems() {
 		Delay.msDelay(100);
 		itemsQuantity++;
-		LCD.clear();
-		LCD.drawString("Curent number of items is: ", 1, 0);
-		LCD.drawInt(itemsQuantity, 2, 1);
 	}
 
 	public void dropItems() {
 		Delay.msDelay(100);
 		itemsQuantity--;
-		LCD.clear();
-		LCD.drawString("Curent number of items is: ", 1, 0);
-		LCD.drawInt(itemsQuantity, 2, 1);
+		if (itemsQuantity < 0) {
+			itemsQuantity = 0;
+		}
 	}
 	
 	public void waitForSensorCalibration() {
@@ -103,10 +102,5 @@ public class RobotInterface {
 			} else
 				waitForButton();
 		}
-	}
-
-	public void status(int number) {
-		LCD.clear();
-		LCD.drawString("Curent number of items is: " + number, 1, 0);
 	}
 }

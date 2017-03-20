@@ -65,8 +65,8 @@ public class RobotInfo implements Communicatable {
 		return wasJobCancelled;
 	}
 
-	public synchronized void click() {
-		currentJob.decreaseQuantity();
+	public synchronized void pickAll(){
+		currentJob.pickAll();
 	}
 
 	public synchronized boolean finished() {

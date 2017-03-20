@@ -72,8 +72,8 @@ public class JobInfo implements Communicatable {
 		return quantity;
 	}
 	
-	public void decreaseQuantity(){
-		quantity--;
+	public void pickAll(){
+		quantity = 0;
 	}
 
 	public int getJobCode() {
