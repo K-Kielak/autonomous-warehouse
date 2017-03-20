@@ -15,7 +15,8 @@ public class RobotInfo implements Communicatable {
 	private Point position;
 	private Direction direction;
 	private float maxCapacity;
-	private JobInfo currentJob = new JobInfo(); //it will be null if job was cancelled
+	private JobInfo currentJob = new JobInfo();
+	private boolean wasJobCancelled = false;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
 	
 
@@ -29,7 +30,7 @@ public class RobotInfo implements Communicatable {
 	
 	public RobotInfo() {}
 
-	// returns null whole path was finished
+	// returns null if whole path was finished
 	public Direction move() {
 		if(currentPath.isEmpty())
 			return null;
@@ -54,11 +55,11 @@ public class RobotInfo implements Communicatable {
 	}
 	
 	public synchronized void cancelJob(){
-		currentJob = null;
+		wasJobCancelled = true;
 	}
 	
 	public synchronized boolean wasJobCancelled(){
-		return currentJob == null;
+		return wasJobCancelled;
 	}
 
 	public void click() {
@@ -82,6 +83,7 @@ public class RobotInfo implements Communicatable {
 	}
 
 	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
+		wasJobCancelled = false;
 		currentJob = job;
 		currentPath = path;
 	}

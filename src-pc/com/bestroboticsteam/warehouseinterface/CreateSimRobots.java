@@ -1,10 +1,8 @@
 package com.bestroboticsteam.warehouseinterface;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import com.bestroboticsteam.robotsmanagement.RobotsManager;
-
-import lejos.robotics.RangeFinder;
+import java.awt.Point;
 import rp.robotics.MobileRobotWrapper;
-import rp.robotics.control.RandomGridWalk;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
 import rp.robotics.navigation.GridPose;
@@ -14,25 +12,41 @@ import rp.robotics.simulation.MovableRobot;
 import rp.robotics.simulation.SimulatedRobots;
 import rp.robotics.visualisation.GridMapVisualisation;
 import rp.robotics.visualisation.MapVisualisationComponent;
+
 public class CreateSimRobots {
 	public static GridMap map = MapUtils.createRealWarehouse();
 	public static MapBasedSimulation sim = new MapBasedSimulation(map);
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
-	private static RobotsManager robots;
+	private static MobileRobotWrapper<MovableRobot> wrapper;
+	private static RobotInfo[] robotArray;
+	private static RobotInfo robotInfo;
 	
-	public static GridMapVisualisation robots() {
-		RobotInfo[] robotArray = new RobotInfo[robots.getRobotInfos().length];
-		robotArray = robots.getRobotInfos();
-		int numOfRobots = robotArray.length;
+	public static GridMapVisualisation robots(RobotsManager robots) {
+		robotArray = new RobotInfo[robots.getRobotInfos().length];
+		int numOfRobots = getRobotNumber();
 		for (int i = 0; i< numOfRobots; i++){
-			GridPose gridStart = new GridPose(3*i, 0, Heading.PLUS_Y);
-			MobileRobotWrapper<MovableRobot> wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, true),
-					map.toPose(gridStart));
+			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
+			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
+			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, robotInfo);
+
+			new Thread(controller).start();
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;
 	}
-	 public static void main (String[] args){
-		 InterfaceView view = new InterfaceView();
-	 }
+	
+	public static int getRobotNumber(){
+		int numOfRobots = robotArray.length;
+		return numOfRobots;
+	}
+	
+	public static int getPosX(int robot){
+		Point pos = robotArray[robot].getPosition();
+		return pos.x;
+	}
+	
+	public static int getPosY(int robot){
+		Point pos = robotArray[robot].getPosition();
+		return pos.y;
+	}
 }
