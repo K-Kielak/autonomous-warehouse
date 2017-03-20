@@ -1,56 +1,50 @@
-//TODO integrate
-
 package com.bestroboticsteam.robotsmanagement;
 
-import java.awt.Point;
-import java.util.LinkedList;
-import rp.util.Pair;
-
 import com.bestroboticsteam.jobs.JobAssignment;
-import com.bestroboticsteam.jobs.JobInfo;
-import com.bestroboticsteam.pathfinding.AStar;
-import com.bestroboticsteam.communication.PCConnectionHandler;
+
+import org.apache.log4j.Logger;
 
 public class RobotsManager extends Thread{
-	
-	private final int MS_DELAY = 500;
-	private RobotInfo[] robots;
-	private PCConnectionHandler[] connectionHandlers;
-	private JobAssignment jobs;
-	private AStar pathFinder;
-	
-	public RobotsManager(RobotInfo[] robots, JobAssignment jobs, AStar pathFinder){
-		this.robots = robots;
-		this.connectionHandlers = new PCConnectionHandler[robots.length];
+
+	private Robot[] robots;
+
+	final Logger logger = Logger.getLogger(RobotsManager.class);
+
+	public RobotsManager(RobotInfo[] robotInfos, JobAssignment jobs) {
+		this.robots = new Robot[robotInfos.length];
+		for (int i = 0; i < robotInfos.length; i++)
+			this.robots[i] = new Robot(robotInfos[i], jobs, getOtherRobotInfos(robotInfos[i], robotInfos));
+
+		logger.info("robots manager initialised");
+	}
+
+	public void run() {
+		for (int i = 0; i < robots.length; i++){
+			robots[i].setName(robots[i].getInfo().getName()); //setting thread name for debugging purposes
+			robots[i].start();
+			logger.info("robot " + robots[i].getInfo().getName() + " initialised");
+		}
+	}
+
+	public RobotInfo[] getRobotInfos() {
+		RobotInfo[] robotInfos = new RobotInfo[robots.length];
 		for(int i=0; i<robots.length; i++)
-			this.connectionHandlers[i] = new PCConnectionHandler(robots[i].NAME);
+			robotInfos[i] = robots[i].getInfo();
 		
-		this.jobs = jobs;
-		this.pathFinder = pathFinder;
+		return robotInfos;
 	}
 	
-	public void run(){
-		for(RobotInfo r: robots){
-			if(r.finished()){
-				JobInfo nextJob = jobs.getNextJob();
-				LinkedList<Point> path = AStar.singleGetPath(Pair.makePair(r.getPosition(), nextJob.getPosition()));
-				r.setCurrentJob(nextJob, path);
+	private RobotInfo[] getOtherRobotInfos(RobotInfo robotInfo, RobotInfo[] robotInfos){
+		RobotInfo[] otherRobotsInfos = new RobotInfo[robotInfos.length-1];
+		int othersI = 0;
+		for(int i=0; i<robots.length; i++){
+			if(robotInfos[i] != robotInfo){
+				otherRobotsInfos[othersI] = robotInfos[i];
+				othersI++;
 			}
-			
-			
-			//TODO communication with robots
 		}
-			
-		try{
-			Thread.sleep(MS_DELAY);
-		}
-		catch(InterruptedException e){
-			System.out.println(e.getMessage());
-		}
+		
+		return otherRobotsInfos;
 	}
-	
-	public RobotInfo[] getRobots(){
-		return robots;
-	}
-	
+
 }

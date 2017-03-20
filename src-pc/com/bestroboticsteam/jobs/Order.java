@@ -13,7 +13,7 @@ public class Order implements Comparable<Order> {
 	// do you prefer another type of map?
 	private ConcurrentMap<Item, Integer> orderTable;
 	private int id;
-	private int cancelationNumb;
+	private int cancelationNumb = 0;
 	private float totalReward = 0f;
 
 	public Order(int _id, ConcurrentMap<Item, Integer> ot) {
@@ -39,15 +39,18 @@ public class Order implements Comparable<Order> {
 		return orderTable.get(j);
 	}
 
-	LinkedList<JobInfo> toJobInfos() { // ? Made package private
-
+	public LinkedList<JobInfo> toJobInfos() { 
+		
+		//break the order into different JobInfos
+		
 		LinkedList<JobInfo> list = new LinkedList<JobInfo>();
 
 		for (Item i : orderTable.keySet()) {
-			JobInfo info = new JobInfo(i.getCode(), i.getPosition(), orderTable.get(i), id);
+			JobInfo info = new JobInfo(i.getCode(), i.getPosition(), orderTable.get(i), id, i.getWeight());
 			list.add(info);
 		}
-		return null;
+		
+		return list;
 	}
 
 	public ConcurrentMap<Item, Integer> getOrderTable() {
@@ -58,21 +61,34 @@ public class Order implements Comparable<Order> {
 		return totalReward;
 	}
 
-	private void setTotalReward() { // ?
+	private void setTotalReward() {
 		for (Item e : orderTable.keySet()) {
-			totalReward += e.getReward() * orderTable.get(e);
+			totalReward += (e.getReward() * orderTable.get(e))/(e.getWeight()*orderTable.get(e));
 		}
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		return (this.id == ((Order) o).getId());
 	}
 
 	@Override
 	public int compareTo(Order compareOrder) {
+		//used to sort the LinkedList by reward
 		float compareReward = compareOrder.getTotalReward();
 
-		if (this.totalReward - compareReward > 0)
+		if (this.totalReward - compareReward < 0)
 			return 1;
 		else if (this.totalReward - compareReward == 0)
 			return 0;
 		else
 			return -1;
+	}
+	
+	@Override
+	public String toString(){
+		//toString method -> used in InterfaceController
+		return "Job ID: " + getId() + " " + "Job Reward: " + getTotalReward();
+		
 	}
 }

@@ -1,8 +1,5 @@
 package com.bestroboticsteam.communication;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.communication.BaseConnectionHandler;
@@ -43,10 +40,6 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		 * 
 		 */
 
-		if (this.robotName.equals("")) { // TODO Remove
-			return;
-		}
-
 		logger.info("Attempting connection to: " + this.robotName);
 
 		this.status = BaseConnectionHandler.CONNECTING;
@@ -56,32 +49,51 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		conn.addLogListener(new NXTCommLogListener() {
 
 			public void logEvent(String message) {
-				logger.debug("Bluetooth Log Event: " + message);
+				logger.debug("Bluetooth Log Event. ROBOT: " + robotName + " " + message);
 			}
 
 			public void logEvent(Throwable throwable) {
-				logger.debug("Bluetooth Throwable: ", throwable);
+				logger.debug("Bluetooth Throwable. ROBOT: " + robotName, throwable);
 			}
 
 		});
+		
+		int time_delay = 1000;
 
 		for (int retry = 0; retry < PCConnectionHandler.NUM_RETRYS; retry++) {
 			boolean sucessful = conn.connectTo(this.protocol + this.robotName);
 
 			if (sucessful) {
 				this.status = CONNECTED;
-				logger.info("Connection Established via" + this.protocol);
-				input = new DataInputStream(conn.getInputStream());
-				output = new DataOutputStream(conn.getOutputStream());
+				logger.info(this.robotName + " Connection Established via " + this.protocol);
+				input = new MyDataInputStream(conn.getInputStream());
+				output = new MyDataOutputStream(conn.getOutputStream());
 				return;
 			} else {
 				this.status = BaseConnectionHandler.RETRYING;
-				logger.info("Retrying connection...");
+				logger.info("Retrying connection in " + time_delay/1000 + " seconds...");
+				try {
+					Thread.sleep(time_delay);
+				} catch (InterruptedException e) {
+					logger.info("Communication thread interrupted", e);
+					logger.info("Cleaning Up...");
+					return;
+				}
+				time_delay *= 2;
 			}
 		}
 
 		this.status = BaseConnectionHandler.DISCONNECTED;
-		logger.error("Error connecting");
+		logger.error(this.robotName + " Error connecting");
 	}
 
+	public Communicatable receiveObject(Communicatable obj) throws ConnectionNotEstablishedException {
+		logger.info(this.robotName + " Receiving: " + obj.toString());
+		return super.receiveObject(obj);
+	}
+
+	public void sendObject(Communicatable obj) throws ConnectionNotEstablishedException {
+		logger.info(this.robotName + " Sending: " + obj.toString());
+		super.sendObject(obj);
+	}
 }

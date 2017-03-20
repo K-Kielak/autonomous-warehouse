@@ -11,7 +11,7 @@ public class Item {
 	private final float reward;
 	private Point position;
 
-	public Item(String _code, float _weight, float _reward) {
+	public Item(String _code, float _reward, float _weight) {
 		this.code = _code;
 		this.weight = _weight;
 		this.reward = _reward;
@@ -41,7 +41,7 @@ public class Item {
 		return code.hashCode();
 	}
 
-	public boolean equals(Item i) {
-		return (this.code.equals(i.getCode()));
+	public boolean equals(Object i) {
+		return (this.code.equals(((Item) i).getCode()));
 	}
 }
