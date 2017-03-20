@@ -54,13 +54,10 @@ public class Movement {
 			while (!isRightOnBlack && isLeftOnBlack) {
 				pilot.rotateLeft();
 
+				Delay.msDelay(DELAY);
 				isLeftOnBlack = isOnBlack(leftSensor.readValue());
 				isRightOnBlack = isOnBlack(rightSensor.readValue());
 			}
-
-			Delay.msDelay(DELAY);
-			isLeftOnBlack = isOnBlack(leftSensor.readValue());
-			isRightOnBlack = isOnBlack(rightSensor.readValue());
 		}
 
 		pilot.stop();
