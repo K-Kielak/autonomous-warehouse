@@ -117,15 +117,6 @@ public class ReadingTest {
 	}
 	
 	@Test
-	public void TestReadOrder2(){
-		
-		assertEquals(orders.get(0).getCancelationNumb(),0);
-		assertEquals(orders.get(1).getCancelationNumb(),1);
-		assertEquals(orders.get(2).getCancelationNumb(),0);
-	
-	}
-	
-	@Test
 	public void TestReadDropPoint(){
 		
 		assertEquals(points.get(0).x, 7);
