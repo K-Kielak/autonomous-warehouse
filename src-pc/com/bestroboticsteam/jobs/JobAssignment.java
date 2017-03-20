@@ -92,7 +92,14 @@ public class JobAssignment extends Thread {
 	}
 	
 	public LinkedList<Order> getAssignedOrders(){
-		return assignedOrders;
+		LinkedList<Order> result = new LinkedList<Order>();
+		LinkedList<Order> currentOrder = getCurrentOrders();
+		
+		for(Order o: result)
+			if(!currentOrder.contains(o))
+				result.add(o);
+		
+		return result;
 	}
 	
 	public synchronized JobInfo getNextJob(String robotCode) {
@@ -167,7 +174,7 @@ public class JobAssignment extends Thread {
 		
 		MyRobotInfo robot = robotMap.get(robots[robotIndex].getName());
 		
-		LinkedList<JobInfo> aux = (LinkedList<JobInfo>) path.clone();
+		LinkedList<JobInfo> aux = (LinkedList<JobInfo>)path.clone();
 		
 		int jobNumb = path.size();
 		

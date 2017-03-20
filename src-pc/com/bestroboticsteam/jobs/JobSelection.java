@@ -25,8 +25,8 @@ public class JobSelection {
 
 		//Create a LinkedList of Orders and sort it
 		list = reader.readOrderData(path);
-		setPrediction(list);
-		setList(list);
+		setPrediction();
+		setList();
 	}
 
 	public synchronized LinkedList<Point> getDropLocation() {
@@ -42,16 +42,6 @@ public class JobSelection {
 			return null;
 		return list.pop();
 	}
-
-	public synchronized Order viewOrder(int i) {
-		if(i >= list.size()){
-			logger.error("Null in Order collection!");
-			return null;
-		}
-		
-		return list.get(i);
-
-	}
 	
 	public void cancelOrder(int order){
 		for(Order element: list){
@@ -62,7 +52,7 @@ public class JobSelection {
 		}
 	}
 
-	private synchronized void setList(Collection<Order> orderList) {
+	private synchronized void setList() {
 
 		Comparator<Order> comparator = new Comparator<Order>() {
 			@Override
@@ -71,13 +61,15 @@ public class JobSelection {
 			}
 		};
 		
-		logger.info("Sorting list.");
+		logger.info("Sorting list of orders.");
 		list.sort(comparator);
 	}
 	
-	private void setPrediction(LinkedList<Order> jobs) {
+	private void setPrediction() {
 		
-		for(Order o: jobs){
+		logger.info("Computing the predictions.");
+		
+		for(Order o: list){
 			float yes = 0.5f;
 			float no = 0.5f;
 			
