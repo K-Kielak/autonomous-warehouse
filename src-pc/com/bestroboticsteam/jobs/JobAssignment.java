@@ -339,7 +339,7 @@ public class JobAssignment extends Thread {
 	
 	private int averageDistance(Point point, Point point2) {
 		
-		return Math.abs(point.x - point2.x) + Math.abs(point.y - point2.y);
+		return AStar.singleGetPath(point, point2).size();
 	}
 	
 	private Point getDrop(JobInfo info){
