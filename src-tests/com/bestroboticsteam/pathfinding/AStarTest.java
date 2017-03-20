@@ -36,12 +36,12 @@ public class AStarTest {
 	@Test
 	public void testSingleGetPath() {
 		List<Point> path;
-		path = AStar.singleGetPath(Pair.makePair(new Point(0, 3), new Point(0, 2)));
+		path = AStar.singleGetPath(new Point(0, 3), new Point(0, 2));
 		List<Point> actualPath = new LinkedList<Point>();
 		actualPath.add(new Point(0, 2));
 		assertEquals(path, actualPath);
 
-		path = AStar.singleGetPath(Pair.makePair(new Point(0, 3), new Point(2, 3)));
+		path = AStar.singleGetPath(new Point(0, 3), new Point(2, 3));
 		actualPath = new LinkedList<Point>();
 		actualPath.add(new Point(0, 2));
 		actualPath.add(new Point(0, 1));
@@ -53,11 +53,11 @@ public class AStarTest {
 		actualPath.add(new Point(2, 3));
 		assertEquals(path, actualPath);
 
-		path = AStar.singleGetPath(Pair.makePair(new Point(0, 3), new Point(1, 3)));
+		path = AStar.singleGetPath(new Point(0, 3), new Point(1, 3));
 		// Should return null when no path is found
 		assertNull(path);
 
-		path = AStar.singleGetPath(Pair.makePair(new Point(1, 6), new Point(5, 5)));
+		path = AStar.singleGetPath(new Point(1, 6), new Point(5, 5));
 		actualPath = new LinkedList<Point>();
 		actualPath.add(new Point(2, 6));
 		actualPath.add(new Point(3, 6));
@@ -66,11 +66,11 @@ public class AStarTest {
 		actualPath.add(new Point(5, 5));
 		assertEquals(path, actualPath);
 
-		path = AStar.singleGetPath(Pair.makePair(new Point(-1, 6), new Point(5, 5)));
+		path = AStar.singleGetPath(new Point(-1, 6), new Point(5, 5));
 		// Should return null when no path is found
 		assertNull(path);
 
-		path = AStar.singleGetPath(Pair.makePair(new Point(1, 6), new Point(-5, 5)));
+		path = AStar.singleGetPath(new Point(1, 6), new Point(-5, 5));
 		// Should return null when no path is found
 		assertNull(path);
 	}
