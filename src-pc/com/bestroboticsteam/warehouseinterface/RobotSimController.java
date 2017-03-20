@@ -74,15 +74,15 @@ public class RobotSimController implements StoppableRunnable {
 	// visual robot
 	public int getPosX() {
 		Pose pos = robot.getPose();
-		int a = (int) pos.getX();
-		int b = (int) (a * 3.67);
-		return b;
+		int actual = (int) pos.getX();
+		int scaled = (int) (actual * 3.67);
+		return scaled;
 	}
 
 	public int getPosY() {
 		Pose pos = robot.getPose();
-		int a = (int) pos.getY();
-		int b = (int) (a * 3.67);
-		return b;
+		int actual = (int) pos.getY();
+		int scaled = (int) (actual * 3.67);
+		return scaled;
 	}
 }

@@ -37,7 +37,9 @@ public class InterfaceController extends Thread {
 			String robot = robotArray[i].getName();
 			PCConnectionHandler connect = new PCConnectionHandler(robot);
 			String status = connect.getStatus();
-			robotInfo = robot + " - " + status + " : " + robotInfo;
+			int posx = CreateSimRobots.getPosX(i);
+			int posy = CreateSimRobots.getPosY(i);
+			robotInfo = robot + " - " + status + "(" + posx + "," + posy + ")" + " : " + robotInfo ;
 		}
 		warehouseInterface.setStatusText(robotInfo);
 	}
@@ -103,7 +105,7 @@ public class InterfaceController extends Thread {
 				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-			//	setFinishedJobs();
+				setFinishedJobs();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
@@ -115,27 +117,27 @@ public class InterfaceController extends Thread {
 	public class cancelListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (e.getSource() == warehouseInterface.cancel) {
+			if (e.getSource() == warehouseInterface.cancelUpcoming) {
 				logger.info("cancel1 button has been pressed");
-				if(warehouseInterface.text3.getText()  == null){
+				if(warehouseInterface.cancelTextU.getText()  == null){
 					logger.error("No job has been inputted - cannot cancel" );
 				} else {
-					String text = warehouseInterface.text3.getText();
+					String text = warehouseInterface.cancelTextU.getText();
 					int itemID = Integer.parseInt(text);
 					incomingJobs.cancelOrder(itemID);
 					tenJobsMap.remove(itemID);
-					warehouseInterface.text3.setText("");
+					warehouseInterface.cancelTextU.setText("");
 				}
-			} else if (e.getSource() == warehouseInterface.cancel2) {
+			} else if (e.getSource() == warehouseInterface.cancelCurrent) {
 				logger.info("cancel2 button has been pressed");
-				if(warehouseInterface.text4.getText()  == null){
+				if(warehouseInterface.cancelTextC.getText()  == null){
 					logger.error("No job has been inputted - cannot cancel" );
 				} else {
-					String text = warehouseInterface.text4.getText();
+					String text = warehouseInterface.cancelTextC.getText();
 					int itemID = Integer.parseInt(text);
 					assign.cancelOrder(itemID);
 					progJobsMap.remove(itemID);
-					warehouseInterface.text4.setText("");
+					warehouseInterface.cancelTextC.setText("");
 				}
 			}
 		}

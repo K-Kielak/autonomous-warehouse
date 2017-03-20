@@ -22,20 +22,20 @@ public class InterfaceView extends JFrame {
 	public JPanel jobInProgPanel = new JPanel();
 	public JPanel jobListPanel = new JPanel();
 	public JPanel jobFinishedPanel = new JPanel();
-	public JTextArea text5 = new JTextArea();
-	// create visualisation of graph
-	GridMapVisualisation mapVis;
 	public JPanel robotStatus = new JPanel();
 	public JTextArea statusText = new JTextArea();
+	public JTextArea fishedJobText = new JTextArea();
 	// will display list of orders -> from JobSelection class via interfaceController
-	public JTextArea text = new JTextArea();
+	public JTextArea nextJobText = new JTextArea();
 	// will display orders in progress -> from jobAssignment via iC
-	public JTextArea text2 = new JTextArea();
-	
-	public JTextArea text3 = new JTextArea();
-    public JButton cancel = new JButton();
-	public JTextArea text4 = new JTextArea();
-    public JButton cancel2 = new JButton();
+	public JTextArea currentJobText = new JTextArea();
+	// create visualisation of graph
+	GridMapVisualisation mapVis;
+	//cancellation stuff
+	public JTextArea cancelTextU = new JTextArea();
+    public JButton cancelUpcoming = new JButton();
+	public JTextArea cancelTextC = new JTextArea();
+    public JButton cancelCurrent = new JButton();
 	
 	public InterfaceView(RobotsManager robots) {
 		mapVis = CreateSimRobots.robots(robots);
@@ -53,61 +53,61 @@ public class InterfaceView extends JFrame {
 		// list of jobs in progress
 		toDoLabel.setPreferredSize(new Dimension(150, 20));
 		toDoLabel.setOpaque(true);
-		text2.setPreferredSize(new Dimension(220, 150));
-		text2.setOpaque(true);
-		text2.setEditable(false);
-		text2.setBackground(null);
+		currentJobText.setPreferredSize(new Dimension(220, 150));
+		currentJobText.setOpaque(true);
+		currentJobText.setEditable(false);
+		currentJobText.setBackground(null);
 		// list of first 10 jobs
 		doingLabel.setPreferredSize(new Dimension(150, 20));
 		doingLabel.setOpaque(true);
-		text.setPreferredSize(new Dimension(220, 150));
-		text.setOpaque(true);
-		text.setEditable(false);
-		text.setBackground(null);
+		nextJobText.setPreferredSize(new Dimension(220, 150));
+		nextJobText.setOpaque(true);
+		nextJobText.setEditable(false);
+		nextJobText.setBackground(null);
 		
 		jobInProgPanel.setPreferredSize(new Dimension(350, 200));
 		jobListPanel.setPreferredSize(new Dimension(350, 200));
 		jobFinishedPanel.setPreferredSize(new Dimension(600, 200));	
 		robotStatus.setPreferredSize(new Dimension(600, 100));
 		
-		cancel.setPreferredSize(new Dimension(30,20));
-		text3.setPreferredSize(new Dimension(50, 30));
-		text3.setOpaque(true);
-		text3.setBorder(BorderFactory.createLineBorder(Color.black));
-		cancel2.setPreferredSize(new Dimension(30,20));
-		text4.setPreferredSize(new Dimension(50, 30));
-		text4.setOpaque(true);
-		text4.setBorder(BorderFactory.createLineBorder(Color.black));
+		cancelUpcoming.setPreferredSize(new Dimension(30,20));
+		cancelTextU.setPreferredSize(new Dimension(50, 30));
+		cancelTextU.setOpaque(true);
+		cancelTextU.setBorder(BorderFactory.createLineBorder(Color.black));
+		cancelCurrent.setPreferredSize(new Dimension(30,20));
+		cancelTextC.setPreferredSize(new Dimension(50, 30));
+		cancelTextC.setOpaque(true);
+		cancelTextC.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		text5.setPreferredSize(new Dimension(500, 150));
-		text5.setOpaque(true);
-		text5.setEditable(false);
-		text5.setBorder(BorderFactory.createLineBorder(Color.black));
-		text5.setBackground(null);
+		fishedJobText.setPreferredSize(new Dimension(500, 150));
+		fishedJobText.setOpaque(true);
+		fishedJobText.setEditable(false);
+		fishedJobText.setBorder(BorderFactory.createLineBorder(Color.green));
+		fishedJobText.setBackground(null);
 		
 		statusText.setPreferredSize(new Dimension(550, 60));
 		statusText.setOpaque(true);
 		statusText.setEditable(false);
-		statusText.setBorder(BorderFactory.createLineBorder(Color.black));
+		statusText.setBorder(BorderFactory.createLineBorder(Color.green));
 		statusText.setBackground(null);
 		
 		jobInProgPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		jobListPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		jobFinishedPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
-		text.setBorder(BorderFactory.createLineBorder(Color.green));
-		text2.setBorder(BorderFactory.createLineBorder(Color.green));
-		robotStatus.setBorder(BorderFactory.createLineBorder(Color.cyan));
+		nextJobText.setBorder(BorderFactory.createLineBorder(Color.green));
+		currentJobText.setBorder(BorderFactory.createLineBorder(Color.green));
+		robotStatus.setBorder(BorderFactory.createLineBorder(Color.blue));
 		
 		jobListPanel.add(toDoLabel);
-		jobListPanel.add(text);
-		jobListPanel.add(text3);
-		jobListPanel.add(cancel);
+		jobListPanel.add(nextJobText);
+		jobListPanel.add(cancelTextU);
+		jobListPanel.add(cancelUpcoming);
 		jobInProgPanel.add(doingLabel);
-		jobInProgPanel.add(text2);
-		jobInProgPanel.add(text4);
-		jobInProgPanel.add(cancel2);
+		jobInProgPanel.add(currentJobText);
+		jobInProgPanel.add(cancelTextC);
+		jobInProgPanel.add(cancelCurrent);
 		jobFinishedPanel.add(finLabel);
-		jobFinishedPanel.add(text5);
+		jobFinishedPanel.add(fishedJobText);
 		jobPanel.add(jobListPanel);
 		jobPanel.add(jobInProgPanel);
 		jobPanel.add(jobFinishedPanel);
@@ -136,21 +136,21 @@ public class InterfaceView extends JFrame {
 		String newline = "\n";
 		String[] parts = jobs.split(" : ");
 		for (int i = 0; i < parts.length; i++) {
-			text.append(parts[i] + newline);
+			nextJobText.append(parts[i] + newline);
 		}
 	}
 
 	public void addOneToJobList(String job) {
 		String newline = "\n";
-		text.append(job + newline);
+		nextJobText.append(job + newline);
 	}
 
 	public void emptyJobList() {
-		text.setText("");
+		nextJobText.setText("");
 	}
 
 	public String getJobList() {
-		return text.getText();
+		return nextJobText.getText();
 	}
 
 	// job in progress list methods
@@ -159,16 +159,16 @@ public class InterfaceView extends JFrame {
 		String newline = "\n";
 		String[] parts = jobProgText.split(" : ");
 		for (int i = 0; i < parts.length; i++) {
-			text2.append(parts[i] + newline);
+			currentJobText.append(parts[i] + newline);
 		}
 	}
 
 	public void emptyProgList() {
-		text2.setText("");
+		currentJobText.setText("");
 	}
 
 	public String getInProgList() {
-		return text2.getText();
+		return currentJobText.getText();
 	}
 	
 	//finished Jobs
@@ -176,18 +176,18 @@ public class InterfaceView extends JFrame {
 		String newline = "\n";
 		String[] parts = jobsDone.split(" : ");
 		for (int i = 0; i < parts.length; i++) {
-			text5.append(parts[i] + newline);
+			fishedJobText.append(parts[i] + newline);
 		}
 	}
 	
 	public String getFinishedList(){
-		return text5.getText();
+		return fishedJobText.getText();
 	}
 	
 	//cancellation buttons
 	 public void addCancelListener(ActionListener listen){
-			cancel.addActionListener(listen);
-			cancel2.addActionListener(listen);
+		 cancelUpcoming.addActionListener(listen);
+		 cancelCurrent.addActionListener(listen);
 	 }
 
 	public void setStatusText(String robotInfo) {
