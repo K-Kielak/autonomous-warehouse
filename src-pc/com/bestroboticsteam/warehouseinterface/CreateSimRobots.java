@@ -15,6 +15,7 @@ import rp.robotics.visualisation.MapVisualisationComponent;
 
 public class CreateSimRobots {
 	public static GridMap map = MapUtils.createRealWarehouse();
+	//public static GridMap map = CreateMap.createRealWarehouse();
 	public static MapBasedSimulation sim = new MapBasedSimulation(map);
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;

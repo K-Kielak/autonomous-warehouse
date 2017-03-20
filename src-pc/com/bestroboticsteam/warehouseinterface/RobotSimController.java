@@ -26,7 +26,6 @@ public class RobotSimController implements StoppableRunnable {
 
 	@Override
 	public void run() {
-		logger.info("running robot " + robotInfo.getName());
 		boolean inPositionY = false;
 		boolean inPositionX = false;
 		while (!inPositionX) {
@@ -39,9 +38,9 @@ public class RobotSimController implements StoppableRunnable {
 						inPositionY = true;
 					}
 				} else if (yDifference < 0) {
+					pilot.rotatePositive();
+					pilot.rotatePositive();
 					for (int i = 0; i < yDifference; i++) {
-						pilot.rotateNegative();
-						pilot.rotateNegative();
 						pilot.moveForward();
 						inPositionY = true;
 					}
@@ -58,15 +57,13 @@ public class RobotSimController implements StoppableRunnable {
 			} else if (xDifference < 0) {
 				pilot.rotatePositive();
 				for (int i = 0; i < xDifference; i++) {
-					pilot.rotateNegative();
-					pilot.rotateNegative();
 					pilot.moveForward();
 					inPositionX = true;
 				}
 			}
 		}
 	}
-
+	
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
