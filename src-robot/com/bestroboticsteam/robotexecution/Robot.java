@@ -6,6 +6,7 @@ import com.bestroboticsteam.robot.RobotConfig;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
+import lejos.nxt.ADSensorPort;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
@@ -34,11 +35,13 @@ public class Robot implements StoppableRunnable {
 	private LightSensor leftSensor;
 	private LightSensor rightSensor;
 	private DifferentialPilot pilot;
+	private ADSensorPort rightSensorPort;
+	private ADSensorPort leftSensorPort;
 
 	public Robot(SensorPort leftSensorPort, SensorPort rightSensorPort, WheeledRobotConfiguration ExpressBot) {
-		rightSensor = new LightSensor(rightSensorPort);
-		leftSensor = new LightSensor(leftSensorPort);
-		pilot = new WheeledRobotSystem(ExpressBot).getPilot();
+		this.leftSensorPort = leftSensorPort;
+		this.rightSensorPort = rightSensorPort;
+		this.pilot = new WheeledRobotSystem(ExpressBot).getPilot();
 		this.robotInterface = new RobotInterface();
 		this.comms = new RobotCommunicationHandler();
 	}
@@ -46,15 +49,24 @@ public class Robot implements StoppableRunnable {
 	@Override
 	public void run() {
 		this.robotInterface.waitForSensorCalibration();
+		rightSensor = new LightSensor(rightSensorPort);
+		leftSensor = new LightSensor(leftSensorPort);
 		this.movement = new Movement(leftSensor, rightSensor, pilot);
-		new Thread(this.comms).start();
+		Thread connection = new Thread(this.comms);
+		connection.start();
 
-		while (!this.comms.getStatus().equals(RobotCommunicationHandler.CONNECTED)) {
-			robotInterface.bluetoothMessage(this.info, this.comms);
+		robotInterface.bluetoothMessage(RobotCommunicationHandler.CONNECTING);
+		
+		try {
+			connection.join(); // Thread has ended
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		while (m_run) {
 			this.receiveInfo();
+			this.robotInterface.printMovingToItemMessage(this.info);
 			// Going to destination
 			direction = info.move();
 			if (direction != null) {
@@ -70,8 +82,8 @@ public class Robot implements StoppableRunnable {
 				Sound.playTone(110, 800); // We play a sound
 				while (info.getCurrentJob().getQuantity() != robotInterface.getItemsQuantity()) {
 					robotInterface.printLoadMessage(info);
-					robotInterface.waitForButton();
 				}
+				this.info.pickAll();
 			}
 			robotInterface.setItemsQuantity(0); // We've collected items so we reset item quantity
 			this.sendInfo();
