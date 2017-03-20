@@ -79,7 +79,7 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 					logger.info("Cleaning Up...");
 					return;
 				}
-				time_delay *= 2;
+				time_delay = Math.min(30000, time_delay * 2);
 			}
 		}
 

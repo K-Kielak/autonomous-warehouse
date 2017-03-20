@@ -6,6 +6,7 @@ import com.bestroboticsteam.robot.RobotConfig;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
+import lejos.nxt.ADSensorPort;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
@@ -45,14 +46,21 @@ public class Robot implements StoppableRunnable {
 	public void run() {
 		this.robotInterface.waitForSensorCalibration();
 		this.movement.calibrate();
-		new Thread(this.comms).start();
+		Thread connection = new Thread(this.comms);
+		connection.start();
 
-		while (!this.comms.getStatus().equals(RobotCommunicationHandler.CONNECTED)) {
-			robotInterface.bluetoothMessage(this.info, this.comms);
+		robotInterface.bluetoothMessage(RobotCommunicationHandler.CONNECTING);
+		
+		try {
+			connection.join(); // Thread has ended
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		while (m_run) {
 			this.receiveInfo();
+			this.robotInterface.printMovingToItemMessage(this.info);
 			// Going to destination
 			direction = info.move();
 			if (direction != null) {
@@ -68,8 +76,8 @@ public class Robot implements StoppableRunnable {
 				Sound.playTone(110, 800); // We play a sound
 				while (info.getCurrentJob().getQuantity() != robotInterface.getItemsQuantity()) {
 					robotInterface.printLoadMessage(info);
-					robotInterface.waitForButton();
 				}
+				this.info.pickAll();
 			}
 			robotInterface.setItemsQuantity(0); // We've collected items so we reset item quantity
 			this.sendInfo();
