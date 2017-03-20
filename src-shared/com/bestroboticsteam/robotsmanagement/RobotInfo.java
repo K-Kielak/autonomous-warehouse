@@ -38,8 +38,6 @@ public class RobotInfo implements Communicatable {
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
-		if(position.equals(newPos))
-			return null; //doesn't have directon
 		
 		if(position.distance(newPos) != 1)
 			throw new IllegalArgumentException("wrong path");
@@ -85,17 +83,21 @@ public class RobotInfo implements Communicatable {
 		return maxCapacity;
 	}
 
-	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
+	public void setCurrentJob(JobInfo job) {
 		wasJobCancelled = false;
 		currentJob = job;
-		currentPath = path;
 	}
 
 	public synchronized JobInfo getCurrentJob() {
 		return currentJob;
 	}
+	
+	public void setCurrentPath(LinkedList<Point> path){
+		if(path != null)
+			currentPath = path;
+	}
 
-	public LinkedList<Point> getCurrentPath() {
+	public synchronized LinkedList<Point> getCurrentPath() {
 		return currentPath;
 	}
 

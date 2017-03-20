@@ -42,9 +42,14 @@ public class Robot extends Thread{
 			}
 			
 			if(info.wasJobCancelled() || info.finished()){
-				assignNewJob();
+				info.setCurrentJob(jobs.getNextJob(info.getName()));
 				logger.info("Got new job: " + info.getCurrentJob().getJobCode());
 			}
+			
+			Point start = info.getPosition();
+			Point goal = info.getCurrentJob().getPosition();
+			Pair<Point, Point> startGoalPair = Pair.makePair(start, goal);
+			info.setCurrentPath(AStar.multiGetPath(startGoalPair, otherRobotInfos));
 		
 			logger.info("Sending information to robot " + info.getName());
 			try {
@@ -74,9 +79,6 @@ public class Robot extends Thread{
 	
 	private void assignNewJob(){
 		JobInfo job = jobs.getNextJob(info.getName());
-		Point start = info.getPosition();
-		Point goal = job.getPosition();
-		LinkedList<Point> path = AStar.multiGetPath(Pair.makePair(start, goal), otherRobotInfos);
-		info.setCurrentJob(job, path);
+		info.setCurrentJob(job);
 	}
 }
