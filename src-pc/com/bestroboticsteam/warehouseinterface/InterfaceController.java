@@ -38,19 +38,14 @@ public class InterfaceController extends Thread {
 	
 	public void setFinishedJobs(){
 		String jobsText = "";
-		//if (assign.viewFinishedOrder(0) == null){
-			//jobsText = "No Jobs Completed";
-		//} else {
-			for (int i = 0; i < 5; i++){
+		for (int i = 0; i < 5; i++){
+			if(assign.viewFinishedOrder(i) == null){
+				jobsText = "No completed job";
+			} else {
 				Order job = assign.viewFinishedOrder(i);
-				if (job == null) {
-					logger.error("No jobs completed");
-					break;
-				} else {
-					jobsText = jobsText + " : " + job.toString();
-				}
-			}
-		//}
+				jobsText = jobsText + " : " + job.toString();
+			}	
+		}
 		warehouseInterface.setFinishedList(jobsText);
 	}
 	
