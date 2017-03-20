@@ -21,8 +21,8 @@ public class JobAssignment extends Thread {
 	private LinkedList<Order> finishedOrders = new LinkedList<Order>();
 	private Thread thread;
 	
-	public JobAssignment(JobSelection selection, RobotInfo[] robots) {
-		this.selection = selection;
+	public JobAssignment(JobSelection selector, RobotInfo[] robots) {
+		this.selection = selector;
 		this.robots = robots;
 		this.costs = new int[robots.length];
 		this.weights = new float[robots.length];
