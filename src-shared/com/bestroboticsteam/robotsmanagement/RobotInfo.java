@@ -93,8 +93,7 @@ public class RobotInfo implements Communicatable {
 	}
 	
 	public void setCurrentPath(LinkedList<Point> path){
-		if(path != null)
-			currentPath = path;
+		currentPath = path;
 	}
 
 	public synchronized LinkedList<Point> getCurrentPath() {
