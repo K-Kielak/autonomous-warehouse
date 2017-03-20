@@ -1,5 +1,7 @@
 package com.bestroboticsteam.warehouseinterface;
 
+import org.apache.log4j.Logger;
+
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import lejos.robotics.navigation.Pose;
 import rp.robotics.mapping.GridMap;
@@ -9,10 +11,11 @@ import rp.robotics.simulation.MovableRobot;
 import rp.systems.StoppableRunnable;
 
 public class RobotSimController implements StoppableRunnable {
+	final static Logger logger = Logger.getLogger(CreateSimRobots.class);
 	private GridMap map;
 	private GridPilot pilot;
 	private RobotInfo robotInfo;
-	private static MovableRobot robot;
+	private MovableRobot robot;
 
 	public RobotSimController(MovableRobot robot, GridMap map, GridPose start, RobotInfo robotInfo) {
 		this.map = map;
@@ -23,6 +26,7 @@ public class RobotSimController implements StoppableRunnable {
 
 	@Override
 	public void run() {
+		logger.info("running robot " + robotInfo.getName());
 		boolean inPositionY = false;
 		boolean inPositionX = false;
 		while (!inPositionX) {
@@ -36,6 +40,8 @@ public class RobotSimController implements StoppableRunnable {
 					}
 				} else if (yDifference < 0) {
 					for (int i = 0; i < yDifference; i++) {
+						pilot.rotateNegative();
+						pilot.rotateNegative();
 						pilot.moveForward();
 						inPositionY = true;
 					}
@@ -52,6 +58,8 @@ public class RobotSimController implements StoppableRunnable {
 			} else if (xDifference < 0) {
 				pilot.rotatePositive();
 				for (int i = 0; i < xDifference; i++) {
+					pilot.rotateNegative();
+					pilot.rotateNegative();
 					pilot.moveForward();
 					inPositionX = true;
 				}
@@ -75,13 +83,17 @@ public class RobotSimController implements StoppableRunnable {
 	}
 
 	// visual robot
-	public static int getPosX() {
+	public int getPosX() {
 		Pose pos = robot.getPose();
-		return (int) pos.getX();
+		int a = (int) pos.getX();
+		int b = (int) (a * 3.67);
+		return b;
 	}
 
-	public static int getPosY() {
+	public int getPosY() {
 		Pose pos = robot.getPose();
-		return (int) pos.getY();
+		int a = (int) pos.getY();
+		int b = (int) (a * 3.67);
+		return b;
 	}
 }
