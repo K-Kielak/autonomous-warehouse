@@ -33,25 +33,33 @@ public class InterfaceController extends Thread {
 
 	public void setRobotStatus() {
 		String robotInfo = "";
+	//	String status = "";
 		for (int i = 0; i < robotArray.length; i++){
+			int jobId = 0;
 			String robot = robotArray[i].getName();
-			PCConnectionHandler connect = new PCConnectionHandler(robot);
-			String status = connect.getStatus();
 			int posx = CreateSimRobots.getPosX(i);
 			int posy = CreateSimRobots.getPosY(i);
-			robotInfo = robot + " - " + status + "(" + posx + "," + posy + ")" + " : " + robotInfo ;
+		//	if (status.equals("Connected")){
+				jobId = robotArray[i].getCurrentJob().getJobCode();
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " : " + robotInfo ;
+		//	} else {
+		//		robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + status + " : " + robotInfo ;
+		//	}
 		}
 		warehouseInterface.setStatusText(robotInfo);
 	}
 	
 	public void setFinishedJobs(){
-		String jobsText = "No jobs have been completed";
+		String jobsText = "";
+		float reward = 0.0f;
 		for (int i = 0; i < 5; i++){
 			if(assign.viewFinishedOrder(i) != null){
 				Order job = assign.viewFinishedOrder(i);
+				reward += assign.viewFinishedOrder(i).getTotalReward();
 				jobsText = jobsText + " : " + job.toString();
 			}	
 		}
+		warehouseInterface.setReward(reward);
 		warehouseInterface.setFinishedList(jobsText);
 	}
 	
@@ -106,7 +114,7 @@ public class InterfaceController extends Thread {
 				setTenJobs();
 				setCurrentJobs();
 				setFinishedJobs();
-				Thread.sleep(5000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
 			}

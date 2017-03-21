@@ -42,12 +42,12 @@ public class Robot extends Thread{
 			
 			if(info.wasJobCancelled() || info.finished()){
 				info.setCurrentJob(jobs.getNextJob(info.getName()));
-				logger.info("Got new job: " + info.getCurrentJob().getJobCode());
+				logger.debug("Got new job: " + info.getCurrentJob().getJobCode());
 			}
 			
 			recalculatePath();
 		
-			logger.info("Sending information to robot " + info.getName());
+			logger.debug("Sending information to robot " + info.getName());
 			try {
 				connectionHandler.sendObject(info);
 			} catch (ConnectionNotEstablishedException e) {
@@ -60,7 +60,7 @@ public class Robot extends Thread{
 				logger.error(e.getMessage());
 			}
 	
-			logger.info("Receiving information from robot " + info.getName());
+			logger.debug("Receiving information from robot " + info.getName());
 			try {
 				connectionHandler.receiveObject(info);
 			} catch (ConnectionNotEstablishedException e) {
@@ -69,17 +69,18 @@ public class Robot extends Thread{
 		}
 	}
 	
-	public synchronized RobotInfo getInfo(){
+	public RobotInfo getInfo(){
 		return info;
 	}
 	
-	private synchronized void recalculatePath(){
+	private void recalculatePath(){
+		logger.debug("recalculating path for " + info.getName());
 		Point start = info.getPosition();
 		Point goal = info.getCurrentJob().getPosition();
 		Pair<Point, Point> startGoalPair = Pair.makePair(start, goal);
 		LinkedList<Point> path = null;
 		while(path == null){
-			logger.info("Robot " + info.getName() + " is waiting for a new path (goal is not accessible now)");
+			logger.warn("Robot " + info.getName() + " is waiting for a new path (goal is not accessible now)");
 			path = AStar.multiGetPath(startGoalPair, otherRobotInfos);
 			try {
 				Thread.sleep(2*DELAY);
