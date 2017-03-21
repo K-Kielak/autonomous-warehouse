@@ -1,10 +1,14 @@
 package com.bestroboticsteam.warehouseinterface;
 
 import org.apache.log4j.Logger;
+
+import lejos.geom.Point;
+import lejos.robotics.navigation.Pose;
 import lejos.util.Delay;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
+import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MovableRobot;
 
 public class RobotSimController extends Thread {
@@ -24,73 +28,12 @@ public class RobotSimController extends Thread {
 	}
 
 	public void run() {
-		boolean ypos = false;
-		boolean xpos = false;
 		while (true) {
-			while (!ypos) {
 				posx = CreateSimRobots.getPosX(theRobot);
 				posy = CreateSimRobots.getPosY(theRobot);
-				int yDifference = posy - simY();
-				while (!xpos) {
-					int xDifference = posx - simX();
-					logger.info(posx);
-					logger.info(simX());
-					if (xDifference > 0) {
-						// move left
-						logger.info("moving left");
-						pilot.moveForward();
-
-					} else if (xDifference < 0) {
-						// move right
-						int count = 0;
-						logger.info("moving right");
-						if (count == 0){
-							pilot.rotateNegative();
-						} 
-						pilot.moveForward();
-						count++;
-					} else {
-						xpos = true;
-					}
-				}
-				if (yDifference > 0) {
-					// move forward
-					logger.info("move forward");
-					pilot.moveForward();
-
-				} else if (yDifference < 0) {
-					// move backward
-					int count = 0; 
-					logger.info("move backward");
-					if (count == 0){
-						pilot.rotatePositive();
-						pilot.rotatePositive();
-					}
-					pilot.moveForward();
-					count++;
-				} else {
-					ypos = true;
-				}
-			}
-			Delay.msDelay(2000);
-			ypos = false;
-			xpos = false;
+				GridPose position = new  GridPose(posx, posy, Heading.PLUS_Y);
+				pilot.setGridPose(position);
+				Delay.msDelay(2000);
 		}
-	}
-
-	private int simX() {
-		int pos = (int) robot.getPose().getX();
-		if (pos != 0) {
-			pos = (int) (pos + 8.33);
-		}
-		return pos;
-	}
-
-	private int simY() {
-		int pos = (int) robot.getPose().getY();
-		if (pos != 0) {
-			pos = (int) (pos + 5.56);
-		}
-		return pos;
 	}
 }
