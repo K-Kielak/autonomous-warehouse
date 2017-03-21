@@ -30,7 +30,14 @@ public class MyDataInputStream extends DataInputStream{
 	
 	public Point readPoint() throws IOException {
 		try {
-			return new Point(this.readInt(), this.readInt());		
+			boolean not_null = this.readInt() == 1;
+			if (not_null) {
+				return new Point(this.readInt(), this.readInt());	
+			}
+			else {
+				return null;
+			}
+	
 		} catch (EOFException e) {
 			try {
 				Thread.sleep(10);

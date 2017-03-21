@@ -14,19 +14,23 @@ public class RobotInfo implements Communicatable {
 	private String name;
 	private Point position;
 	private Direction direction;
-	private JobInfo currentJob = new JobInfo();;
+	private float maxCapacity;
+	private JobInfo currentJob = new JobInfo();
+	private boolean wasJobCancelled = false;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
+	
 
-	public RobotInfo(String name, Point position, Direction direction) {
+	public RobotInfo(String name, Point position, Direction direction, float maxCapacity) {
 		super();
 		this.name = name;
 		this.position = position;
 		this.direction = direction;
+		this.maxCapacity = maxCapacity;
 	}
 	
 	public RobotInfo() {}
 
-	// returns null whole path was finished
+	// returns null if whole path was finished
 	public Direction move() {
 		if(currentPath.isEmpty())
 			return null;
@@ -34,8 +38,10 @@ public class RobotInfo implements Communicatable {
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
+		
 		if(position.distance(newPos) != 1)
-			throw new IllegalArgumentException("wrong path");
+			throw new IllegalArgumentException("wrong path:\ncurrent position: "
+												+ position + "\nnext position: " + newPos);
 		
 		if(position.x-1 == newPos.x)
 			newDir = Direction.LEFT; //turn west
@@ -49,13 +55,21 @@ public class RobotInfo implements Communicatable {
 		position = newPos;
 		return turn(newDir);
 	}
+	
+	public void cancelJob(){
+		wasJobCancelled = true;
+	}
+	
+	public boolean wasJobCancelled(){
+		return wasJobCancelled;
+	}
 
-	public void click() {
-		currentJob.decreaseQuantity();
+	public void pickAll(){
+		currentJob.pickAll();
 	}
 
 	public boolean finished() {
-		return currentJob == null || currentJob.getQuantity() <= 0;
+		return currentJob.getQuantity() <= 0;
 	}
 	
 	public String getName(){
@@ -65,14 +79,22 @@ public class RobotInfo implements Communicatable {
 	public Point getPosition() {
 		return position;
 	}
+	
+	public float getMaxCapacity(){
+		return maxCapacity;
+	}
 
-	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
+	public void setCurrentJob(JobInfo job) {
+		wasJobCancelled = false;
 		currentJob = job;
-		currentPath = path;
 	}
 
 	public JobInfo getCurrentJob() {
 		return currentJob;
+	}
+	
+	public void setCurrentPath(LinkedList<Point> path){
+		currentPath = path;
 	}
 
 	public LinkedList<Point> getCurrentPath() {
@@ -96,13 +118,15 @@ public class RobotInfo implements Communicatable {
 	}
 
 	@Override
-	public void sendObject(MyDataOutputStream o) throws IOException {
+	public synchronized void sendObject(MyDataOutputStream o) throws IOException {
 		// this.name
 		o.writeString(this.name);
 		// this.position
 		o.writePoint(this.position);
 		// this.direction
 		o.writeInt(this.direction.ordinal());
+		//this.maxCapacity
+		o.writeFloat(this.maxCapacity);
 		// this.currentJob
 		if (this.currentJob == null) {
 			// We tell other side that this is null
@@ -113,22 +137,24 @@ public class RobotInfo implements Communicatable {
 			o.writeInt(1);
 			this.currentJob.sendObject(o);
 		}
-
+		//this.wasJobCancelled
+		o.writeBoolean(this.wasJobCancelled);
 		// this.currentPath
 		o.writeInt(this.currentPath.size());
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
 			Point point = (Point) iterator.next();
-			System.out.println(point);
+//			System.out.println(point);
 			//Button.waitForAnyPress();
 			o.writePoint(point);
 		}
 	}
 
 	@Override
-	public RobotInfo receiveObject(MyDataInputStream i) throws IOException {
+	public synchronized RobotInfo receiveObject(MyDataInputStream i) throws IOException {
 		this.name = i.readString();
 		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];
+		this.maxCapacity = i.readFloat();
 		int currentJobIsNotNull = i.readInt();
 		if (currentJobIsNotNull == 1) {
 			// currentJob received is not null
@@ -136,9 +162,10 @@ public class RobotInfo implements Communicatable {
 		}
 		else {
 			// currentJob received is null
-			System.out.println("Setting currentJob to null");
+			//System.out.println("Setting currentJob to null");
 			this.currentJob = null;
 		}
+		this.wasJobCancelled = i.readBoolean();
 		// currentPath
 		int pathSize = i.readInt();
 		this.currentPath.clear();

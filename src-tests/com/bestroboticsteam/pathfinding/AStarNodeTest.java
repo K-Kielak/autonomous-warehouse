@@ -10,9 +10,9 @@ public class AStarNodeTest {
 	
 	@Test
 	public void TestConstructor(){
-		AStarNode node = new AStarNode(new Point(1,2), new AStarNode(true), 2, 1, 1);
+		AStarNode node = new AStarNode(new Point(1,2), new AStarNode(new Point(1, 1), true), 2, 1, 1);
 		assertEquals(node.location, new Point(1,2));
-		assertTrue(node.parentNode.isStart);
+		assertFalse(node.isStart);
 		assertEquals(node.fCost, 2);
 		assertEquals(node.gCost, 1);
 		assertEquals(node.hCost, 1);
