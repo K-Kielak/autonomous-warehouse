@@ -141,7 +141,7 @@ public class JobAssignment extends Thread {
 	}
 	
 	public Order viewFinishedOrder(int index){
-		if(index > finishedOrders.size())
+		if(index >= finishedOrders.size())
 			return null;
 		return finishedOrders.get(index);
 	}
