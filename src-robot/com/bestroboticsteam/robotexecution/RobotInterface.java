@@ -29,6 +29,12 @@ public class RobotInterface {
 		Delay.msDelay(800);
 	}
 	
+	public void printWaitingForOrdersMessage(RobotInfo robot) {
+		LCD.clear();
+		LCD.drawString(robot.getName(), 1, 0);
+		LCD.drawString("Waiting for new orders from the server...", 1, 1);	
+	}
+	
 	public void printMovingMessage(RobotInfo robot) {
 		if(robot.getCurrentJob().isDropPoint())
 			printMovingToDropPointMessage(robot);
@@ -41,10 +47,10 @@ public class RobotInterface {
 		LCD.drawString(robot.getName(), 1, 0);
 		JobInfo j = robot.getCurrentJob();
 		LCD.drawString("Please load: " + Integer.toString(j.getQuantity()-this.getItemsQuantity()) + " items", 1, 1);
-		LCD.drawString("Right (->) to load item", 1, 2);
-		LCD.drawString("Left (<-) to drop item", 1, 3);
-		LCD.drawString("Enter (orange) to and loading", 1, 4);
-		LCD.drawString("Escape (gray) to cancel order", 1, 5);
+		LCD.drawString("Right to load item", 0, 2);
+		LCD.drawString("Left (<-) to drop item", 0, 3);
+		LCD.drawString("Entr to and loading", 0, 4);
+		LCD.drawString("Esc to cancel order", 0, 5);
 		waitForLoading(robot);
 	}
 	

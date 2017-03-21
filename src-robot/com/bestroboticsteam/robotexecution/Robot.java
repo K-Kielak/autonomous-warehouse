@@ -57,25 +57,26 @@ public class Robot implements StoppableRunnable {
 		}
 
 		while (m_run) {
+			robotInterface.printWaitingForOrdersMessage(info);
 			receiveInfo();
 			// Going to destination
 			direction = info.move();
 			if (direction != null) {
 				System.out.println("moving to: " + direction);
 				// If we get a direction move to it. This means that we have not arrived yet.
-				robotInterface.printMovingMessage(this.info);
+				robotInterface.printMovingMessage(info);
 				movement.move(direction);
 			} else if (!info.finished()) { // Have we finished a job?
 				Sound.playTone(110, 800); // We play a sound
-				while (info.getCurrentJob().getQuantity() != robotInterface.getItemsQuantity()) {
+				while (info.getCurrentJob().getQuantity() > robotInterface.getItemsQuantity()) {
 					robotInterface.printLoadMessage(info);
 				}
 				
-				this.info.pickAll();
+				info.pickAll();
 				robotInterface.resetItemsQuantity(); // We've collected items so we reset item quantity
 			}
 			
-			this.sendInfo();
+			sendInfo();
 		}
 	}
 	
