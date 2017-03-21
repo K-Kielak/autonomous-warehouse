@@ -104,7 +104,7 @@ public class AStarTest {
 					new Point(0, 5), new Point(0, 4), new Point(0, 3), } };
 		for (int i = 0; i < locationDetinationPairs.length; i++) {
 			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
-			robots[i].setCurrentJob(new JobInfo("", new Point(0, 0)), path);
+			robots[i].setCurrentPath(path);
 			paths[i] = path;
 			assertArrayEquals(path.toArray(new Point[path.size()]), actualPaths[i]);
 		}
@@ -120,7 +120,7 @@ public class AStarTest {
 			{ new Point(2, 2), new Point(2, 1), new Point(3, 1), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
 		for (int i = 0; i < locationDetinationPairs.length; i++) {
 			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
-			robots[i].setCurrentJob(new JobInfo("", new Point(0, 0)), path);
+			robots[i].setCurrentPath(path);
 			paths[i] = path;
 			assertArrayEquals(path.toArray(new Point[path.size()]), actualPaths[i]);
 		}
@@ -136,7 +136,7 @@ public class AStarTest {
 			{ new Point(1, 0), new Point(2, 0), new Point(2, 1), new Point(2, 0), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
 		for (int i = 0; i < locationDetinationPairs.length; i++) {
 			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
-			robots[i].setCurrentJob(new JobInfo("", new Point(0, 0)), path);
+			robots[i].setCurrentPath(path);
 			paths[i] = path;
 			assertArrayEquals(path.toArray(new Point[path.size()]), actualPaths[i]);
 		}

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.*;
+import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import com.bestroboticsteam.robotsmanagement.RobotsManager;
 
 public class InterfaceController extends Thread {
@@ -16,10 +17,10 @@ public class InterfaceController extends Thread {
 	private InterfaceView warehouseInterface;
 	private JobSelection incomingJobs;
 	private JobAssignment assign;
-	private PCConnectionHandler connection;
 	private RobotsManager robots;
 	private ConcurrentMap<Integer, Order> tenJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private ConcurrentMap<Integer, Order> progJobsMap = new ConcurrentHashMap<Integer, Order>();
+	private static RobotInfo[] robotArray;
 	
 	public InterfaceController(JobSelection incomingJobs, JobAssignment assign, RobotsManager robots) {
 		this.robots = robots;
@@ -27,21 +28,34 @@ public class InterfaceController extends Thread {
 		this.incomingJobs = incomingJobs;
 		this.assign = assign;
 		this.warehouseInterface.addCancelListener(new cancelListener());
+		robotArray =  robots.getRobotInfos();
 	}
 
-/*	public void setRobotStatus() {
-		String status = connection.getStatus();
-		warehouseInterface.commLabel.setText(status);
-		//change this
-		
-	}*/
+	public void setRobotStatus() {
+		String robotInfo = "";
+		PCConnectionHandler connect;
+		String status = "";
+		for (int i = 0; i < robotArray.length; i++){
+			int jobId = 0;
+			String robot = robotArray[i].getName();
+			connect = new PCConnectionHandler(robot);
+			status = connect.getStatus();
+			int posx = CreateSimRobots.getPosX(i);
+			int posy = CreateSimRobots.getPosY(i);
+			if (status.equals("Connected")){
+				jobId = robotArray[i].getCurrentJob().getJobCode();
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " : " + robotInfo ;
+			} else {
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + status + " : " + robotInfo ;
+			}
+		}
+		warehouseInterface.setStatusText(robotInfo);
+	}
 	
 	public void setFinishedJobs(){
 		String jobsText = "";
 		for (int i = 0; i < 5; i++){
-			if(assign.viewFinishedOrder(i) == null){
-				jobsText = "No completed job";
-			} else {
+			if(assign.viewFinishedOrder(i) != null){
 				Order job = assign.viewFinishedOrder(i);
 				jobsText = jobsText + " : " + job.toString();
 			}	
@@ -70,7 +84,6 @@ public class InterfaceController extends Thread {
 			}
 		}
 		warehouseInterface.setInProgList(jobsText);
-		logger.debug(jobsText);
 	}
 
 	public void setTenJobs() {
@@ -78,7 +91,6 @@ public class InterfaceController extends Thread {
 		// get the first ten jobs from JobSelection and output them to displayText in IView
 		String jobsText = "";
 		LinkedList<Order> jobs = assign.getAssignedOrders();
-		System.out.println("TEST " + jobs.size());
 		for (int i = 0; i < jobs.size(); i++) {
 			Order job = jobs.get(i);
 			if (job == null) {
@@ -98,10 +110,10 @@ public class InterfaceController extends Thread {
 		while (true) {
 			try {
 				// while running keep updating jobs
-			//	setRobotStatus();
+				setRobotStatus();
 				setTenJobs();
 				setCurrentJobs();
-			//	setFinishedJobs();
+				setFinishedJobs();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
@@ -113,27 +125,27 @@ public class InterfaceController extends Thread {
 	public class cancelListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (e.getSource() == warehouseInterface.cancel) {
-				logger.info("cancel1 button has been pressed");
-				if(warehouseInterface.text3.getText()  == null){
+			if (e.getSource() == warehouseInterface.cancelUpcoming) {
+				logger.info("cancel upcoming job button has been pressed");
+				if(warehouseInterface.cancelTextU.getText()  == null){
 					logger.error("No job has been inputted - cannot cancel" );
 				} else {
-					String text = warehouseInterface.text3.getText();
+					String text = warehouseInterface.cancelTextU.getText();
 					int itemID = Integer.parseInt(text);
-					incomingJobs.cancelOrder(itemID);
+					assign.cancelOrder(itemID);
 					tenJobsMap.remove(itemID);
-					warehouseInterface.text3.setText("");
+					warehouseInterface.cancelTextU.setText("");
 				}
-			} else if (e.getSource() == warehouseInterface.cancel2) {
-				logger.info("cancel2 button has been pressed");
-				if(warehouseInterface.text4.getText()  == null){
+			} else if (e.getSource() == warehouseInterface.cancelCurrent) {
+				logger.info("cancel current job button has been pressed");
+				if(warehouseInterface.cancelTextC.getText()  == null){
 					logger.error("No job has been inputted - cannot cancel" );
 				} else {
-					String text = warehouseInterface.text4.getText();
+					String text = warehouseInterface.cancelTextC.getText();
 					int itemID = Integer.parseInt(text);
 					assign.cancelOrder(itemID);
 					progJobsMap.remove(itemID);
-					warehouseInterface.text4.setText("");
+					warehouseInterface.cancelTextC.setText("");
 				}
 			}
 		}

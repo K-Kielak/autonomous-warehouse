@@ -334,7 +334,7 @@ public class JobAssignment extends Thread {
 			}
 		}
 		
-		if(!ress.getLast().isGoingToDropPoint())
+		if(!ress.getLast().isDropPoint())
 			ress.addLast(new JobInfo("DropBox", this.getDrop(ress.get(ress.size()-1)), orderCode));
 		
 		weights[robotIndex] = weight;

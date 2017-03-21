@@ -28,7 +28,7 @@ public class CreateSimRobots {
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
 			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, robotArray[i]);
-			new Thread(controller).start();
+			controller.start();
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;

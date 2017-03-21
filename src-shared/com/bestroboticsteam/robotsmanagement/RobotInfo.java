@@ -40,7 +40,8 @@ public class RobotInfo implements Communicatable {
 		Direction newDir;
 		
 		if(position.distance(newPos) != 1)
-			throw new IllegalArgumentException("wrong path");
+			throw new IllegalArgumentException("wrong path:\ncurrent position: "
+												+ position + "\nnext position: " + newPos);
 		
 		if(position.x-1 == newPos.x)
 			newDir = Direction.LEFT; //turn west
@@ -55,19 +56,19 @@ public class RobotInfo implements Communicatable {
 		return turn(newDir);
 	}
 	
-	public synchronized void cancelJob(){
+	public void cancelJob(){
 		wasJobCancelled = true;
 	}
 	
-	public synchronized boolean wasJobCancelled(){
+	public boolean wasJobCancelled(){
 		return wasJobCancelled;
 	}
 
-	public synchronized void pickAll(){
+	public void pickAll(){
 		currentJob.pickAll();
 	}
 
-	public synchronized boolean finished() {
+	public boolean finished() {
 		return currentJob.getQuantity() <= 0;
 	}
 	
@@ -88,7 +89,7 @@ public class RobotInfo implements Communicatable {
 		currentJob = job;
 	}
 
-	public synchronized JobInfo getCurrentJob() {
+	public JobInfo getCurrentJob() {
 		return currentJob;
 	}
 	
@@ -96,7 +97,7 @@ public class RobotInfo implements Communicatable {
 		currentPath = path;
 	}
 
-	public synchronized LinkedList<Point> getCurrentPath() {
+	public LinkedList<Point> getCurrentPath() {
 		return currentPath;
 	}
 

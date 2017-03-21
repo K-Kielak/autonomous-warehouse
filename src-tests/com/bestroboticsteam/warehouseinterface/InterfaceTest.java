@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class InterfaceTest {
-	InterfaceView view = new InterfaceView();
-	InterfaceController controller = new InterfaceController(null, null);
+	InterfaceView view = new InterfaceView(null);
+	InterfaceController controller = new InterfaceController(null, null, null);
 
 	@Test
 	public void jobListTest() {
