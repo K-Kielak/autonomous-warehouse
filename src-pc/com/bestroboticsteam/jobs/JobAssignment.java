@@ -183,6 +183,7 @@ public class JobAssignment extends Thread {
 				}
 				assignedOrders.remove(o);
 				assigned = false;
+				break;
 			}
 		}
 		
