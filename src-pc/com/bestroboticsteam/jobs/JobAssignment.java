@@ -83,7 +83,9 @@ public class JobAssignment extends Thread {
 			}
 		}
 		
-		assignedOrders.add(nextOrder);
+		synchronized(assignedOrders){
+			assignedOrders.add(nextOrder);
+		}
 		
 		MyRobotInfo robot = robotMap.get(robots[index].getName());
 		
@@ -99,9 +101,11 @@ public class JobAssignment extends Thread {
 		LinkedList<Order> result = new LinkedList<Order>();
 		LinkedList<Order> currentOrder = getCurrentOrders();
 		
-		for(Order o: assignedOrders)
-			if(!currentOrder.contains(o))
-				result.add(o);
+		synchronized(assignedOrders){
+			for(Order o: assignedOrders)
+				if(!currentOrder.contains(o))
+					result.add(o);
+		}
 		
 		return result;
 	}
@@ -113,20 +117,23 @@ public class JobAssignment extends Thread {
 				
 		JobInfo job = robot.getNextJob();
 		
-		if(currentOrder == null){
-			for(Order o: assignedOrders){
-				if(job.getJobCode() == o.getId())
-					robot.setCurrentOrder(o);
-			}
-		}else if (currentOrder.getId() != job.getJobCode()){
-			for(Order o: assignedOrders){
-				if(o.getId() == currentOrder.getId()){
-					finishedOrders.add(currentOrder);
-					assignedOrders.remove(o);
-					robot.decrementNumberAssigned();
+		synchronized(assignedOrders){
+			
+			if(currentOrder == null){
+				for(Order o: assignedOrders){
+					if(job.getJobCode() == o.getId())
+						robot.setCurrentOrder(o);
 				}
-				if(job.getJobCode() == o.getId()){
-					robot.setCurrentOrder(o);
+			}else if (currentOrder.getId() != job.getJobCode()){
+				for(Order o: assignedOrders){
+					if(o.getId() == currentOrder.getId()){
+						finishedOrders.add(currentOrder);
+						assignedOrders.remove(o);
+						robot.decrementNumberAssigned();
+					}
+					if(job.getJobCode() == o.getId()){
+						robot.setCurrentOrder(o);
+					}
 				}
 			}
 		}
@@ -170,22 +177,24 @@ public class JobAssignment extends Thread {
 	
 	
 	public synchronized void cancelOrder(int code){
-		//robotMap.get(robots[0].getName()).cancelJob(order);
-		//currentOrder = null;
 		
 		boolean current = false;
 		boolean assigned = false;
 		
-		for(Order o: assignedOrders){
-			if(o.getId() == code){
-				
-				for(int i = 0; i < robots.length; i++){
-					robotMap.get(robots[i].getName()).cancelOrder(code);
+		synchronized(assignedOrders){
+		
+			for(Order o: assignedOrders){
+				if(o.getId() == code){
+					
+					for(int i = 0; i < robots.length; i++){
+						robotMap.get(robots[i].getName()).cancelOrder(code);
+					}
+					assignedOrders.remove(o);
+					assigned = false;
+					break;
 				}
-				assignedOrders.remove(o);
-				assigned = false;
-				break;
 			}
+		
 		}
 		
 		if(!assigned){
