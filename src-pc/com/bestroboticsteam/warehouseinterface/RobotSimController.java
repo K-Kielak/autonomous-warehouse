@@ -42,9 +42,13 @@ public class RobotSimController extends Thread {
 
 					} else if (xDifference < 0) {
 						// move right
+						int count = 0;
 						logger.info("moving right");
-						pilot.rotateNegative();
+						if (count == 0){
+							pilot.rotateNegative();
+						} 
 						pilot.moveForward();
+						count++;
 					} else {
 						xpos = true;
 					}
@@ -56,11 +60,14 @@ public class RobotSimController extends Thread {
 
 				} else if (yDifference < 0) {
 					// move backward
+					int count = 0; 
 					logger.info("move backward");
-					pilot.rotatePositive();
-					pilot.rotatePositive();
+					if (count == 0){
+						pilot.rotatePositive();
+						pilot.rotatePositive();
+					}
 					pilot.moveForward();
-
+					count++;
 				} else {
 					ypos = true;
 				}
