@@ -69,11 +69,11 @@ public class Robot extends Thread{
 		}
 	}
 	
-	public synchronized RobotInfo getInfo(){
+	public RobotInfo getInfo(){
 		return info;
 	}
 	
-	private synchronized void recalculatePath(){
+	private void recalculatePath(){
 		Point start = info.getPosition();
 		Point goal = info.getCurrentJob().getPosition();
 		Pair<Point, Point> startGoalPair = Pair.makePair(start, goal);

@@ -55,19 +55,19 @@ public class RobotInfo implements Communicatable {
 		return turn(newDir);
 	}
 	
-	public synchronized void cancelJob(){
+	public void cancelJob(){
 		wasJobCancelled = true;
 	}
 	
-	public synchronized boolean wasJobCancelled(){
+	public boolean wasJobCancelled(){
 		return wasJobCancelled;
 	}
 
-	public synchronized void pickAll(){
+	public void pickAll(){
 		currentJob.pickAll();
 	}
 
-	public synchronized boolean finished() {
+	public boolean finished() {
 		return currentJob.getQuantity() <= 0;
 	}
 	
@@ -88,7 +88,7 @@ public class RobotInfo implements Communicatable {
 		currentJob = job;
 	}
 
-	public synchronized JobInfo getCurrentJob() {
+	public JobInfo getCurrentJob() {
 		return currentJob;
 	}
 	
@@ -96,7 +96,7 @@ public class RobotInfo implements Communicatable {
 		currentPath = path;
 	}
 
-	public synchronized LinkedList<Point> getCurrentPath() {
+	public LinkedList<Point> getCurrentPath() {
 		return currentPath;
 	}
 
