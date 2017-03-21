@@ -162,7 +162,7 @@ public class RobotInfo implements Communicatable {
 		}
 		else {
 			// currentJob received is null
-			System.out.println("Setting currentJob to null");
+			//System.out.println("Setting currentJob to null");
 			this.currentJob = null;
 		}
 		this.wasJobCancelled = i.readBoolean();
