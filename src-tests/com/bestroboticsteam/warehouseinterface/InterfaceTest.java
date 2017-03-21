@@ -48,5 +48,13 @@ public class InterfaceTest {
 		assertEquals(expectedOutput, actualJob);
 
 	}
+	
+	@Test
+	public void jobFinishedTest(){
+		view.setFinishedList("job1 : job2 : job3 : job4");
+		String actualJob = view.getFinishedList();
+		String expectedOutput = "job1\njob2\njob3\njob4\n";
+		assertEquals(expectedOutput, actualJob);
+	}
 
 }
