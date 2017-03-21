@@ -1,6 +1,7 @@
 package com.bestroboticsteam.jobs;
 
 import java.awt.Point;
+import java.nio.channels.Selector;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -167,9 +168,27 @@ public class JobAssignment extends Thread {
 	}
 	
 	
-	public synchronized void cancelOrder(int order){
+	public synchronized void cancelOrder(int code){
 		//robotMap.get(robots[0].getName()).cancelJob(order);
 		//currentOrder = null;
+		
+		boolean current = false;
+		boolean assigned = false;
+		
+		for(Order o: assignedOrders){
+			if(o.getId() == code){
+				
+				for(int i = 0; i < robots.length; i++){
+					robotMap.get(robots[i].getName()).cancelOrder(code);
+				}
+				assignedOrders.remove(o);
+				assigned = false;
+			}
+		}
+		
+		if(!assigned){
+			selection.cancelOrder(code);
+		}
 		
 	} 
 	
@@ -305,6 +324,9 @@ public class JobAssignment extends Thread {
 				weight = weight + value;
 			}
 		}
+		
+		if(!ress.getLast().isGoingToDropPoint())
+			ress.addLast(new JobInfo("DropBox", this.getDrop(ress.get(ress.size()-1))));
 		
 		weights[robotIndex] = weight;
 		

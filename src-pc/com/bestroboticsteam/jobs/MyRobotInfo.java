@@ -95,8 +95,25 @@ public class MyRobotInfo {
 		}
 	}
 	
-	public void cancelJob(int code){
-		while(jobPath.peek().getJobCode() == code)
-			jobPath.remove();
+	public void cancelOrder(int code){
+		
+		boolean removed = false;
+		
+		for(JobInfo info: jobPath){
+			if(info.getJobCode() == code){
+				jobPath.remove(info);
+				removed = true;
+			}
+		}
+		
+		if(removed)
+			this.decrementNumberAssigned();
+		
+		if(this.currentOrder.getId() == code)
+			this.currentOrder = null;
+		
+		if(this.currentJob.getJobCode() == code)
+			this.currentJob = null;
+		
 	}
 }
