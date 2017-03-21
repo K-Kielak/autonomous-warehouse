@@ -40,7 +40,7 @@ public class AStar {
 				}
 			}else{
 				//If the robot has finished its current job then it will be free to move
-				if(!robot.finished()){
+				if(robot.getCurrentJob().getPosition().equals(robot.getPosition())){
 					for(int i = 0; i<100; i++){
 						//This is needed because the other robots may be stopped to pick up or drop off
 						timedReservationTable.put(new TimePoint(robot.getPosition(), i), true);
