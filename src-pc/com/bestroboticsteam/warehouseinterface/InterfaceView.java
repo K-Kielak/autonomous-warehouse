@@ -36,7 +36,7 @@ public class InterfaceView extends JFrame {
     public JButton cancelUpcoming = new JButton();
 	public JTextArea cancelTextC = new JTextArea();
     public JButton cancelCurrent = new JButton();
-	
+	public JLabel reward = new JLabel();
 	public InterfaceView(RobotsManager robots) {
 		mapVis = CreateSimRobots.robots(robots);
 		this.setTitle("Warehouse Management Interface");
@@ -49,7 +49,7 @@ public class InterfaceView extends JFrame {
 		JLabel doingLabel = new JLabel("Jobs in Progress");
 		JLabel finLabel = new JLabel("Jobs recently completed");
 		JLabel commLabel = new JLabel("Robot Status");
-		
+
 		// list of jobs in progress
 		toDoLabel.setPreferredSize(new Dimension(150, 20));
 		toDoLabel.setOpaque(true);
@@ -108,6 +108,7 @@ public class InterfaceView extends JFrame {
 		jobInProgPanel.add(cancelCurrent);
 		jobFinishedPanel.add(finLabel);
 		jobFinishedPanel.add(fishedJobText);
+		jobFinishedPanel.add(reward);
 		jobPanel.add(jobListPanel);
 		jobPanel.add(jobInProgPanel);
 		jobPanel.add(jobFinishedPanel);
@@ -198,5 +199,9 @@ public class InterfaceView extends JFrame {
 		for (int i = 0; i < parts.length; i++) {
 			statusText.append(parts[i] + newline);
 		}
+	}
+
+	public void setReward(float addReward) {
+		reward.setText(Float.toString(addReward));
 	}
 }

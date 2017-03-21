@@ -14,7 +14,7 @@ import rp.robotics.visualisation.GridMapVisualisation;
 import rp.robotics.visualisation.MapVisualisationComponent;
 
 public class CreateSimRobots {
-	public static GridMap map = MapUtils.createRealWarehouse();
+	public static GridMap map = MyGridMap.createRealWarehouse();
 	public static MapBasedSimulation sim = new MapBasedSimulation(map);
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;
@@ -27,7 +27,7 @@ public class CreateSimRobots {
 		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
-			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, robotArray[i]);
+			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
 			controller.start();
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
