@@ -8,9 +8,8 @@ import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.simulation.MovableRobot;
-import rp.systems.StoppableRunnable;
 
-public class RobotSimController implements StoppableRunnable {
+public class RobotSimController extends Thread {
 	final static Logger logger = Logger.getLogger(RobotSimController.class);
 	private GridMap map;
 	private GridPilot pilot;
@@ -26,81 +25,65 @@ public class RobotSimController implements StoppableRunnable {
 
 	@Override
 	public void run() {
-		boolean ypos = false;
-		boolean xpos = false;
 		while (true) {
-			while (!ypos) {
-				int yDifference = robotY() - simY();
-				while (!xpos) {
-					int xDifference = robotX() - simX();
-					if (xDifference > 0) {
-						// move left
-						logger.debug("moving left");
-						for (int i = 0; i < xDifference; i++) {
-							pilot.moveForward();
-						}
-					} else if (xDifference < 0) {
-						// move right
-						logger.debug("moving right");
-						pilot.rotateNegative();
-						for (int i = 0; i < xDifference; i++) {
-							pilot.moveForward();
-						}
-					}
-					xpos = true;
+			int xDifference = (actualRobotX() - getPosX());
+			int yDifference = (actualRobotY() - getPosY());
+			if (yDifference > 0) {
+				logger.debug("moving forward");
+				for (int i = 0; i < yDifference; i++) {
+					pilot.moveForward();
 				}
-				if (yDifference > 0) {
-					// move forward
-					logger.debug("move forward");
-					for (int i = 0; i < yDifference; i++) {
-						pilot.moveForward();
-					}
-				} else if (yDifference < 0) {
-					// move backward
-					logger.debug("move backward");
-					pilot.rotatePositive();
-					pilot.rotatePositive();
-					for (int i = 0; i < yDifference; i++) {
-						pilot.moveForward();
-					}
+			} else if (yDifference < 0) {
+				logger.debug("moving backward");
+				pilot.rotatePositive();
+				pilot.rotatePositive();
+				for (int i = 0; i < yDifference; i++) {
+					pilot.moveForward();
 				}
-				xpos = true;
+			} else {
+				break;
 			}
-			ypos = false;
-			xpos = false;
+			if (xDifference > 0) {
+				logger.debug("moving left");
+				pilot.rotateNegative();
+				for (int i = 0; i < xDifference; i++) {
+					pilot.moveForward();
+				}
+			} else if (xDifference < 0) {
+				logger.debug("moving right");
+				pilot.rotatePositive();
+				for (int i = 0; i < xDifference; i++) {
+					pilot.moveForward();
+				}
+			}
 		}
 	}
 
-	private int simY() {
-		// TODO Auto-generated method stub
-		int yPos = (int) robot.getPose().getY();
-		logger.debug(yPos);
-		return yPos;
+	// the actual robot
+	public int actualRobotX() {
+		logger.debug("Actual robot x " + robotInfo.getName() + " " + robotInfo.getPosition().x);
+		return robotInfo.getPosition().x;
 	}
 
-	private int simX() {
-		int xPos = (int) robot.getPose().getX();
-		logger.debug(xPos);
-		return xPos;
+	public int actualRobotY() {
+		logger.debug("Actual robot y " +  robotInfo.getName() + " " + robotInfo.getPosition().y);
+		return robotInfo.getPosition().y;
 	}
 
-	private int robotY() {
-		int yPos = robotInfo.getPosition().x;
-		yPos = 6;
-		logger.debug(yPos);
-		return yPos;
+	// visual robot
+	public int getPosX() {
+		Pose pos = robot.getPose();
+		int actual = (int) pos.getX();
+		int scaled = (int) (actual * 3.67);
+		logger.debug("sim robot x " +  robotInfo.getName() + " " + scaled);
+		return scaled;
 	}
 
-	private int robotX() {
-		int xPos = robotInfo.getPosition().x;
-		logger.debug(xPos);
-		xPos = 1;
-		return xPos;
-	}
-
-	@Override
-	public void stop() {
-		// TODO Auto-generated method stub
-
+	public int getPosY() {
+		Pose pos = robot.getPose();
+		int actual = (int) pos.getY();
+		int scaled = (int) (actual * 3.67);
+		logger.debug("sim robot y " +  robotInfo.getName() + " " + scaled);
+		return scaled;
 	}
 }
