@@ -66,6 +66,13 @@ public class JobAssignment extends Thread {
 		thread.start();
 	}
 	
+	private Order getOrderAssigned(int code){
+		for(Order o: assignedOrders)
+			if(o.getId() == code)
+				return o;
+		return null;
+	}
+	
 	private void assign(Order nextOrder) {
 		
 		LinkedList<JobInfo> finalPath = null;
@@ -83,7 +90,9 @@ public class JobAssignment extends Thread {
 			}
 		}
 		
-		assignedOrders.add(nextOrder);
+		synchronized(assignedOrders){
+			assignedOrders.add(nextOrder);
+		}
 		
 		MyRobotInfo robot = robotMap.get(robots[index].getName());
 		
@@ -99,9 +108,11 @@ public class JobAssignment extends Thread {
 		LinkedList<Order> result = new LinkedList<Order>();
 		LinkedList<Order> currentOrder = getCurrentOrders();
 		
-		for(Order o: assignedOrders)
-			if(!currentOrder.contains(o))
-				result.add(o);
+		synchronized(assignedOrders){
+			for(Order o: assignedOrders)
+				if(!currentOrder.contains(o))
+					result.add(o);
+		}
 		
 		return result;
 	}
@@ -113,21 +124,19 @@ public class JobAssignment extends Thread {
 				
 		JobInfo job = robot.getNextJob();
 		
-		if(currentOrder == null){
-			for(Order o: assignedOrders){
-				if(job.getJobCode() == o.getId())
-					robot.setCurrentOrder(o);
-			}
-		}else if (currentOrder.getId() != job.getJobCode()){
-			for(Order o: assignedOrders){
-				if(o.getId() == currentOrder.getId()){
-					finishedOrders.add(currentOrder);
-					assignedOrders.remove(o);
-					robot.decrementNumberAssigned();
-				}
-				if(job.getJobCode() == o.getId()){
-					robot.setCurrentOrder(o);
-				}
+		synchronized(assignedOrders){
+			
+			if(currentOrder == null){
+				robot.setCurrentOrder(this.getOrderAssigned(job.getJobCode()));
+			
+			}else if (currentOrder.getId() != job.getJobCode()){
+				Order o = this.getOrderAssigned(job.getJobCode());
+				
+				finishedOrders.add(currentOrder);
+				assignedOrders.remove(currentOrder);
+				robot.decrementNumberAssigned();
+				robot.setCurrentOrder(o);	
+				
 			}
 		}
 		
@@ -170,22 +179,19 @@ public class JobAssignment extends Thread {
 	
 	
 	public synchronized void cancelOrder(int code){
-		//robotMap.get(robots[0].getName()).cancelJob(order);
-		//currentOrder = null;
-		
-		boolean current = false;
+	
 		boolean assigned = false;
 		
-		for(Order o: assignedOrders){
-			if(o.getId() == code){
-				
-				for(int i = 0; i < robots.length; i++){
-					robotMap.get(robots[i].getName()).cancelOrder(code);
-				}
-				assignedOrders.remove(o);
-				assigned = false;
-				break;
+		synchronized(assignedOrders){
+			
+			Order o = this.getOrderAssigned(code);
+			
+			for(int i = 0; i < robots.length; i++){
+				robotMap.get(robots[i].getName()).cancelOrder(code);
 			}
+			assignedOrders.remove(o);
+			assigned = false;
+		
 		}
 		
 		if(!assigned){
