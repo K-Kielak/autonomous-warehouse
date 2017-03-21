@@ -11,7 +11,7 @@ import rp.robotics.simulation.MovableRobot;
 import rp.systems.StoppableRunnable;
 
 public class RobotSimController implements StoppableRunnable {
-	final static Logger logger = Logger.getLogger(CreateSimRobots.class);
+	final static Logger logger = Logger.getLogger(RobotSimController.class);
 	private GridMap map;
 	private GridPilot pilot;
 	private RobotInfo robotInfo;
@@ -30,12 +30,12 @@ public class RobotSimController implements StoppableRunnable {
 			int xDifference = (actualRobotX() - getPosX());
 			int yDifference = (actualRobotY() - getPosY());
 			if (yDifference > 0) {
-				System.out.println("moving forward");
+				logger.debug("moving forward");
 				for (int i = 0; i < yDifference; i++) {
 					pilot.moveForward();
 				}
 			} else if (yDifference < 0) {
-				System.out.println("moving backward");
+				logger.debug("moving backward");
 				pilot.rotatePositive();
 				pilot.rotatePositive();
 				for (int i = 0; i < yDifference; i++) {
@@ -45,13 +45,13 @@ public class RobotSimController implements StoppableRunnable {
 				break;
 			}
 			if (xDifference > 0) {
-				System.out.println("moving left");
+				logger.debug("moving left");
 				pilot.rotateNegative();
 				for (int i = 0; i < xDifference; i++) {
 					pilot.moveForward();
 				}
 			} else if (xDifference < 0) {
-				System.out.println("moving right");
+				logger.debug("moving right");
 				pilot.rotatePositive();
 				for (int i = 0; i < xDifference; i++) {
 					pilot.moveForward();
@@ -68,12 +68,12 @@ public class RobotSimController implements StoppableRunnable {
 
 	// the actual robot
 	public int actualRobotX() {
-		System.out.println("Actual robot x " + robotInfo.getName() + " " + robotInfo.getPosition().x);
+		logger.debug("Actual robot x " + robotInfo.getName() + " " + robotInfo.getPosition().x);
 		return robotInfo.getPosition().x;
 	}
 
 	public int actualRobotY() {
-		System.out.println("Actual robot y " +  robotInfo.getName() + " " + robotInfo.getPosition().y);
+		logger.debug("Actual robot y " +  robotInfo.getName() + " " + robotInfo.getPosition().y);
 		return robotInfo.getPosition().y;
 	}
 
@@ -82,7 +82,7 @@ public class RobotSimController implements StoppableRunnable {
 		Pose pos = robot.getPose();
 		int actual = (int) pos.getX();
 		int scaled = (int) (actual * 3.67);
-		System.out.println("sim robot x " +  robotInfo.getName() + " " + scaled);
+		logger.debug("sim robot x " +  robotInfo.getName() + " " + scaled);
 		return scaled;
 	}
 
@@ -90,7 +90,7 @@ public class RobotSimController implements StoppableRunnable {
 		Pose pos = robot.getPose();
 		int actual = (int) pos.getY();
 		int scaled = (int) (actual * 3.67);
-		System.out.println("sim robot y " +  robotInfo.getName() + " " + scaled);
+		logger.debug("sim robot y " +  robotInfo.getName() + " " + scaled);
 		return scaled;
 	}
 }
