@@ -38,35 +38,39 @@ public class RobotSimController extends Thread {
 					if (xDifference > 0) {
 						// move left
 						logger.info("moving left");
-						for (int i = 0; i < xDifference; i++) {
-							pilot.moveForward();
-						}
+						pilot.moveForward();
+
 					} else if (xDifference < 0) {
 						// move right
+						int count = 0;
 						logger.info("moving right");
-						pilot.rotateNegative();
-						for (int i = 0; i < xDifference; i++) {
-							pilot.moveForward();
-						}
+						if (count == 0){
+							pilot.rotateNegative();
+						} 
+						pilot.moveForward();
+						count++;
+					} else {
+						xpos = true;
 					}
-					xpos = true;
 				}
 				if (yDifference > 0) {
 					// move forward
 					logger.info("move forward");
-					for (int i = 0; i < yDifference; i++) {
-						pilot.moveForward();
-					}
+					pilot.moveForward();
+
 				} else if (yDifference < 0) {
 					// move backward
+					int count = 0; 
 					logger.info("move backward");
-					pilot.rotatePositive();
-					pilot.rotatePositive();
-					for (int i = 0; i < yDifference; i++) {
-						pilot.moveForward();
+					if (count == 0){
+						pilot.rotatePositive();
+						pilot.rotatePositive();
 					}
+					pilot.moveForward();
+					count++;
+				} else {
+					ypos = true;
 				}
-				ypos = true;
 			}
 			Delay.msDelay(2000);
 			ypos = false;
@@ -76,16 +80,15 @@ public class RobotSimController extends Thread {
 
 	private int simX() {
 		int pos = (int) robot.getPose().getX();
-		if (pos != 0){
+		if (pos != 0) {
 			pos = (int) (pos + 8.33);
 		}
 		return pos;
 	}
 
-	
 	private int simY() {
 		int pos = (int) robot.getPose().getY();
-		if (pos != 0){
+		if (pos != 0) {
 			pos = (int) (pos + 5.56);
 		}
 		return pos;
