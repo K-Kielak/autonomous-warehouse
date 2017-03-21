@@ -28,12 +28,80 @@ public class RobotSimController extends Thread {
 	}
 
 	public void run() {
+		boolean ypos = false;
+		boolean xpos = false;
 		while (true) {
+			while (!ypos) {
+				int county = 0;
 				posx = CreateSimRobots.getPosX(theRobot);
 				posy = CreateSimRobots.getPosY(theRobot);
-				GridPose position = new  GridPose(posx, posy, Heading.PLUS_Y);
-				pilot.setGridPose(position);
-				Delay.msDelay(2000);
+				int yDifference = posy - simY();
+				while (!xpos) {
+					int countx1 = 0;
+					int countx2 = 0;
+					int xDifference = posx - simX();
+					logger.debug("actualx " + posx);
+					logger.debug(simX());
+					if (xDifference > 0) {
+						// move right
+						if (countx2 == 0) {
+							pilot.rotateNegative();
+						}
+						logger.debug("moving right");
+						pilot.moveForward();
+						countx2++;
+
+					} else if (xDifference < 0) {
+						// move left
+						logger.debug("moving left");
+						if (countx1 == 0) {
+							pilot.rotatePositive();
+						}
+						pilot.moveForward();
+						countx1++;
+					} else {
+						xpos = true;
+					}
+					countx1 = 0;
+					countx2 = 0;
+				}
+				if (yDifference > 0) {
+					// move forward
+					logger.debug("move forward");
+					pilot.moveForward();
+
+				} else if (yDifference < 0) {
+					// move backward
+					logger.debug("move backward");
+					if (county == 0) {
+						pilot.rotatePositive();
+						pilot.rotatePositive();
+					}
+					pilot.moveForward();
+					county++;
+				} else {
+					ypos = true;
+				}
+			}
+			Delay.msDelay(1000);
+			ypos = false;
+			xpos = false;
 		}
+	}
+
+	private int simX() {
+		int pos = (int) robot.getPose().getX();
+		if (pos != 0) {
+			pos = (int) (pos + 8.33);
+		}
+		return pos;
+	}
+
+	private int simY() {
+		int pos = (int) robot.getPose().getY();
+		if (pos != 0) {
+			pos = (int) (pos + 5.56);
+		}
+		return pos;
 	}
 }
