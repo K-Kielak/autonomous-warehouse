@@ -31,7 +31,8 @@ public class RobotInterface {
 	
 	public void printWaitingForOrdersMessage(RobotInfo robot) {
 		LCD.clear();
-		LCD.drawString(robot.getName(), 1, 0);
+		if(robot.getName() != null)
+			LCD.drawString(robot.getName(), 1, 0);
 		LCD.drawString("Waiting for new orders from the server...", 1, 1);	
 	}
 	
