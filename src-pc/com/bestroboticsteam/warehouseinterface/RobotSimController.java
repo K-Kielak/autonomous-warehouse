@@ -66,7 +66,7 @@ public class RobotSimController extends Thread {
 						pilot.moveForward();
 					}
 				}
-				xpos = true;
+				ypos = true;
 			}
 			Delay.msDelay(2000);
 			ypos = false;
