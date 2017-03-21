@@ -1,9 +1,7 @@
 package com.bestroboticsteam.warehouseinterface;
 
 import org.apache.log4j.Logger;
-
-import com.bestroboticsteam.robotsmanagement.RobotInfo;
-import lejos.robotics.navigation.Pose;
+import lejos.util.Delay;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
@@ -13,77 +11,83 @@ public class RobotSimController extends Thread {
 	final static Logger logger = Logger.getLogger(RobotSimController.class);
 	private GridMap map;
 	private GridPilot pilot;
-	private RobotInfo robotInfo;
+	private int theRobot;
 	private MovableRobot robot;
+	private int posx;
+	private int posy;
 
-	public RobotSimController(MovableRobot robot, GridMap map, GridPose start, RobotInfo robotInfo) {
+	public RobotSimController(MovableRobot robot, GridMap map, GridPose start, int theRobot) {
 		this.map = map;
 		this.pilot = new GridPilot(robot.getPilot(), map, start);
 		this.robot = robot;
-		this.robotInfo = robotInfo;
+		this.theRobot = theRobot;
 	}
 
-	@Override
 	public void run() {
+		boolean ypos = false;
+		boolean xpos = false;
 		while (true) {
-			int xDifference = (actualRobotX() - getPosX());
-			int yDifference = (actualRobotY() - getPosY());
-			if (yDifference > 0) {
-				logger.debug("moving forward");
-				for (int i = 0; i < yDifference; i++) {
-					pilot.moveForward();
+			while (!ypos) {
+				posx = CreateSimRobots.getPosX(theRobot);
+				posy = CreateSimRobots.getPosY(theRobot);
+				int yDifference = posy - simY();
+				while (!xpos) {
+					int xDifference = posx - simX();
+					logger.info(posx);
+					logger.info(simX());
+					if (xDifference > 0) {
+						// move left
+						logger.info("moving left");
+						for (int i = 0; i < xDifference; i++) {
+							pilot.moveForward();
+						}
+					} else if (xDifference < 0) {
+						// move right
+						logger.info("moving right");
+						pilot.rotateNegative();
+						for (int i = 0; i < xDifference; i++) {
+							pilot.moveForward();
+						}
+					}
+					xpos = true;
 				}
-			} else if (yDifference < 0) {
-				logger.debug("moving backward");
-				pilot.rotatePositive();
-				pilot.rotatePositive();
-				for (int i = 0; i < yDifference; i++) {
-					pilot.moveForward();
+				if (yDifference > 0) {
+					// move forward
+					logger.info("move forward");
+					for (int i = 0; i < yDifference; i++) {
+						pilot.moveForward();
+					}
+				} else if (yDifference < 0) {
+					// move backward
+					logger.info("move backward");
+					pilot.rotatePositive();
+					pilot.rotatePositive();
+					for (int i = 0; i < yDifference; i++) {
+						pilot.moveForward();
+					}
 				}
-			} else {
-				break;
+				ypos = true;
 			}
-			if (xDifference > 0) {
-				logger.debug("moving left");
-				pilot.rotateNegative();
-				for (int i = 0; i < xDifference; i++) {
-					pilot.moveForward();
-				}
-			} else if (xDifference < 0) {
-				logger.debug("moving right");
-				pilot.rotatePositive();
-				for (int i = 0; i < xDifference; i++) {
-					pilot.moveForward();
-				}
-			}
+			Delay.msDelay(2000);
+			ypos = false;
+			xpos = false;
 		}
 	}
 
-	// the actual robot
-	public int actualRobotX() {
-		logger.debug("Actual robot x " + robotInfo.getName() + " " + robotInfo.getPosition().x);
-		return robotInfo.getPosition().x;
+	private int simX() {
+		int pos = (int) robot.getPose().getX();
+		if (pos != 0){
+			pos = (int) (pos + 8.33);
+		}
+		return pos;
 	}
 
-	public int actualRobotY() {
-		logger.debug("Actual robot y " +  robotInfo.getName() + " " + robotInfo.getPosition().y);
-		return robotInfo.getPosition().y;
-	}
-
-	// visual robot
-	public int getPosX() {
-		Pose pos = robot.getPose();
-		int actual = (int) pos.getX();
-		int scaled = (int) (actual * 3.67);
-		logger.debug("sim robot x " +  robotInfo.getName() + " " + scaled);
-		return scaled;
-	}
-
-	public int getPosY() {
-		Pose pos = robot.getPose();
-		int actual = (int) pos.getY();
-		int scaled = (int) (actual * 3.67);
-		logger.debug("sim robot y " +  robotInfo.getName() + " " + scaled);
-		return scaled;
+	
+	private int simY() {
+		int pos = (int) robot.getPose().getY();
+		if (pos != 0){
+			pos = (int) (pos + 5.56);
+		}
+		return pos;
 	}
 }

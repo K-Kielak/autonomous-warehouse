@@ -33,33 +33,33 @@ public class InterfaceController extends Thread {
 
 	public void setRobotStatus() {
 		String robotInfo = "";
-		PCConnectionHandler connect;
-		String status = "";
+	//	String status = "";
 		for (int i = 0; i < robotArray.length; i++){
 			int jobId = 0;
 			String robot = robotArray[i].getName();
-			connect = new PCConnectionHandler(robot);
-			status = connect.getStatus();
 			int posx = CreateSimRobots.getPosX(i);
 			int posy = CreateSimRobots.getPosY(i);
-			if (status.equals("Connected")){
+		//	if (status.equals("Connected")){
 				jobId = robotArray[i].getCurrentJob().getJobCode();
 				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " : " + robotInfo ;
-			} else {
-				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + status + " : " + robotInfo ;
-			}
+		//	} else {
+		//		robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + status + " : " + robotInfo ;
+		//	}
 		}
 		warehouseInterface.setStatusText(robotInfo);
 	}
 	
 	public void setFinishedJobs(){
 		String jobsText = "";
+		float reward = 0.0f;
 		for (int i = 0; i < 5; i++){
 			if(assign.viewFinishedOrder(i) != null){
 				Order job = assign.viewFinishedOrder(i);
+				reward += assign.viewFinishedOrder(i).getTotalReward();
 				jobsText = jobsText + " : " + job.toString();
 			}	
 		}
+		warehouseInterface.setReward(reward);
 		warehouseInterface.setFinishedList(jobsText);
 	}
 	
