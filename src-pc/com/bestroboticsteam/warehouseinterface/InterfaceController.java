@@ -114,7 +114,7 @@ public class InterfaceController extends Thread {
 				setTenJobs();
 				setCurrentJobs();
 				setFinishedJobs();
-				Thread.sleep(5000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				logger.error("InterfaceController thread has been interrupted");
 			}
