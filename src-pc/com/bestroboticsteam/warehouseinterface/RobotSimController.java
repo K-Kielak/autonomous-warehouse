@@ -35,17 +35,17 @@ public class RobotSimController extends Thread {
 				int county = 0;
 				posx = CreateSimRobots.getPosX(theRobot);
 				posy = CreateSimRobots.getPosY(theRobot);
-				int yDifference = posy - simY();
 				while (!xpos) {
 					int countx1 = 0;
 					int countx2 = 0;
-					int xDifference = posx - simX();
 					logger.debug("actualx " + posx);
-					logger.debug(simX());
+					logger.debug("simx " + simX());
+					int xDifference = posx - simX();
+					logger.debug("xdiff " + xDifference);
 					if (xDifference > 0) {
 						// move right
 						if (countx2 == 0) {
-							pilot.rotateNegative();
+							pilot.rotatePositive();
 						}
 						logger.debug("moving right");
 						pilot.moveForward();
@@ -55,7 +55,7 @@ public class RobotSimController extends Thread {
 						// move left
 						logger.debug("moving left");
 						if (countx1 == 0) {
-							pilot.rotatePositive();
+							pilot.rotateNegative();
 						}
 						pilot.moveForward();
 						countx1++;
@@ -65,6 +65,10 @@ public class RobotSimController extends Thread {
 					countx1 = 0;
 					countx2 = 0;
 				}
+				logger.debug("actualy " + posy);
+				logger.debug("simy " + simY());
+				int yDifference = posy - simY();
+				logger.debug(yDifference + " " + yDifference);
 				if (yDifference > 0) {
 					// move forward
 					logger.debug("move forward");
