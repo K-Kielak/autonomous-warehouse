@@ -40,8 +40,8 @@ public class RobotInfo implements Communicatable {
 		Direction newDir;
 		
 		if(position.distance(newPos) != 1)
-			throw new IllegalArgumentException("wrong path:\ncurrent position: "
-												+ position + "\nnext position: " + newPos);
+			throw new IllegalArgumentException("wp: " + position + " " + newPos);
+		
 		
 		if(position.x-1 == newPos.x)
 			newDir = Direction.LEFT; //turn west
@@ -79,6 +79,8 @@ public class RobotInfo implements Communicatable {
 	public Point getPosition() {
 		return position;
 	}
+	
+	
 	
 	public float getMaxCapacity(){
 		return maxCapacity;
