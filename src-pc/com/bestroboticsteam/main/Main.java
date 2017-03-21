@@ -10,7 +10,8 @@ public class Main {
 	
 	private static final RobotInfo[] robots = {  //TODO For loop
 			new RobotInfo(ROBOT_1_NAME, new Point(0, 0), Direction.FORWARD, 30f),
-			new RobotInfo(ROBOT_2_NAME, new Point(11, 7), Direction.FORWARD, 30f)
+			new RobotInfo(ROBOT_2_NAME, new Point(11, 7), Direction.FORWARD, 30f),
+			new RobotInfo(ROBOT_3_NAME, new Point(11, 0), Direction.FORWARD, 30f)
 		};
 	
 	
