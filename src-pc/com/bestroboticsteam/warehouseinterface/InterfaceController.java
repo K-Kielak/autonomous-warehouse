@@ -118,18 +118,18 @@ public class InterfaceController extends Thread {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == warehouseInterface.cancelUpcoming) {
-				logger.info("cancel1 button has been pressed");
+				logger.info("cancel upcoming job button has been pressed");
 				if(warehouseInterface.cancelTextU.getText()  == null){
 					logger.error("No job has been inputted - cannot cancel" );
 				} else {
 					String text = warehouseInterface.cancelTextU.getText();
 					int itemID = Integer.parseInt(text);
-					incomingJobs.cancelOrder(itemID);
+					assign.cancelOrder(itemID);
 					tenJobsMap.remove(itemID);
 					warehouseInterface.cancelTextU.setText("");
 				}
 			} else if (e.getSource() == warehouseInterface.cancelCurrent) {
-				logger.info("cancel2 button has been pressed");
+				logger.info("cancel current job button has been pressed");
 				if(warehouseInterface.cancelTextC.getText()  == null){
 					logger.error("No job has been inputted - cannot cancel" );
 				} else {

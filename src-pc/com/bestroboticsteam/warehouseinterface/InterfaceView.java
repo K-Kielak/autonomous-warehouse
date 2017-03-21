@@ -67,8 +67,8 @@ public class InterfaceView extends JFrame {
 		
 		jobInProgPanel.setPreferredSize(new Dimension(350, 200));
 		jobListPanel.setPreferredSize(new Dimension(350, 200));
-		jobFinishedPanel.setPreferredSize(new Dimension(600, 200));	
-		robotStatus.setPreferredSize(new Dimension(600, 100));
+		jobFinishedPanel.setPreferredSize(new Dimension(350, 200));	
+		robotStatus.setPreferredSize(new Dimension(350, 100));
 		
 		cancelUpcoming.setPreferredSize(new Dimension(30,20));
 		cancelTextU.setPreferredSize(new Dimension(50, 30));
@@ -79,13 +79,13 @@ public class InterfaceView extends JFrame {
 		cancelTextC.setOpaque(true);
 		cancelTextC.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		fishedJobText.setPreferredSize(new Dimension(500, 150));
+		fishedJobText.setPreferredSize(new Dimension(300, 150));
 		fishedJobText.setOpaque(true);
 		fishedJobText.setEditable(false);
 		fishedJobText.setBorder(BorderFactory.createLineBorder(Color.green));
 		fishedJobText.setBackground(null);
 		
-		statusText.setPreferredSize(new Dimension(550, 60));
+		statusText.setPreferredSize(new Dimension(300, 60));
 		statusText.setOpaque(true);
 		statusText.setEditable(false);
 		statusText.setBorder(BorderFactory.createLineBorder(Color.green));
@@ -173,6 +173,7 @@ public class InterfaceView extends JFrame {
 	
 	//finished Jobs
 	public void setFinishedList(String jobsDone){
+		fishedJobText.setText("");
 		String newline = "\n";
 		String[] parts = jobsDone.split(" : ");
 		for (int i = 0; i < parts.length; i++) {
