@@ -125,6 +125,8 @@ public class RobotInfo implements Communicatable {
 		o.writePoint(this.position);
 		// this.direction
 		o.writeInt(this.direction.ordinal());
+		//this.maxCapacity
+		o.writeFloat(this.maxCapacity);
 		// this.currentJob
 		if (this.currentJob == null) {
 			// We tell other side that this is null
@@ -135,7 +137,8 @@ public class RobotInfo implements Communicatable {
 			o.writeInt(1);
 			this.currentJob.sendObject(o);
 		}
-
+		//this.wasJobCancelled
+		o.writeBoolean(this.wasJobCancelled);
 		// this.currentPath
 		o.writeInt(this.currentPath.size());
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
@@ -151,6 +154,7 @@ public class RobotInfo implements Communicatable {
 		this.name = i.readString();
 		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];
+		this.maxCapacity = i.readFloat();
 		int currentJobIsNotNull = i.readInt();
 		if (currentJobIsNotNull == 1) {
 			// currentJob received is not null
@@ -161,6 +165,7 @@ public class RobotInfo implements Communicatable {
 			System.out.println("Setting currentJob to null");
 			this.currentJob = null;
 		}
+		this.wasJobCancelled = i.readBoolean();
 		// currentPath
 		int pathSize = i.readInt();
 		this.currentPath.clear();
