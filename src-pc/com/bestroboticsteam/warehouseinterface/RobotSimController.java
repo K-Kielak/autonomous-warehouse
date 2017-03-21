@@ -28,12 +28,74 @@ public class RobotSimController extends Thread {
 	}
 
 	public void run() {
+		boolean ypos = false;
+		boolean xpos = false;
 		while (true) {
+			while (!ypos) {
+				int county = 0;
 				posx = CreateSimRobots.getPosX(theRobot);
 				posy = CreateSimRobots.getPosY(theRobot);
-				GridPose position = new  GridPose(posx, posy, Heading.PLUS_Y);
-				pilot.setGridPose(position);
-				Delay.msDelay(2000);
+				int yDifference = posy - simY();
+				while (!xpos) {
+					int countx = 0;
+					int xDifference = posx - simX();
+					logger.info(posx);
+					logger.info(simX());
+					if (xDifference > 0) {
+						// move left
+						logger.info("moving left");
+						pilot.moveForward();
+
+					} else if (xDifference < 0) {
+						// move right
+						logger.info("moving right");
+						if (countx == 0){
+							pilot.rotateNegative();
+						} 
+						pilot.moveForward();
+						countx++;
+					} else {
+						xpos = true;
+					}
+					countx = 0;
+				}
+				if (yDifference > 0) {
+					// move forward
+					logger.info("move forward");
+					pilot.moveForward();
+
+				} else if (yDifference < 0) {
+					// move backward
+					logger.info("move backward");
+					if (county == 0){
+						pilot.rotatePositive();
+						pilot.rotatePositive();
+					}
+					pilot.moveForward();
+					county++;
+				} else {
+					ypos = true;
+				}
+			}
+			Delay.msDelay(1000);
+			ypos = false;
+			xpos = false;
 		}
+	}
+
+	private int simX() {
+		int pos = (int) robot.getPose().getX();
+		if (pos != 0) {
+			pos = (int) (pos + 8.33);
+		}
+		return pos;
+	}
+
+	private int simY() {
+		int pos = (int) robot.getPose().getY();
+		if (pos != 0) {
+			pos = (int) (pos + 5.56);
+		}
+		return pos;
 	}
 }
