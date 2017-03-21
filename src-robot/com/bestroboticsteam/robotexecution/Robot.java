@@ -68,7 +68,7 @@ public class Robot implements StoppableRunnable {
 				movement.move(direction);
 			} else if (!info.finished()) { // Have we finished a job?
 				Sound.playTone(110, 800); // We play a sound
-				while (info.getCurrentJob().getQuantity() > robotInterface.getItemsQuantity()) {
+				while (info.getCurrentJob().getQuantity() > robotInterface.getItemsQuantity() && !info.wasJobCancelled()) {
 					robotInterface.printLoadMessage(info);
 				}
 				
