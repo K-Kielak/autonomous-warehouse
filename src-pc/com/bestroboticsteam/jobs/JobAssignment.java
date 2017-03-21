@@ -130,9 +130,6 @@ public class JobAssignment extends Thread {
 						finishedOrders.add(currentOrder);
 						assignedOrders.remove(o);
 						robot.decrementNumberAssigned();
-						break;
-					}
-					if(job.getJobCode() == o.getId()){
 						robot.setCurrentOrder(o);
 						break;
 					}
