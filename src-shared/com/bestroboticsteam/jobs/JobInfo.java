@@ -50,7 +50,7 @@ public class JobInfo implements Communicatable {
 		return cost;
 	}
 
-	public boolean isGoingToDropPoint() {
+	public boolean isDropPoint() {
 		return itemCode.equals("DropBox");
 
 	}

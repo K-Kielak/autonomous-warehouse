@@ -43,8 +43,8 @@ public class Robot implements StoppableRunnable {
 
 	@Override
 	public void run() {
-		this.robotInterface.waitForSensorCalibration();
-		this.movement.calibrate();
+		robotInterface.waitForSensorCalibration();
+		movement.calibrate();
 		Thread connection = new Thread(this.comms);
 		connection.start();
 
@@ -57,28 +57,24 @@ public class Robot implements StoppableRunnable {
 		}
 
 		while (m_run) {
-			this.receiveInfo();
-			this.robotInterface.printMovingToItemMessage(this.info);
+			receiveInfo();
 			// Going to destination
 			direction = info.move();
 			if (direction != null) {
 				System.out.println("moving to: " + direction);
 				// If we get a direction move to it. This means that we have not arrived yet.
+				robotInterface.printMovingMessage(this.info);
 				movement.move(direction);
-				if (info.getCurrentJob().isGoingToDropPoint()) { // Is the current route going to a drop off point?
-					robotInterface.printMovingToDropPointMessage(info);
-					
-				} else { // Not a drop off point. Therefore, going to an item.
-					robotInterface.printMovingToItemMessage(info);
-				}	
 			} else if (!info.finished()) { // Have we finished a job?
 				Sound.playTone(110, 800); // We play a sound
 				while (info.getCurrentJob().getQuantity() != robotInterface.getItemsQuantity()) {
 					robotInterface.printLoadMessage(info);
 				}
+				
 				this.info.pickAll();
+				robotInterface.resetItemsQuantity(); // We've collected items so we reset item quantity
 			}
-			robotInterface.setItemsQuantity(0); // We've collected items so we reset item quantity
+			
 			this.sendInfo();
 		}
 	}
