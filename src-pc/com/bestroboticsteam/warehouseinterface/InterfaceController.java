@@ -33,11 +33,12 @@ public class InterfaceController extends Thread {
 
 	public void setRobotStatus() {
 		String robotInfo = "";
+		PCConnectionHandler connect;
 		String status = "";
 		for (int i = 0; i < robotArray.length; i++){
 			int jobId = 0;
 			String robot = robotArray[i].getName();
-			PCConnectionHandler connect = new PCConnectionHandler(robot);
+			connect = new PCConnectionHandler(robot);
 			status = connect.getStatus();
 			int posx = CreateSimRobots.getPosX(i);
 			int posy = CreateSimRobots.getPosY(i);
