@@ -53,7 +53,7 @@ public class JobAssignment extends Thread {
 					boolean check = false;
 					for(MyRobotInfo r: robotMap.values()){
 						
-						if(r.getNumberAssigned() == 3){
+						if(r.getNumberAssigned() == 6){
 							check = true;
 						}
 					}
