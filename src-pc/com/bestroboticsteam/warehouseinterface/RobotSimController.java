@@ -37,37 +37,43 @@ public class RobotSimController extends Thread {
 				posy = CreateSimRobots.getPosY(theRobot);
 				int yDifference = posy - simY();
 				while (!xpos) {
-					int countx = 0;
+					int countx1 = 0;
+					int countx2 = 0;
 					int xDifference = posx - simX();
-					logger.info(posx);
-					logger.info(simX());
+					logger.debug("actualx " + posx);
+					logger.debug(simX());
 					if (xDifference > 0) {
-						// move left
-						logger.info("moving left");
+						// move right
+						if (countx2 == 0) {
+							pilot.rotateNegative();
+						}
+						logger.debug("moving right");
 						pilot.moveForward();
+						countx2++;
 
 					} else if (xDifference < 0) {
-						// move right
-						logger.info("moving right");
-						if (countx == 0){
-							pilot.rotateNegative();
-						} 
+						// move left
+						logger.debug("moving left");
+						if (countx1 == 0) {
+							pilot.rotatePositive();
+						}
 						pilot.moveForward();
-						countx++;
+						countx1++;
 					} else {
 						xpos = true;
 					}
-					countx = 0;
+					countx1 = 0;
+					countx2 = 0;
 				}
 				if (yDifference > 0) {
 					// move forward
-					logger.info("move forward");
+					logger.debug("move forward");
 					pilot.moveForward();
 
 				} else if (yDifference < 0) {
 					// move backward
-					logger.info("move backward");
-					if (county == 0){
+					logger.debug("move backward");
+					if (county == 0) {
 						pilot.rotatePositive();
 						pilot.rotatePositive();
 					}
