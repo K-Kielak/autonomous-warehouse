@@ -349,7 +349,7 @@ public class JobAssignment extends Thread {
 			
 			}else if( ress.get(i).getItem().equals("DropBox") && i == ress.size()-1 ){
 				costs[robotIndex] += itemToDrop[path.indexOf(ress.get(i-1))];
-				ress.get(i).setCost(itemToDrop[path.indexOf(ress.get(i))]);
+				ress.get(i).setCost(itemToDrop[path.indexOf(ress.get(i-1))]);
 			}else{
 				ress.get(i).setCost(itemToItem[path.indexOf(ress.get(i-1))][path.indexOf(ress.get(i))]);
 				costs[robotIndex] += itemToItem[path.indexOf(ress.get(i-1))][path.indexOf(ress.get(i))];
