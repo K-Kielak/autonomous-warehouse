@@ -109,11 +109,14 @@ public class MyRobotInfo {
 		if(removed)
 			this.decrementNumberAssigned();
 		
-		if(this.currentOrder.getId() == code)
-			this.currentOrder = null;
 		
-		if(this.currentJob.getJobCode() == code)
-			this.currentJob = null;
+		if(this.currentOrder != null)
+			if(this.currentOrder.getId() == code)
+				this.currentOrder = null;
+		
+		if(this.currentJob != null)
+			if(this.currentJob.getJobCode() == code)
+				this.currentJob = null;
 		
 	}
 }
