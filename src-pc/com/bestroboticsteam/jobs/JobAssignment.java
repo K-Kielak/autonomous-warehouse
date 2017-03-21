@@ -46,18 +46,21 @@ public class JobAssignment extends Thread {
 			
 			@Override
 			public void run(){
-				Order nextOrder;
+				Order nextOrder = selection.take();
 				
-				while((nextOrder = selection.take()) != null){
+				while(nextOrder != null){
 					
 					boolean check = false;
-					for(MyRobotInfo r: robotMap.values())
-						if(r.getNumberAssigned() == 6){
+					for(MyRobotInfo r: robotMap.values()){
+						
+						if(r.getNumberAssigned() == 3){
 							check = true;
 						}
+					}
 					
 					if(!check){
 						assign(nextOrder);
+						nextOrder = selection.take();
 					}
 				}
 			}
