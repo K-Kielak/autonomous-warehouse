@@ -203,6 +203,7 @@ public class JobAssignment extends Thread {
 	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path, int robotIndex){
 		
 		MyRobotInfo robot = robotMap.get(robots[robotIndex].getName());
+		int orderCode = path.peek().getJobCode();
 		
 		LinkedList<JobInfo> aux = (LinkedList<JobInfo>)path.clone();
 		
@@ -309,7 +310,7 @@ public class JobAssignment extends Thread {
 			float value = ress.get(i).getWeight()*ress.get(i).getQuantity();
 			if(weight + value == maxWeight){
 				
-				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i-1))));
+				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i-1)), orderCode));
 				weight = 0f;;
 				
 			}else if(weight + value > maxWeight){
@@ -322,7 +323,7 @@ public class JobAssignment extends Thread {
 				
 				ress.add(i, new JobInfo(info.getItem(), info.getPosition(), quantity, info.getJobCode(), info.getWeight()));
 				
-				ress.add(++i, new JobInfo("DropBox", this.getDrop(ress.get(i-1))));
+				ress.add(++i, new JobInfo("DropBox", this.getDrop(ress.get(i-1)), orderCode));
 				
 				ress.add(++i, new JobInfo(info.getItem(), info.getPosition(), info.getQuantity() - quantity, info.getJobCode(), info.getWeight()));
 				
@@ -334,7 +335,7 @@ public class JobAssignment extends Thread {
 		}
 		
 		if(!ress.getLast().isGoingToDropPoint())
-			ress.addLast(new JobInfo("DropBox", this.getDrop(ress.get(ress.size()-1))));
+			ress.addLast(new JobInfo("DropBox", this.getDrop(ress.get(ress.size()-1)), orderCode));
 		
 		weights[robotIndex] = weight;
 		
