@@ -2,6 +2,10 @@ package com.bestroboticsteam.warehouseinterface;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import com.bestroboticsteam.robotsmanagement.RobotsManager;
 import java.awt.Point;
+import java.util.LinkedList;
+
+import org.apache.log4j.Logger;
+
 import rp.robotics.MobileRobotWrapper;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
@@ -19,6 +23,7 @@ public class CreateSimRobots {
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
+	final static Logger logger = Logger.getLogger(CreateSimRobots.class);
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {
 		robotArray = new RobotInfo[robots.getRobotInfos().length];
@@ -26,6 +31,7 @@ public class CreateSimRobots {
 		robotArray = getRobotInfos(robots);
 		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
+			logger.info("Visualisation of " + robotArray[i].getName() + " is starting");
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
 			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
 			controller.start();
@@ -51,5 +57,18 @@ public class CreateSimRobots {
 	public static int getPosY(int robot){
 		Point pos = robotArray[robot].getPosition();
 		return pos.y;
+	}
+	
+	public static Point getGoalPoint(int robot){
+		Point a = robotArray[robot].getCurrentPath().removeLast();
+		return a; 
+	}
+	
+	public static String getName(int robot){
+		return robotArray[robot].getName();
+	}
+	
+	public static LinkedList<Point> getPath(int robot){
+		return robotArray[robot].getCurrentPath();
 	}
 }
