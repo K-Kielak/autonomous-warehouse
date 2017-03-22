@@ -1,11 +1,14 @@
 package com.bestroboticsteam.jobs;
+
 import java.awt.Point;
+import java.nio.channels.Selector;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+
 import org.apache.log4j.Logger;
+
 import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.pathfinding.AStar;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
 public class JobAssignment extends Thread {
@@ -22,8 +25,8 @@ public class JobAssignment extends Thread {
 	private LinkedList<Order> finishedOrders = new LinkedList<Order>();
 	private Thread thread;
 	
-	public JobAssignment(JobSelection selection, RobotInfo[] robots) {
-		this.selection = selection;
+	public JobAssignment(JobSelection selector, RobotInfo[] robots) {
+		this.selection = selector;
 		this.robots = robots;
 		this.costs = new int[robots.length];
 		this.weights = new float[robots.length];
@@ -43,24 +46,34 @@ public class JobAssignment extends Thread {
 			
 			@Override
 			public void run(){
-				Order nextOrder;
+				Order nextOrder = selection.take();
 				
-				while((nextOrder = selection.take()) != null){
+				while(nextOrder != null){
 					
 					boolean check = false;
-					for(MyRobotInfo r: robotMap.values())
+					for(MyRobotInfo r: robotMap.values()){
+						
 						if(r.getNumberAssigned() == 6){
 							check = true;
 						}
+					}
 					
 					if(!check){
 						assign(nextOrder);
+						nextOrder = selection.take();
 					}
 				}
 			}
 		};
 		
 		thread.start();
+	}
+	
+	private Order getOrderAssigned(int code){
+		for(Order o: assignedOrders)
+			if(o.getId() == code)
+				return o;
+		return null;
 	}
 	
 	private void assign(Order nextOrder) {
@@ -80,7 +93,9 @@ public class JobAssignment extends Thread {
 			}
 		}
 		
-		assignedOrders.add(nextOrder);
+		synchronized(assignedOrders){
+			assignedOrders.add(nextOrder);
+		}
 		
 		MyRobotInfo robot = robotMap.get(robots[index].getName());
 		
@@ -93,7 +108,16 @@ public class JobAssignment extends Thread {
 	}
 	
 	public LinkedList<Order> getAssignedOrders(){
-		return assignedOrders;
+		LinkedList<Order> result = new LinkedList<Order>();
+		LinkedList<Order> currentOrder = getCurrentOrders();
+		
+		synchronized(assignedOrders){
+			for(Order o: assignedOrders)
+				if(!currentOrder.contains(o))
+					result.add(o);
+		}
+		
+		return result;
 	}
 	
 	public synchronized JobInfo getNextJob(String robotCode) {
@@ -103,20 +127,19 @@ public class JobAssignment extends Thread {
 				
 		JobInfo job = robot.getNextJob();
 		
-		if(currentOrder == null){
-			for(Order o: assignedOrders){
-				if(job.getJobCode() == o.getId())
-					robot.setCurrentOrder(o);
-			}
-		}else if (currentOrder.getId() != job.getJobCode()){
-			for(Order o: assignedOrders){
-				if(o.getId() == currentOrder.getId()){
-					finishedOrders.add(currentOrder);
-					assignedOrders.remove(o);
-				}
-				if(job.getJobCode() == o.getId()){
-					robot.setCurrentOrder(o);
-				}
+		synchronized(assignedOrders){
+			
+			if(currentOrder == null){
+				robot.setCurrentOrder(this.getOrderAssigned(job.getJobCode()));
+			
+			}else if (currentOrder.getId() != job.getJobCode()){
+				Order o = this.getOrderAssigned(job.getJobCode());
+				
+				finishedOrders.add(currentOrder);
+				assignedOrders.remove(currentOrder);
+				robot.decrementNumberAssigned();
+				robot.setCurrentOrder(o);	
+				
 			}
 		}
 		
@@ -132,7 +155,7 @@ public class JobAssignment extends Thread {
 	}
 	
 	public Order viewFinishedOrder(int index){
-		if(index > finishedOrders.size())
+		if(index >= finishedOrders.size())
 			return null;
 		return finishedOrders.get(index);
 	}
@@ -158,17 +181,34 @@ public class JobAssignment extends Thread {
 	}
 	
 	
-	public synchronized void cancelOrder(int order){
-		//robotMap.get(robots[0].getName()).cancelJob(order);
-		//currentOrder = null;
+	public synchronized void cancelOrder(int code){
+	
+		boolean assigned = false;
+		
+		synchronized(assignedOrders){
+			
+			Order o = this.getOrderAssigned(code);
+			
+			for(int i = 0; i < robots.length; i++){
+				robotMap.get(robots[i].getName()).cancelOrder(code);
+			}
+			assignedOrders.remove(o);
+			assigned = false;
+		
+		}
+		
+		if(!assigned){
+			selection.cancelOrder(code);
+		}
 		
 	} 
 	
 	private LinkedList<JobInfo> orderPath(LinkedList<JobInfo> path, int robotIndex){
 		
 		MyRobotInfo robot = robotMap.get(robots[robotIndex].getName());
+		int orderCode = path.peek().getJobCode();
 		
-		LinkedList<JobInfo> aux = (LinkedList<JobInfo>) path.clone();
+		LinkedList<JobInfo> aux = (LinkedList<JobInfo>)path.clone();
 		
 		int jobNumb = path.size();
 		
@@ -273,7 +313,7 @@ public class JobAssignment extends Thread {
 			float value = ress.get(i).getWeight()*ress.get(i).getQuantity();
 			if(weight + value == maxWeight){
 				
-				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i-1))));
+				ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i-1)), orderCode));
 				weight = 0f;;
 				
 			}else if(weight + value > maxWeight){
@@ -286,7 +326,7 @@ public class JobAssignment extends Thread {
 				
 				ress.add(i, new JobInfo(info.getItem(), info.getPosition(), quantity, info.getJobCode(), info.getWeight()));
 				
-				ress.add(++i, new JobInfo("DropBox", this.getDrop(ress.get(i-1))));
+				ress.add(++i, new JobInfo("DropBox", this.getDrop(ress.get(i-1)), orderCode));
 				
 				ress.add(++i, new JobInfo(info.getItem(), info.getPosition(), info.getQuantity() - quantity, info.getJobCode(), info.getWeight()));
 				
@@ -296,6 +336,9 @@ public class JobAssignment extends Thread {
 				weight = weight + value;
 			}
 		}
+		
+		if(!ress.getLast().isDropPoint())
+			ress.addLast(new JobInfo("DropBox", this.getDrop(ress.get(ress.size()-1)), orderCode));
 		
 		weights[robotIndex] = weight;
 		
@@ -318,7 +361,7 @@ public class JobAssignment extends Thread {
 			
 			}else if( ress.get(i).getItem().equals("DropBox") && i == ress.size()-1 ){
 				costs[robotIndex] += itemToDrop[path.indexOf(ress.get(i-1))];
-				ress.get(i).setCost(itemToDrop[path.indexOf(ress.get(i))]);
+				ress.get(i).setCost(itemToDrop[path.indexOf(ress.get(i-1))]);
 			}else{
 				ress.get(i).setCost(itemToItem[path.indexOf(ress.get(i-1))][path.indexOf(ress.get(i))]);
 				costs[robotIndex] += itemToItem[path.indexOf(ress.get(i-1))][path.indexOf(ress.get(i))];
@@ -329,8 +372,7 @@ public class JobAssignment extends Thread {
 	}
 	
 	private int averageDistance(Point point, Point point2) {
-		
-		return Math.abs(point.x - point2.x) + Math.abs(point.y - point2.y);
+		return AStar.singleGetPath(point, point2).size();
 	}
 	
 	private Point getDrop(JobInfo info){

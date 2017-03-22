@@ -38,8 +38,10 @@ public class RobotInfo implements Communicatable {
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
+		
 		if(position.distance(newPos) != 1)
-			throw new IllegalArgumentException("wrong path");
+			throw new IllegalArgumentException("wrong path:\ncurrent position: "
+												+ position + "\nnext position: " + newPos);
 		
 		if(position.x-1 == newPos.x)
 			newDir = Direction.LEFT; //turn west
@@ -54,19 +56,19 @@ public class RobotInfo implements Communicatable {
 		return turn(newDir);
 	}
 	
-	public synchronized void cancelJob(){
+	public void cancelJob(){
 		wasJobCancelled = true;
 	}
 	
-	public synchronized boolean wasJobCancelled(){
+	public boolean wasJobCancelled(){
 		return wasJobCancelled;
 	}
 
-	public synchronized void click() {
-		currentJob.decreaseQuantity();
+	public void pickAll(){
+		currentJob.pickAll();
 	}
 
-	public synchronized boolean finished() {
+	public boolean finished() {
 		return currentJob.getQuantity() <= 0;
 	}
 	
@@ -82,14 +84,17 @@ public class RobotInfo implements Communicatable {
 		return maxCapacity;
 	}
 
-	public void setCurrentJob(JobInfo job, LinkedList<Point> path) {
+	public void setCurrentJob(JobInfo job) {
 		wasJobCancelled = false;
 		currentJob = job;
-		currentPath = path;
 	}
 
-	public synchronized JobInfo getCurrentJob() {
+	public JobInfo getCurrentJob() {
 		return currentJob;
+	}
+	
+	public void setCurrentPath(LinkedList<Point> path){
+		currentPath = path;
 	}
 
 	public LinkedList<Point> getCurrentPath() {
@@ -120,6 +125,8 @@ public class RobotInfo implements Communicatable {
 		o.writePoint(this.position);
 		// this.direction
 		o.writeInt(this.direction.ordinal());
+		//this.maxCapacity
+		o.writeFloat(this.maxCapacity);
 		// this.currentJob
 		if (this.currentJob == null) {
 			// We tell other side that this is null
@@ -130,12 +137,13 @@ public class RobotInfo implements Communicatable {
 			o.writeInt(1);
 			this.currentJob.sendObject(o);
 		}
-
+		//this.wasJobCancelled
+		o.writeBoolean(this.wasJobCancelled);
 		// this.currentPath
 		o.writeInt(this.currentPath.size());
 		for (Iterator<Point> iterator = currentPath.iterator(); iterator.hasNext();) {
 			Point point = (Point) iterator.next();
-			//System.out.println(point);
+//			System.out.println(point);
 			//Button.waitForAnyPress();
 			o.writePoint(point);
 		}
@@ -146,6 +154,7 @@ public class RobotInfo implements Communicatable {
 		this.name = i.readString();
 		this.position = i.readPoint();
 		this.direction = Direction.values()[i.readInt()];
+		this.maxCapacity = i.readFloat();
 		int currentJobIsNotNull = i.readInt();
 		if (currentJobIsNotNull == 1) {
 			// currentJob received is not null
@@ -153,9 +162,10 @@ public class RobotInfo implements Communicatable {
 		}
 		else {
 			// currentJob received is null
-			System.out.println("Setting currentJob to null");
+			//System.out.println("Setting currentJob to null");
 			this.currentJob = null;
 		}
+		this.wasJobCancelled = i.readBoolean();
 		// currentPath
 		int pathSize = i.readInt();
 		this.currentPath.clear();

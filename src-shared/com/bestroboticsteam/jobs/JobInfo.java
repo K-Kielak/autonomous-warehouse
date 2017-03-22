@@ -17,7 +17,6 @@ public class JobInfo implements Communicatable {
 	
 	//THIS IS FOR ASSIGNMENT! don't touch it :D
 	private int cost;
-	//Seriously now... don't touch it
 
 	public JobInfo(String code, Point position, int _quantity, int _jobCode, float weight) {
 
@@ -28,11 +27,11 @@ public class JobInfo implements Communicatable {
 		this.weight = weight;
 	}
 	
-	public JobInfo(String code, Point position) {
+	public JobInfo(String code, Point position, int _jobCode) {
 		this.itemCode = code;
 		this.position = position;
 		this.quantity = 1;
-		this.jobCode = 0;
+		this.jobCode = _jobCode;
 	}
 	
 	public JobInfo() {
@@ -42,12 +41,18 @@ public class JobInfo implements Communicatable {
 		this.jobCode = 0;
 	}
 	
+
 	public void setCost(int cost){
 		this.cost = cost;
 	}
 	
 	public int getCost(){
 		return cost;
+	}
+
+	public boolean isDropPoint() {
+		return itemCode.equals("DropBox");
+
 	}
 
 	public String getItem() {
@@ -66,8 +71,8 @@ public class JobInfo implements Communicatable {
 		return quantity;
 	}
 	
-	public void decreaseQuantity(){
-		quantity--;
+	public void pickAll(){
+		quantity = 0;
 	}
 
 	public int getJobCode() {
@@ -99,5 +104,4 @@ public class JobInfo implements Communicatable {
 		this.jobCode = i.readInt();
 		return this;
 	}
-
 }

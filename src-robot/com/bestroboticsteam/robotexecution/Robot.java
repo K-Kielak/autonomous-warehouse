@@ -2,70 +2,88 @@ package com.bestroboticsteam.robotexecution;
 
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.RobotCommunicationHandler;
-import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.robot.RobotConfig;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
-import lejos.nxt.Button;
-import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+import lejos.nxt.Sound;
 import lejos.robotics.navigation.DifferentialPilot;
 import rp.config.WheeledRobotConfiguration;
-import rp.systems.RobotProgrammingDemo;
 import rp.systems.StoppableRunnable;
 import rp.systems.WheeledRobotSystem;
 
-public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
+public class Robot implements StoppableRunnable {
+	/*
+	 * The interface is implemented as a set of states that the robot can be in.
+	 * This is mostly for the interface on the LCD.
+	 * 
+	 * The main states are:
+	 * - Waiting for connection
+	 * - Going to an item
+	 * - Going to a drop off point
+	 * 
+	 */
 	private Movement movement;
+	private RobotInterface robotInterface;
 	private RobotInfo info = new RobotInfo();
 	private RobotCommunicationHandler comms;
-    private boolean m_run = true;
-    
+	private boolean m_run = true;
+	private Direction direction;
+
 	public Robot(SensorPort leftSensorPort, SensorPort rightSensorPort, WheeledRobotConfiguration ExpressBot) {
 		LightSensor rightSensor = new LightSensor(rightSensorPort);
 		LightSensor leftSensor = new LightSensor(leftSensorPort);
 		DifferentialPilot pilot = new WheeledRobotSystem(ExpressBot).getPilot();
 		this.movement = new Movement(leftSensor, rightSensor, pilot);
+		this.robotInterface = new RobotInterface();
 		this.comms = new RobotCommunicationHandler();
 	}
 
 	@Override
-	public void run() {		
-		this.comms.run();
-		System.out.println(this.comms.getStatus());
+	public void run() {
+		robotInterface.waitForSensorCalibration();
+		movement.calibrate();
+		Thread connection = new Thread(this.comms);
+		connection.start();
+
+		robotInterface.bluetoothMessage(RobotCommunicationHandler.CONNECTING);
 		
-		while(m_run){
-			this.receiveInfo();
-			
-			printInfo();
-			Direction direction = info.move();
-			if(direction != null)
+		try {
+			connection.join(); // Thread has ended
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		while (m_run) {
+			robotInterface.printWaitingForOrdersMessage(info);
+			receiveInfo();
+			// Going to destination
+			direction = info.move();
+			if (direction != null) {
+				System.out.println("moving to: " + direction);
+				// If we get a direction move to it. This means that we have not arrived yet.
+				robotInterface.printMovingMessage(info);
 				movement.move(direction);
-			else if(!info.finished()){
-				Button.waitForAnyPress();
-				info.click();
+			} else if (!info.finished()) { // Have we finished a job?
+				Sound.playTone(110, 800); // We play a sound
+				while (info.getCurrentJob().getQuantity() > robotInterface.getItemsQuantity() && !info.wasJobCancelled()) {
+					robotInterface.printLoadMessage(info);
+				}
+				
+				info.pickAll();
+				robotInterface.resetItemsQuantity(); // We've collected items so we reset item quantity
 			}
-		    
-		    this.sendInfo();
+			
+			sendInfo();
 		}
 	}
 	
-	@Override
-	public void stop(){
+	public void stop() {
 		m_run = false;
 	}
 	
-	private void printInfo(){
-		JobInfo job = info.getCurrentJob();
-		LCD.clear();
-		System.out.println(info.getName());
-		System.out.println("Current job code: " + job.getJobCode());
-		System.out.println("Destination: " + "(" + job.getPosition().getX() + ", " + job.getPosition().getY() + ")");
-		System.out.println("Items left to pick: " + info.getCurrentJob().getQuantity());
-	}
-
 	public void sendInfo() {
 		try {
 			this.comms.sendObject(this.info);
@@ -73,7 +91,7 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void receiveInfo() { // Note: Block
 		try {
 			this.info = (RobotInfo) this.comms.receiveObject(this.info);
@@ -84,11 +102,10 @@ public class Robot extends RobotProgrammingDemo implements StoppableRunnable {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Press Enter to calibrate");
-		Button.waitForAnyPress();
-		LCD.clear();
 		WheeledRobotConfiguration config = RobotConfig.CUSTOM_EXPRESS_BOT;
-		RobotProgrammingDemo demo = new Robot(SensorPort.S2, SensorPort.S3, config);
+		final SensorPort left = SensorPort.S2;
+		final SensorPort right = SensorPort.S3;
+		Robot demo = new Robot(left, right, config);
 		demo.run();
 	}
 

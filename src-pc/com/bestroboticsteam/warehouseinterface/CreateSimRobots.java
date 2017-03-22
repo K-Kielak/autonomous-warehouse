@@ -14,22 +14,21 @@ import rp.robotics.visualisation.GridMapVisualisation;
 import rp.robotics.visualisation.MapVisualisationComponent;
 
 public class CreateSimRobots {
-	public static GridMap map = MapUtils.createRealWarehouse();
+	public static GridMap map = MyGridMap.createRealWarehouse();
 	public static MapBasedSimulation sim = new MapBasedSimulation(map);
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
-	private static RobotInfo robotInfo;
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {
 		robotArray = new RobotInfo[robots.getRobotInfos().length];
 		int numOfRobots = getRobotNumber();
+		robotArray = getRobotInfos(robots);
 		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
-			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, robotInfo);
-
-			new Thread(controller).start();
+			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
+			controller.start();
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;
@@ -38,6 +37,10 @@ public class CreateSimRobots {
 	public static int getRobotNumber(){
 		int numOfRobots = robotArray.length;
 		return numOfRobots;
+	}
+	
+	public static RobotInfo[] getRobotInfos(RobotsManager robots){
+		return robots.getRobotInfos();
 	}
 	
 	public static int getPosX(int robot){
