@@ -1,6 +1,11 @@
 package com.bestroboticsteam.warehouseinterface;
 
+import java.util.LinkedList;
+
 import org.apache.log4j.Logger;
+
+import com.bestroboticsteam.robotsmanagement.RobotInfo;
+
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
@@ -101,7 +106,7 @@ public class RobotSimController extends Thread {
 			xpos = false;
 		}
 	}
-
+	
 	private int simX() {
 		int pos = (int) robot.getPose().getX();
 		if (pos != 0) {
