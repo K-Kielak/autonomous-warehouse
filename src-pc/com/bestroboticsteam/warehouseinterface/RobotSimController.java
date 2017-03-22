@@ -1,14 +1,9 @@
 package com.bestroboticsteam.warehouseinterface;
 
 import org.apache.log4j.Logger;
-
-import lejos.geom.Point;
-import lejos.robotics.navigation.Pose;
-import lejos.util.Delay;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
-import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MovableRobot;
 
 public class RobotSimController extends Thread {
@@ -31,63 +26,77 @@ public class RobotSimController extends Thread {
 		boolean ypos = false;
 		boolean xpos = false;
 		while (true) {
+			int county1 = 0;
 			while (!ypos) {
-				int county = 0;
 				posx = CreateSimRobots.getPosX(theRobot);
 				posy = CreateSimRobots.getPosY(theRobot);
+				int countx1 = 0;
+				int countx2 = 0;
 				while (!xpos) {
-					int countx1 = 0;
-					int countx2 = 0;
-					logger.debug("actualx " + posx);
-					logger.debug("simx " + simX());
+					logger.info("actualx " + posx);
+					logger.info("simx " + simX());
 					int xDifference = posx - simX();
-					logger.debug("xdiff " + xDifference);
+					logger.info("xdiff " + xDifference);
 					if (xDifference > 0) {
-						// move right
-						if (countx2 == 0) {
-							pilot.rotatePositive();
-						}
-						logger.debug("moving right");
-						pilot.moveForward();
-						countx2++;
-
-					} else if (xDifference < 0) {
-						// move left
-						logger.debug("moving left");
+						System.out.println("move right ");
 						if (countx1 == 0) {
+							// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
 							pilot.rotateNegative();
 						}
-						pilot.moveForward();
+						for (int i = 0; i < xDifference; i++) {
+							pilot.moveForward();
+						}
 						countx1++;
-					} else {
 						xpos = true;
+						// System.out.println("counterx1 " + countx1);
+					} else if (xDifference < 0) {
+						System.out.println("move left ");
+						if (countx2 == 0) {
+							// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
+							pilot.rotateNegative();
+						}
+						for (int i = 0; i < xDifference; i++) {
+							pilot.moveForward();
+						}
+						countx2++;
+						xpos = true;
+						// System.out.println("counterx2 " + countx2);
 					}
-					countx1 = 0;
-					countx2 = 0;
 				}
-				logger.debug("actualy " + posy);
-				logger.debug("simy " + simY());
+				// System.out.println("HEEEEEEEEEEEEERRRRRRRRRRRRRRRRREEEEEEEEEEeee");
+				logger.info("actualy " + posy);
+				logger.info("simy " + simY());
 				int yDifference = posy - simY();
-				logger.debug(yDifference + " " + yDifference);
+				logger.info("ydiff " + yDifference);
 				if (yDifference > 0) {
-					// move forward
-					logger.debug("move forward");
-					pilot.moveForward();
-
-				} else if (yDifference < 0) {
-					// move backward
-					logger.debug("move backward");
-					if (county == 0) {
-						pilot.rotatePositive();
-						pilot.rotatePositive();
+					logger.info("move forward ");
+					pilot.rotatePositive();
+					for (int i = 0; i < yDifference; i++) {
+						pilot.moveForward();
 					}
-					pilot.moveForward();
-					county++;
-				} else {
+					county1++;
 					ypos = true;
+					// System.out.println("counterx1 " + countx1);
+				} else if (yDifference < 0) {
+					logger.info("move left ");
+					if (county1 == 0) {
+						// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
+						pilot.rotateNegative();
+						pilot.rotateNegative();
+					}
+					for (int i = 0; i < yDifference; i++) {
+						pilot.moveForward();
+					}
+					county1++;
+					ypos = true;
+					// System.out.println("counterx2 " + countx2);
 				}
 			}
-			Delay.msDelay(1000);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				logger.error("thread has been interrupted");
+			}
 			ypos = false;
 			xpos = false;
 		}
