@@ -78,7 +78,7 @@ public class Robot extends Thread{
 		Point start = info.getPosition();
 		Point goal = info.getCurrentJob().getPosition();
 		Pair<Point, Point> startGoalPair = Pair.makePair(start, goal);
-		LinkedList<Point> path = null;
+		LinkedList<Point> path = AStar.multiGetPath(startGoalPair, otherRobotInfos);
 		while(path == null){
 			logger.warn("Robot " + info.getName() + " is waiting for a new path (goal is not accessible now)");
 			path = AStar.multiGetPath(startGoalPair, otherRobotInfos);
