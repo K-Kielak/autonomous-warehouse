@@ -1,10 +1,6 @@
 package com.bestroboticsteam.warehouseinterface;
 
-import java.util.LinkedList;
-
 import org.apache.log4j.Logger;
-
-import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
@@ -32,60 +28,24 @@ public class RobotSimController extends Thread {
 		boolean xpos = false;
 		while (true) {
 			int county1 = 0;
+			posy = CreateSimRobots.getPosY(theRobot);
+			posx = CreateSimRobots.getPosX(theRobot);
 			while (!ypos) {
-				posx = CreateSimRobots.getPosX(theRobot);
-				posy = CreateSimRobots.getPosY(theRobot);
-				int countx1 = 0;
-				int countx2 = 0;
-				while (!xpos) {
-					logger.debug("actualx " + posx);
-					logger.debug("simx " + simX());
-					int xDifference = posx - simX();
-					logger.debug("xdiff " + xDifference);
-					if (xDifference > 0) {
-						logger.debug("move right ");
-						if (countx1 == 0) {
-							// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
-							pilot.rotateNegative();
-						}
-						for (int i = 0; i < xDifference; i++) {
-							pilot.moveForward();
-						}
-						countx1++;
-						xpos = true;
-						// System.out.println("counterx1 " + countx1);
-					} else if (xDifference < 0) {
-						logger.debug("move left ");
-						if (countx2 == 0) {
-							// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
-							pilot.rotateNegative();
-						}
-						for (int i = 0; i < xDifference; i++) {
-							pilot.moveForward();
-						}
-						countx2++;
-						xpos = true;
-						// System.out.println("counterx2 " + countx2);
-					}
-				}
-				// System.out.println("HEEEEEEEEEEEEERRRRRRRRRRRRRRRRREEEEEEEEEEeee");
-				logger.debug("actualy " + posy);
-				logger.debug("simy " + simY());
+			//	System.out.println("HEEEEEEERE");
+			//	logger.info("actualy " + posy);
+			//	logger.info("simy " + simY());
 				int yDifference = posy - simY();
-				logger.debug("ydiff " + yDifference);
+			//	logger.info("ydiff " + yDifference);
 				if (yDifference > 0) {
 					logger.debug("move forward ");
-					pilot.rotatePositive();
 					for (int i = 0; i < yDifference; i++) {
 						pilot.moveForward();
 					}
 					county1++;
 					ypos = true;
-					// System.out.println("counterx1 " + countx1);
 				} else if (yDifference < 0) {
-					logger.debug("move left ");
+					logger.debug("move back ");
 					if (county1 == 0) {
-						// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
 						pilot.rotateNegative();
 						pilot.rotateNegative();
 					}
@@ -94,19 +54,52 @@ public class RobotSimController extends Thread {
 					}
 					county1++;
 					ypos = true;
-					// System.out.println("counterx2 " + countx2);
+				} else {
+					ypos = true;
+				}
+			}
+			int countx1 = 0;
+			int countx2 = 0;
+			while (!xpos) {
+				logger.debug("actualx " + posx);
+				logger.debug("simx " + simX());
+				int xDifference = posx - simX();
+				logger.info("xdiff " + xDifference);
+				if (xDifference > 0) {
+					logger.debug("move right ");
+					if (countx1 == 0) {
+						pilot.rotateNegative();
+					}
+					for (int i = 0; i < xDifference; i++) {
+						pilot.moveForward();
+					}
+					countx1++;
+					xpos = true;
+				} else if (xDifference < 0) {
+					logger.debug("move left ");
+					if (countx2 == 0) {
+						pilot.rotatePositive();
+					}
+					for (int i = 0; i < xDifference; i++) {
+						pilot.moveForward();
+					}
+					countx2++;
+					xpos = true;
+				} else {
+					xpos = true;
 				}
 			}
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				logger.error("thread has been interrupted");
 			}
 			ypos = false;
 			xpos = false;
+
 		}
 	}
-	
+
 	private int simX() {
 		int pos = (int) robot.getPose().getX();
 		if (pos != 0) {
