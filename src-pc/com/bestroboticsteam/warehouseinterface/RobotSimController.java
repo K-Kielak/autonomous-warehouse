@@ -32,20 +32,19 @@ public class RobotSimController extends Thread {
 		boolean xpos = false;
 		while (true) {
 			int county1 = 0;
+			posx = CreateSimRobots.getPosX(theRobot);
+			posy = CreateSimRobots.getPosY(theRobot);
 			while (!ypos) {
-				posx = CreateSimRobots.getPosX(theRobot);
-				posy = CreateSimRobots.getPosY(theRobot);
 				int countx1 = 0;
 				int countx2 = 0;
 				while (!xpos) {
 					logger.debug("actualx " + posx);
 					logger.debug("simx " + simX());
 					int xDifference = posx - simX();
-					logger.debug("xdiff " + xDifference);
+					logger.info("xdiff " + xDifference);
 					if (xDifference > 0) {
 						logger.debug("move right ");
 						if (countx1 == 0) {
-							// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
 							pilot.rotateNegative();
 						}
 						for (int i = 0; i < xDifference; i++) {
@@ -53,39 +52,34 @@ public class RobotSimController extends Thread {
 						}
 						countx1++;
 						xpos = true;
-						// System.out.println("counterx1 " + countx1);
 					} else if (xDifference < 0) {
-						logger.debug("move left ");
+						logger.info("move left ");
 						if (countx2 == 0) {
-							// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
-							pilot.rotateNegative();
+							pilot.rotatePositive();
 						}
 						for (int i = 0; i < xDifference; i++) {
 							pilot.moveForward();
 						}
 						countx2++;
 						xpos = true;
-						// System.out.println("counterx2 " + countx2);
+					} else {
+						xpos = true;
 					}
 				}
-				// System.out.println("HEEEEEEEEEEEEERRRRRRRRRRRRRRRRREEEEEEEEEEeee");
 				logger.debug("actualy " + posy);
 				logger.debug("simy " + simY());
 				int yDifference = posy - simY();
 				logger.debug("ydiff " + yDifference);
 				if (yDifference > 0) {
 					logger.debug("move forward ");
-					pilot.rotatePositive();
 					for (int i = 0; i < yDifference; i++) {
 						pilot.moveForward();
 					}
 					county1++;
 					ypos = true;
-					// System.out.println("counterx1 " + countx1);
 				} else if (yDifference < 0) {
-					logger.debug("move left ");
+					logger.debug("move back ");
 					if (county1 == 0) {
-						// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
 						pilot.rotateNegative();
 						pilot.rotateNegative();
 					}
@@ -94,19 +88,21 @@ public class RobotSimController extends Thread {
 					}
 					county1++;
 					ypos = true;
-					// System.out.println("counterx2 " + countx2);
+				} else {
+					ypos = true;
 				}
 			}
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				logger.error("thread has been interrupted");
 			}
 			ypos = false;
 			xpos = false;
+
 		}
 	}
-	
+
 	private int simX() {
 		int pos = (int) robot.getPose().getX();
 		if (pos != 0) {
