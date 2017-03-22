@@ -13,10 +13,12 @@ public class MyGridMap {
 	public static GridMap createRealWarehouse() {
 		float height = 2.44f;
 		float width = 3.67f;
-
+		int accheight = 7;
+		int accwidth = 11;
 		float xInset = 0.17f, yInstet = 0.155f;
 		int gridWitdth = 12, gridHeight = 8;
 		float cellSize = 0.30f;
+		int acccellsize = 1;
 
 		// First ins 36 39 56 188
 
