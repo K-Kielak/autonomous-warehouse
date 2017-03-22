@@ -33,12 +33,12 @@ public class RobotSimController extends Thread {
 				int countx1 = 0;
 				int countx2 = 0;
 				while (!xpos) {
-					logger.info("actualx " + posx);
-					logger.info("simx " + simX());
+					logger.debug("actualx " + posx);
+					logger.debug("simx " + simX());
 					int xDifference = posx - simX();
-					logger.info("xdiff " + xDifference);
+					logger.debug("xdiff " + xDifference);
 					if (xDifference > 0) {
-						System.out.println("move right ");
+						logger.debug("move right ");
 						if (countx1 == 0) {
 							// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
 							pilot.rotateNegative();
@@ -50,7 +50,7 @@ public class RobotSimController extends Thread {
 						xpos = true;
 						// System.out.println("counterx1 " + countx1);
 					} else if (xDifference < 0) {
-						System.out.println("move left ");
+						logger.debug("move left ");
 						if (countx2 == 0) {
 							// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
 							pilot.rotateNegative();
@@ -64,12 +64,12 @@ public class RobotSimController extends Thread {
 					}
 				}
 				// System.out.println("HEEEEEEEEEEEEERRRRRRRRRRRRRRRRREEEEEEEEEEeee");
-				logger.info("actualy " + posy);
-				logger.info("simy " + simY());
+				logger.debug("actualy " + posy);
+				logger.debug("simy " + simY());
 				int yDifference = posy - simY();
-				logger.info("ydiff " + yDifference);
+				logger.debug("ydiff " + yDifference);
 				if (yDifference > 0) {
-					logger.info("move forward ");
+					logger.debug("move forward ");
 					pilot.rotatePositive();
 					for (int i = 0; i < yDifference; i++) {
 						pilot.moveForward();
@@ -78,7 +78,7 @@ public class RobotSimController extends Thread {
 					ypos = true;
 					// System.out.println("counterx1 " + countx1);
 				} else if (yDifference < 0) {
-					logger.info("move left ");
+					logger.debug("move left ");
 					if (county1 == 0) {
 						// System.out.println("THIS SHOULD NOT FUCKING BE ZERO " + countx1);
 						pilot.rotateNegative();
