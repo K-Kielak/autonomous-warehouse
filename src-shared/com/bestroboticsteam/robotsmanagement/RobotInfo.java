@@ -168,4 +168,8 @@ public class RobotInfo implements Communicatable {
 		}
 		return this;
 	}
+	
+	public Direction getDirection() {
+		return direction;
+	}
 }
