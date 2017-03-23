@@ -103,6 +103,7 @@ public class JobAssignment extends Thread {
 		robot.setCost(costs[index]);
 		robot.setWeight(weights[index]);
 		robot.incementNumberAssigned();
+		logger.debug(robots[index].getName() + " " + robot.getNumberAssigned());
 		robot.setPosition(finalPath.getLast().getPosition());
 		
 	}

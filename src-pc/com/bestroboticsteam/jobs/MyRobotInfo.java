@@ -2,8 +2,6 @@ package com.bestroboticsteam.jobs;
 
 import java.awt.Point;
 import java.util.LinkedList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class MyRobotInfo {
 	
