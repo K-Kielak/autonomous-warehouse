@@ -23,7 +23,7 @@ public class AStar {
 	final static Logger logger = Logger.getLogger(AStar.class);
 	
 	// multi robot AStar
-	public static LinkedList<Point> multiGetPath(Pair<Point, Point> locationDestinationPair, RobotInfo[] otherRobots) {
+	public synchronized static LinkedList<Point> multiGetPath(Pair<Point, Point> locationDestinationPair, RobotInfo[] otherRobots) {
 		HashMap<TimePoint, Boolean> timedReservationTable = new HashMap<>(100);
 		//Set up the timesReservationTable to avoid collisions with other robots
 		for(RobotInfo robot : otherRobots){
@@ -127,6 +127,7 @@ public class AStar {
 			openList = addToOpenList(new Point(nodeX, nodeY-1), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			openList = addToOpenList(new Point(nodeX+1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			openList = addToOpenList(new Point(nodeX-1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
+			openList = addToOpenList(new Point(nodeX, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			
 		}
 		
@@ -174,9 +175,6 @@ public class AStar {
 		//Calculates the TimePoint for the current node based on its gCost
 		TimePoint nodeTimePoint = new TimePoint(location, currentNode.gCost);
 		if(location.x>=0 && location.y>=0 && location.x<map.getXSize() && location.y <map.getYSize()){
-			if(location.equals(new Point(3,  0)) && doorPosition.equals(new Point(5, 0))){
-				System.out.println(currentNode + " " + adjacentRobot(currentNode, timedReservationTable));
-			}
 			if(!map.isObstructed(location.x, location.y) && !closedListLocations[location.x][location.y] && !timedReservationTable.containsKey(nodeTimePoint)){
 				if(!openListLocations[location.x][location.y]){
 					openList.add(new AStarNode(new Point(location.x,location.y), currentNode, currentNode.gCost+1+Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y), currentNode.gCost+1, Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y)));

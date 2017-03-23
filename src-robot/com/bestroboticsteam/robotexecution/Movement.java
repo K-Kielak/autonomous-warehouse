@@ -9,6 +9,7 @@ import lejos.util.Delay;
 public class Movement {
 	private final int ERROR = 5;
 	private final float SPEED = 0.2f;
+	private final int WAIT_DELAY = 1000;
 	private int calibratedValue;
 	private final LightSensor leftSensor;
 	private final LightSensor rightSensor;
@@ -35,18 +36,21 @@ public class Movement {
 			return; //if there is not movement order just do nothing
 		
 		switch (direction) {
-		case LEFT:
-			pilot.rotate(90);
-			break;
-		case RIGHT:
-			pilot.rotate(-90);
-			break;
-		case BACKWARD:
-			pilot.rotate(180);
-			break;
-		case FORWARD:
-			// dont't rotate
-			break;
+			case WAIT:
+				Delay.msDelay(WAIT_DELAY);
+				return;
+			case LEFT:
+				pilot.rotate(90);
+				break;
+			case RIGHT:
+				pilot.rotate(-90);
+				break;
+			case BACKWARD:
+				pilot.rotate(180);
+				break;
+			case FORWARD:
+				// dont't rotate
+				break;
 		}
 
 		boolean isLeftOnBlack = isOnBlack(leftSensor.readValue());

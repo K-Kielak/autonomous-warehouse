@@ -117,7 +117,7 @@ public class AStarTest {
 
 		paths  = (LinkedList<Point>[]) new LinkedList<?>[2];
 		actualPaths = new Point[][] { { new Point(4, 0), new Point(3, 0), new Point(2, 0) },
-			{ new Point(2, 2), new Point(2, 1), new Point(3, 1), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
+			{ new Point(3, 1), new Point(3, 1), new Point(3, 1), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
 		for (int i = 0; i < locationDetinationPairs.length; i++) {
 			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
 			robots[i].setCurrentPath(path);
@@ -126,14 +126,13 @@ public class AStarTest {
 		}
 
 		
-		System.out.println("start");
 		locationDetinationPairs = new Pair[] { Pair.makePair(new Point(5, 0), new Point(3, 2)),
 				Pair.makePair(new Point(0, 0), new Point(5, 0)) };
 		robots = new RobotInfo[] { new RobotInfo("John Cena", new Point(5, 0), Direction.BACKWARD, 10) , new RobotInfo("John Cena2", new Point(3, 2), Direction.BACKWARD, 20) };
 
 		paths  = (LinkedList<Point>[]) new LinkedList<?>[2];
 		actualPaths = new Point[][] { { new Point(4, 0), new Point(3, 0), new Point(3, 1), new Point(3, 2) },
-			{ new Point(1, 0), new Point(2, 0), new Point(2, 1), new Point(2, 0), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
+			{ new Point(1, 0), new Point(2, 0), new Point(2, 0), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
 		for (int i = 0; i < locationDetinationPairs.length; i++) {
 			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
 			robots[i].setCurrentPath(path);
