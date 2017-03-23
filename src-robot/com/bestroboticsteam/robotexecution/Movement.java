@@ -39,13 +39,13 @@ public class Movement {
 				pilot.rotate(10);
 				while(!isOnBlack(leftSensor.readValue()))
 					pilot.rotateLeft();
-				pilot.rotate(13);
+				pilot.rotate(10);
 				break;
 			case RIGHT:
 				pilot.rotate(-10);
 				while(!isOnBlack(rightSensor.readValue()))
 					pilot.rotateRight();
-				pilot.rotate(-13);
+				pilot.rotate(-10);
 				break;
 			case BACKWARD:
 				pilot.travel(-0.1);
