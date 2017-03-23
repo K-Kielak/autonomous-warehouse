@@ -83,6 +83,10 @@ public class RobotInfo implements Communicatable {
 		return position;
 	}
 	
+	public Direction getDirection() {
+		return direction;
+	}
+	
 	public float getMaxCapacity(){
 		return maxCapacity;
 	}
