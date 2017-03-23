@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.JobAssignment;
+import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.pathfinding.AStar;
 
 import rp.util.Pair;
@@ -40,10 +41,8 @@ public class Robot extends Thread{
 				info.cancelJob();
 			}
 			
-			if(info.wasJobCancelled() || info.finished()){
-				info.setCurrentJob(jobs.getNextJob(info.getName()));
-				logger.debug("Got new job: " + info.getCurrentJob().getJobCode());
-			}
+			if(info.wasJobCancelled() || info.finished())
+				getNextJob();
 			
 			recalculatePath();
 		
@@ -71,6 +70,22 @@ public class Robot extends Thread{
 	
 	public RobotInfo getInfo(){
 		return info;
+	}
+	
+	private void getNextJob(){
+		JobInfo nextJob = jobs.getNextJob(info.getName());
+		while(nextJob == null){
+			logger.warn("Robot " + info.getName() + " is waiting for a new job (it is not accessible now)");
+			nextJob = jobs.getNextJob(info.getName());
+			try {
+				Thread.sleep(2*DELAY);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		
+		info.setCurrentJob(jobs.getNextJob(info.getName()));
+		logger.debug(info.getCurrentJob().getJobCode() + " got new job");
 	}
 	
 	private void recalculatePath(){
