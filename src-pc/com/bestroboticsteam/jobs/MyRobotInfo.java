@@ -49,7 +49,9 @@ public class MyRobotInfo {
 	}
 	
 	public void addJobPath(LinkedList<JobInfo> list){
-		jobPath.addAll(list);
+		synchronized(jobPath){
+			jobPath.addAll(list);
+		}
 	}
 	
 	public float getWeight(){
@@ -93,24 +95,27 @@ public class MyRobotInfo {
 		
 		boolean removed = false;
 		
-		for(JobInfo info: jobPath){
-			if(info.getJobCode() == code){
-				jobPath.remove(info);
-				removed = true;
+		synchronized(jobPath){
+		
+			for(JobInfo info: jobPath){
+				if(info.getJobCode() == code){
+					jobPath.remove(info);
+					removed = true;
+				}
 			}
+			
+			if(removed)
+				this.decrementNumberAssigned();
+			
+			
+			if(this.currentOrder != null)
+				if(this.currentOrder.getId() == code)
+					this.currentOrder = null;
+			
+			if(this.currentJob != null)
+				if(this.currentJob.getJobCode() == code)
+					this.currentJob = null;
 		}
-		
-		if(removed)
-			this.decrementNumberAssigned();
-		
-		
-		if(this.currentOrder != null)
-			if(this.currentOrder.getId() == code)
-				this.currentOrder = null;
-		
-		if(this.currentJob != null)
-			if(this.currentJob.getJobCode() == code)
-				this.currentJob = null;
 		
 	}
 }
