@@ -5,6 +5,8 @@ import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
+import com.bestroboticsteam.robotsmanagement.Direction;
+
 import lejos.geom.Line;
 import lejos.robotics.navigation.Pose;
 import rp.robotics.MobileRobot;
@@ -54,7 +56,16 @@ public class RobotSimController extends Thread {
 			if (newPosY != simX()) {
 				posForSimX = newPosx;
 			}
-
+			Direction dir = CreateSimRobots.getDirection(theRobot);
+			if (dir == Direction.LEFT){
+				position.setHeading(180);
+			} else if (dir == Direction.FORWARD){
+				position.setHeading(90);
+			} else if (dir == Direction.RIGHT){
+				position.setHeading(0);
+			} else if (dir == Direction.BACKWARD){
+				position.setHeading(270);
+			}
 			position.setLocation(posForSimX, posForSimY);
 			robot.setPose(position);
 		}
