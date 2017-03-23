@@ -37,7 +37,6 @@ public class RobotSimController extends Thread {
 	
 	public void run() {
 		while (true) {
-			System.out.println();
 			float posForSimY = simY();
 			float posForSimX = simX();
 			posy = CreateSimRobots.getPosY(theRobot);
