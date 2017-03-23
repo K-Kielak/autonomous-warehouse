@@ -2,15 +2,13 @@ package com.bestroboticsteam.jobs;
 
 import java.awt.Point;
 import java.util.LinkedList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class MyRobotInfo {
 	
 	private final float MAX_WEIGHT;
 	private float weight;
 	private Point position;
-	private BlockingQueue<JobInfo> jobPath = new LinkedBlockingQueue<JobInfo>();
+	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
 	private int totalCost;
 	private int numberJobsAssigned;
 	private JobInfo currentJob = null;
@@ -49,7 +47,9 @@ public class MyRobotInfo {
 	}
 	
 	public void addJobPath(LinkedList<JobInfo> list){
-		jobPath.addAll(list);
+		synchronized(jobPath){
+			jobPath.addAll(list);
+		}
 	}
 	
 	public float getWeight(){
@@ -85,38 +85,35 @@ public class MyRobotInfo {
 	}
 	
 	public JobInfo getNextJob(){
-		while(true){
-			try {
-				return jobPath.take();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		return jobPath.poll();
+	
 	}
 	
 	public void cancelOrder(int code){
 		
 		boolean removed = false;
 		
-		for(JobInfo info: jobPath){
-			if(info.getJobCode() == code){
-				jobPath.remove(info);
-				removed = true;
+		synchronized(jobPath){
+		
+			for(JobInfo info: jobPath){
+				if(info.getJobCode() == code){
+					jobPath.remove(info);
+					removed = true;
+				}
 			}
+			
+			if(removed)
+				this.decrementNumberAssigned();
+			
+			
+			if(this.currentOrder != null)
+				if(this.currentOrder.getId() == code)
+					this.currentOrder = null;
+			
+			if(this.currentJob != null)
+				if(this.currentJob.getJobCode() == code)
+					this.currentJob = null;
 		}
-		
-		if(removed)
-			this.decrementNumberAssigned();
-		
-		
-		if(this.currentOrder != null)
-			if(this.currentOrder.getId() == code)
-				this.currentOrder = null;
-		
-		if(this.currentJob != null)
-			if(this.currentJob.getJobCode() == code)
-				this.currentJob = null;
 		
 	}
 }

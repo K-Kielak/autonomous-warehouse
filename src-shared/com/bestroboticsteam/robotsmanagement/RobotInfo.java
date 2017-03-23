@@ -38,10 +38,13 @@ public class RobotInfo implements Communicatable {
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
-		
-		if(position.distance(newPos) != 1)
-			throw new IllegalArgumentException("wp: " + position + " " + newPos);
-		
+
+		if(position.distance(newPos) != 1
+		&& position.distance(newPos) != 0)
+				throw new IllegalArgumentException("wp: " + position + " " + newPos);
+				
+		if(position.equals(newPos))
+			return Direction.WAIT;
 		
 		if(position.x-1 == newPos.x)
 			newDir = Direction.LEFT; //turn west
@@ -80,8 +83,6 @@ public class RobotInfo implements Communicatable {
 		return position;
 	}
 	
-	
-	
 	public float getMaxCapacity(){
 		return maxCapacity;
 	}
@@ -108,11 +109,13 @@ public class RobotInfo implements Communicatable {
 		
 		if (direction == goal)
 			turnSide = Direction.FORWARD;
-		else if ((direction.ordinal()  + 1) % 4 == goal.ordinal()) 
+		else if ((direction.ordinal() + 1) == goal.ordinal()
+			  || (direction.ordinal() + 1) >= 4 && (direction.ordinal() + 2) % 5 == goal.ordinal())
 			turnSide = Direction.RIGHT;
-		else if ((direction.ordinal()  + 2) % 4 == goal.ordinal())
+		else if ((direction.ordinal() + 2) == goal.ordinal()
+			  || (direction.ordinal() + 2) >= 4 && (direction.ordinal() + 3) % 5 == goal.ordinal())
 			turnSide = Direction.BACKWARD;
-		else// if(direction.ordinal() == (goal.ordinal()+3)%4)
+		else// if(direction.ordinal() == (goal.ordinal()+3) || direction.ordinal() == (goal.ordinal() + 5 + 4) % 5)
 			turnSide =  Direction.LEFT;
 		
 		direction = goal;

@@ -1,8 +1,11 @@
 package com.bestroboticsteam.robotexecution;
 
+import static com.bestroboticsteam.robot.RobotConfig.CUSTOM_EXPRESS_BOT;
+import static com.bestroboticsteam.robot.RobotConfig.LEFT_LIGHT_SENSOR;
+import static com.bestroboticsteam.robot.RobotConfig.RIGHT_LIGHT_SENSOR;
+
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.RobotCommunicationHandler;
-import com.bestroboticsteam.robot.RobotConfig;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
@@ -111,11 +114,7 @@ public class Robot implements StoppableRunnable {
 	}
 
 	public static void main(String[] args) {
-		WheeledRobotConfiguration config = RobotConfig.CUSTOM_EXPRESS_BOT;
-		final SensorPort left = SensorPort.S2;
-		final SensorPort right = SensorPort.S3;
-		Robot demo = new Robot(left, right, config);
+		Robot demo = new Robot(LEFT_LIGHT_SENSOR, RIGHT_LIGHT_SENSOR, CUSTOM_EXPRESS_BOT);
 		demo.run();
 	}
-
 }

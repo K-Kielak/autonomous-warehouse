@@ -9,6 +9,7 @@ import lejos.util.Delay;
 public class Movement {
 	private final int ERROR = 6;
 	private final float SPEED = 0.2f;
+	private final int WAIT_DELAY = 1000;
 	private int calibratedValue;
 	private final LightSensor leftSensor;
 	private final LightSensor rightSensor;
@@ -31,6 +32,9 @@ public class Movement {
 
 	public void move(Direction direction){
 		switch(direction){
+		    case WAIT:
+				Delay.msDelay(WAIT_DELAY);
+				return;
 			case LEFT:
 				pilot.rotate(10);
 				while(!isOnBlack(leftSensor.readValue()))

@@ -3,7 +3,6 @@ package com.bestroboticsteam.warehouseinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import rp.robotics.visualisation.GridMapVisualisation;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -57,7 +56,7 @@ public class InterfaceView extends JFrame {
 		currentJobText.setOpaque(true);
 		currentJobText.setEditable(false);
 		currentJobText.setBackground(null);
-		// list of first 10 jobs
+		// list of upcoming jobs
 		doingLabel.setPreferredSize(new Dimension(150, 20));
 		doingLabel.setOpaque(true);
 		nextJobText.setPreferredSize(new Dimension(220, 150));
@@ -121,7 +120,8 @@ public class InterfaceView extends JFrame {
 
 		// create split pane and add the map and job panels to it respectively
 		JSplitPane split = new JSplitPane();
-		split.setSize(1000, 300);
+		split.setBackground(Color.white);
+		split.setSize(1000, 600);
 		split.setDividerLocation(500);
 		split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 		split.setLeftComponent(mapVis);

@@ -14,6 +14,21 @@ public class RobotInterface {
 	private int itemsQuantity = 0;
 	
 	public void waitForSensorCalibration() {
+		/*
+		 * Prints a message to the screen like follows:
+		 * 
+		 * ┌──────────────────┐
+		 * │ Press Any Button │
+		 * │ to Calibrate     │
+		 * │ Sensors          │
+		 * │                  │
+		 * │                  │
+		 * │                  │
+		 * └──────────────────┘
+		 *
+		 * Then waits for a button to be pressed.
+		 * 
+		 */
 		LCD.clear();
 		LCD.drawString("Press Any Button", 1, 0);
 		LCD.drawString("to Calibrate", 1, 1);
@@ -22,6 +37,17 @@ public class RobotInterface {
 	}
 
 	public void bluetoothMessage(String message) {
+		/**
+		 * 
+		 * ┌──────────────────┐
+		 * │                  │
+		 * │ Status:          │
+		 * │ Connected        │
+		 * │                  │
+		 * │                  │
+		 * │                  │
+		 * └──────────────────┘
+		 */
 		LCD.clear();
 		LCD.drawString("", 1, 0);
 		LCD.drawString("Status:", 2, 1);
@@ -30,10 +56,23 @@ public class RobotInterface {
 	}
 	
 	public void printWaitingForOrdersMessage(RobotInfo robot) {
+		/**
+		 * ┌──────────────────┐
+		 * │ John Cena        │
+		 * │ Waiting for new  │
+		 * │ orders from the  │
+		 * │ server...        │
+		 * │                  │
+		 * │                  │
+		 * │                  │
+		 * └──────────────────┘
+		 */
 		LCD.clear();
 		if(robot.getName() != null)
 			LCD.drawString(robot.getName(), 1, 0);
-		LCD.drawString("Waiting for new orders from the server...", 1, 1);	
+		LCD.drawString("Waiting for new", 1, 1);
+		LCD.drawString("orders from the", 1, 2);
+		LCD.drawString("server...", 1, 3);
 	}
 	
 	public void printMovingMessage(RobotInfo robot) {
@@ -83,9 +122,21 @@ public class RobotInterface {
 	}
 	
 	private void printMovingToDropPointMessage(RobotInfo robot) {
+		/**
+		 * ┌──────────────────┐
+		 * │ John Cena        │
+		 * │ Job Code: aaa    │
+		 * │ Moving to        │
+		 * │ delivery point...│
+		 * │ server...        │
+		 * │ Destination: 1, 2│
+		 * │                  │
+		 * │                  │
+		 * └──────────────────┘
+		 */
 		LCD.clear();
 		LCD.drawString(robot.getName(), 1, 0);
-		LCD.drawString("Job code: " + robot.getCurrentJob().getItem(), 1, 1);
+		LCD.drawString("Job Code: " + robot.getCurrentJob().getItem(), 1, 1);
 		LCD.drawString("Moving to delivery point...", 1, 2);
 		Point p = robot.getCurrentJob().getPosition();
 		LCD.drawString("Destination: " + p.x + ", " + p.y, 1, 3);
@@ -93,6 +144,19 @@ public class RobotInterface {
 	}
 	
 	private void printMovingToItemMessage(RobotInfo robot) {
+		/**
+		 * ┌──────────────────┐
+		 * │ Robot Name:      │
+		 * │   John Cena      │
+		 * │ Job Code:        │
+		 * │ 1234             │
+		 * │ Moving to item:  │
+		 * │ Destination:     │
+		 * │    x: 1          │
+		 * │    y: 6          │
+		 * │                  │
+		 * └──────────────────┘
+		 */
 		LCD.clear();
 		LCD.drawString("Robot name: ", 1, 0);
 		LCD.drawString("  " + robot.getName() , 1, 1);

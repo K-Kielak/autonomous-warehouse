@@ -3,6 +3,12 @@ package com.bestroboticsteam.communication;
 import java.io.IOException;
 
 public class DummyObject implements Communicatable {
+	/**
+	 * 
+	 * Used in the tests to test sending and receiving and to illustrate the use
+	 * of sendObject and receiveObject
+	 * 
+	 */
 	private int num;
 
 	public DummyObject() {
