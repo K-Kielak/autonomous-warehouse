@@ -128,7 +128,7 @@ public class AStar {
 			openList = addToOpenList(new Point(nodeX, nodeY-1), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			openList = addToOpenList(new Point(nodeX+1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			openList = addToOpenList(new Point(nodeX-1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
-			openList = addToOpenList(new Point(nodeX, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
+			//openList = addToOpenList(new Point(nodeX, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			
 		}
 		
@@ -184,7 +184,7 @@ public class AStar {
 					for(AStarNode n : openList){
 						// Calculates the information needed by the new node
 						if(n.location.x==location.x && n.location.y==location.y){
-							if(n.gCost>currentNode.gCost){
+							if(n.gCost>currentNode.gCost+1){
 								n.gCost=currentNode.gCost+1;
 								n.parentNode=currentNode;
 								n.fCost=n.gCost+n.hCost;
