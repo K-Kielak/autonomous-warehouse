@@ -38,6 +38,8 @@ public class RobotSimController extends Thread {
 			float posForSimX = simX();
 			posy = CreateSimRobots.getPosY(theRobot);
 			posx = CreateSimRobots.getPosX(theRobot);
+			posy = 4;
+			posx = 1;
 			float newPosx = convertX(posx);
 			float newPosY = convertY(posy);
 			try {
@@ -131,10 +133,4 @@ public class RobotSimController extends Thread {
 		}
 		return y;
 	}
-	
-	/*public static Point mapOutPath(){
-		Point theGoal = CreateSimRobots.getGoalPoint(theRobot);
-		return theGoal;
-		
-	}*/
 }

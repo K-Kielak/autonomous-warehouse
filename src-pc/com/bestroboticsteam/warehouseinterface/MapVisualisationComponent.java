@@ -12,6 +12,9 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.Timer;
+
+import org.apache.log4j.Logger;
+
 import lejos.geom.Line;
 import lejos.geom.Point;
 import lejos.robotics.RangeReading;
@@ -50,7 +53,8 @@ public class MapVisualisationComponent extends JComponent {
 	private ArrayList<LocalisedRangeScanner> m_rangers = new ArrayList<>(1);
 	private boolean m_trackRobots = true;
 	private ArrayList<Point> m_robotTracks = new ArrayList<Point>();
-
+	final static Logger logger = Logger.getLogger(MapVisualisationComponent.class);
+	
 	public MapVisualisationComponent(LineMap _lineMap, float _scaleFactor) {
 
 		int _width = (int) _lineMap.getBoundingRect().getWidth();
@@ -238,6 +242,10 @@ public class MapVisualisationComponent extends JComponent {
 		g2.setStroke(new BasicStroke(2));
 		float x = (float)_robot.getPose().getX();
 		float y = (float)_robot.getPose().getY();
+		logger.debug("X " + x);
+		logger.debug("Y " + y);
+		logger.debug("acc robot x " + RobotSimController.convertX((float)CreateSimRobots.jPos.getX()));
+		logger.debug("acc robot" + RobotSimController.convertY((float)CreateSimRobots.jPos.getY()));
 		if (x == RobotSimController.convertX((float)CreateSimRobots.dPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.dPos.getY())){
 			g2.setPaint(Color.BLUE);
 		} else if (x == RobotSimController.convertX((float)CreateSimRobots.hPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.hPos.getY())){
