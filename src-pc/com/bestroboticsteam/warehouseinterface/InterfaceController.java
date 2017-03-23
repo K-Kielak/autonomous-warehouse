@@ -40,8 +40,12 @@ public class InterfaceController extends Thread {
 			int posx = CreateSimRobots.getPosX(i);
 			int posy = CreateSimRobots.getPosY(i);
 			jobId = robotArray[i].getCurrentJob().getJobCode();
-			if (jobId != 0) {
-				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " : " + robotInfo;
+			int goalx = CreateSimRobots.getGoalPoint(i).x;
+			int goaly = CreateSimRobots.getGoalPoint(i).y;
+			if (jobId != 0 && goalx != -1 && goaly != -1) {
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " goal: " + "(" + goalx + "," + goaly + ") " + " : " + robotInfo;
+			} else if (jobId != 0 && goalx == -1 && goaly == -1){
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " goal is unknown " + " : " + robotInfo;
 			} else {
 				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + "Disconnected" + " : " + robotInfo;
 			}
@@ -85,10 +89,8 @@ public class InterfaceController extends Thread {
 		warehouseInterface.setInProgList(jobsText);
 	}
 
-	public void setTenJobs() {
+	public void setUpcomingjobs() {
 		// get input for jobsList
-		// get the first ten jobs from JobSelection and output them to
-		// displayText in IView
 		String jobsText = "";
 		LinkedList<Order> jobs = assign.getAssignedOrders();
 		for (int i = 0; i < jobs.size(); i++) {
@@ -111,7 +113,7 @@ public class InterfaceController extends Thread {
 			try {
 				// while running keep updating jobs
 				setRobotStatus();
-				setTenJobs();
+				setUpcomingjobs();
 				setCurrentJobs();
 				setFinishedJobs();
 				Thread.sleep(500);

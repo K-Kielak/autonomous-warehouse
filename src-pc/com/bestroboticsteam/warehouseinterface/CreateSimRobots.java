@@ -60,8 +60,13 @@ public class CreateSimRobots {
 	}
 	
 	public static Point getGoalPoint(int robot){
-		Point a = robotArray[robot].getCurrentPath().removeLast();
-		return a; 
+		if (getPath(robot).size() == 0){
+			Point b = new Point(-1,-1);
+			return b;
+		} else {
+			Point a = getPath(robot).removeLast();
+			return a;
+		} 
 	}
 	
 	public static String getName(int robot){
