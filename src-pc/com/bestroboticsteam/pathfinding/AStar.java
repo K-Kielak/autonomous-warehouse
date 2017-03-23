@@ -50,6 +50,7 @@ public class AStar {
 			}
 			//Even if the robot can move, it cannot instantly teleport out of the way
 			timedReservationTable.put(new TimePoint(robot.getPosition(), 0), true);
+			timedReservationTable.put(new TimePoint(robot.getPosition(), 1), true);
 		}
 		List<Point> path = AStarPath(locationDestinationPair, timedReservationTable);
 		
