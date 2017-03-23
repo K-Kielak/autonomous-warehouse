@@ -1,21 +1,18 @@
 package com.bestroboticsteam.warehouseinterface;
+
+import com.bestroboticsteam.communication.RobotNames;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import com.bestroboticsteam.robotsmanagement.RobotsManager;
 import java.awt.Point;
 import java.util.LinkedList;
-
 import org.apache.log4j.Logger;
-
 import rp.robotics.MobileRobotWrapper;
 import rp.robotics.mapping.GridMap;
-import rp.robotics.mapping.MapUtils;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MapBasedSimulation;
 import rp.robotics.simulation.MovableRobot;
 import rp.robotics.simulation.SimulatedRobots;
-import rp.robotics.visualisation.GridMapVisualisation;
-import rp.robotics.visualisation.MapVisualisationComponent;
 
 public class CreateSimRobots {
 	public static GridMap map = MyGridMap.createRealWarehouse();
@@ -23,6 +20,9 @@ public class CreateSimRobots {
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
+	public static Point dPos = null;
+	public static Point jPos = null;
+	public static Point hPos = null;
 	final static Logger logger = Logger.getLogger(CreateSimRobots.class);
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {
@@ -32,6 +32,7 @@ public class CreateSimRobots {
 		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
 			logger.info("Visualisation of " + robotArray[i].getName() + " is starting");
+			getPos(i);
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
 			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
 			controller.start();
@@ -59,12 +60,25 @@ public class CreateSimRobots {
 		return pos.y;
 	}
 	
+	public static void getPos(int robot){
+		Point pos = robotArray[robot].getPosition();
+		String name = getName(robot);
+		if (name == RobotNames.ROBOT_3_NAME){
+			dPos = pos;
+		} else if (name == RobotNames.ROBOT_1_NAME){
+			jPos = pos;
+		} else if (name == RobotNames.ROBOT_2_NAME){
+			hPos = pos;
+		}
+	}
+	
 	public static Point getGoalPoint(int robot){
 		if (getPath(robot).size() == 0){
 			Point b = new Point(-1,-1);
 			return b;
 		} else {
-			Point a = getPath(robot).removeLast();
+			Point a = robotArray[robot].getCurrentJob().getPosition();
+		//	Point a = getPath(robot).removeLast();
 			return a;
 		} 
 	}
@@ -75,5 +89,5 @@ public class CreateSimRobots {
 	
 	public static LinkedList<Point> getPath(int robot){
 		return robotArray[robot].getCurrentPath();
-	}
+	}	
 }
