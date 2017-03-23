@@ -241,9 +241,9 @@ public class MapVisualisationComponent extends JComponent {
 		if (x == RobotSimController.convertX((float)CreateSimRobots.dPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.dPos.getY())){
 			g2.setPaint(Color.GREEN);
 		} else if (x == RobotSimController.convertX((float)CreateSimRobots.hPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.hPos.getY())){
-			g2.setPaint(Color.RED);
-		} else if (x == RobotSimController.convertX((float)CreateSimRobots.jPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.jPos.getY())){
 			g2.setPaint(Color.ORANGE);
+		} else if (x == RobotSimController.convertX((float)CreateSimRobots.jPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.jPos.getY())){
+			g2.setPaint(Color.RED);
 		} else {
 			g2.setPaint(Color.BLACK);
 		}
