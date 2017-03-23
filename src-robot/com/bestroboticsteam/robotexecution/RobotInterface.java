@@ -86,8 +86,23 @@ public class RobotInterface {
 		else
 			printMovingToItemMessage();
 	}
+	
+	public void printCheckpointMessage(){
+		if(info.getCurrentJob().isDropPoint())
+			printUnloadMessage();
+		else
+			printLoadMessage();
+	}
+	
+	public void resetItemsQuantity() {
+		itemsQuantity = 0;
+	}
 
-	public void printLoadMessage() {
+	public int getItemsQuantity() {
+		return itemsQuantity;
+	}
+	
+	private void printLoadMessage() {
 		LCD.clear();
 		LCD.drawString(info.getName(), 3, 0);
 		JobInfo j = info.getCurrentJob();
@@ -99,7 +114,7 @@ public class RobotInterface {
 		waitForLoading();
 	}
 	
-	public void printUnloadMessage(){
+	private void printUnloadMessage(){
 		LCD.clear();
 		LCD.drawString(info.getName(), 1, 0);
 		JobInfo j = info.getCurrentJob();
@@ -107,14 +122,6 @@ public class RobotInterface {
 		LCD.drawString("Please unload all of the items", 1, 2);
 		LCD.drawString("Press any button to unload", 1, 3);
 		waitForUnloading();
-	}
-	
-	public void resetItemsQuantity() {
-		itemsQuantity = 0;
-	}
-
-	public int getItemsQuantity() {
-		return itemsQuantity;
 	}
 
 	private void waitForLoading() {
