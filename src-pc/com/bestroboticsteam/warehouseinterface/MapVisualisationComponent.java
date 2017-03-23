@@ -67,7 +67,7 @@ public class MapVisualisationComponent extends JComponent {
 		// render time during visualisation
 		m_transformedLines = staticTransformMapLines(m_lineMap, X_MARGIN, Y_MARGIN);
 
-		// repaint frequecy
+		// repaint frequency
 		new Timer(16, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				repaint();
@@ -239,7 +239,7 @@ public class MapVisualisationComponent extends JComponent {
 		float x = (float)_robot.getPose().getX();
 		float y = (float)_robot.getPose().getY();
 		if (x == RobotSimController.convertX((float)CreateSimRobots.dPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.dPos.getY())){
-			g2.setPaint(Color.GREEN);
+			g2.setPaint(Color.BLUE);
 		} else if (x == RobotSimController.convertX((float)CreateSimRobots.hPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.hPos.getY())){
 			g2.setPaint(Color.ORANGE);
 		} else if (x == RobotSimController.convertX((float)CreateSimRobots.jPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.jPos.getY())){
@@ -335,6 +335,7 @@ public class MapVisualisationComponent extends JComponent {
 				// first 2 coords are upper left corner of framing rectangle
 				new Ellipse2D.Double(scale(_point.getX() - _radius) + X_MARGIN,
 						scale(flipY(_point.getY() + _radius)) + Y_MARGIN, scale(_radius * 2), scale(_radius * 2));
+		_g2.setColor(Color.DARK_GRAY);
 		_g2.draw(ell);
 	}
 

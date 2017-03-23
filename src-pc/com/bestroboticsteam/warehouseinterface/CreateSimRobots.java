@@ -24,6 +24,9 @@ public class CreateSimRobots {
 	public static Point dPos = null;
 	public static Point jPos = null;
 	public static Point hPos = null;
+	public static Point dGPos = null;
+	public static Point jGPos = null;
+	public static Point hGPos = null;
 	final static Logger logger = Logger.getLogger(CreateSimRobots.class);
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {
@@ -37,6 +40,7 @@ public class CreateSimRobots {
 			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
 			controller.start();
 			getPos(i);
+			getGoalPoint(i);
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;
@@ -79,7 +83,14 @@ public class CreateSimRobots {
 			return b;
 		} else {
 			Point a = robotArray[robot].getCurrentJob().getPosition();
-		//	Point a = getPath(robot).removeLast();
+			String name = getName(robot);
+			if (name == RobotNames.ROBOT_3_NAME){
+				dGPos = a;
+			} else if (name == RobotNames.ROBOT_1_NAME){
+				jGPos = a;
+			} else if (name == RobotNames.ROBOT_2_NAME){
+				hGPos = a;
+			}
 			return a;
 		} 
 	}
