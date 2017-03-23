@@ -127,6 +127,9 @@ public class JobAssignment extends Thread {
 				
 		JobInfo job = robot.getNextJob();
 		
+		if(job == null)
+			return job;
+		
 		synchronized(assignedOrders){
 			
 			if(currentOrder == null){

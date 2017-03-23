@@ -10,7 +10,7 @@ public class MyRobotInfo {
 	private final float MAX_WEIGHT;
 	private float weight;
 	private Point position;
-	private BlockingQueue<JobInfo> jobPath = new LinkedBlockingQueue<JobInfo>();
+	private LinkedList<JobInfo> jobPath = new LinkedList<JobInfo>();
 	private int totalCost;
 	private int numberJobsAssigned;
 	private JobInfo currentJob = null;
@@ -85,14 +85,8 @@ public class MyRobotInfo {
 	}
 	
 	public JobInfo getNextJob(){
-		while(true){
-			try {
-				return jobPath.take();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		return jobPath.poll();
+	
 	}
 	
 	public void cancelOrder(int code){
