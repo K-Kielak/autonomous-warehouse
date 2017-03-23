@@ -193,7 +193,7 @@ public class JobAssignment extends Thread {
 				robotMap.get(robots[i].getName()).cancelOrder(code);
 			}
 			assignedOrders.remove(o);
-			assigned = false;
+			assigned = true;
 		
 		}
 		
@@ -320,17 +320,22 @@ public class JobAssignment extends Thread {
 				
 				int quantity = (int)(value / (maxWeight - weight));
 				
-				JobInfo info = ress.get(i);
-				
-				ress.remove(i);
-				
-				ress.add(i, new JobInfo(info.getItem(), info.getPosition(), quantity, info.getJobCode(), info.getWeight()));
-				
-				ress.add(++i, new JobInfo("DropBox", this.getDrop(ress.get(i-1)), orderCode));
-				
-				ress.add(++i, new JobInfo(info.getItem(), info.getPosition(), info.getQuantity() - quantity, info.getJobCode(), info.getWeight()));
-				
-				weight = info.getWeight()*(info.getQuantity() - quantity);
+				if(quantity > 0){
+					JobInfo info = ress.get(i);
+					
+					ress.remove(i);
+					
+					ress.add(i, new JobInfo(info.getItem(), info.getPosition(), quantity, info.getJobCode(), info.getWeight()));
+					
+					ress.add(++i, new JobInfo("DropBox", this.getDrop(ress.get(i-1)), orderCode));
+					
+					ress.add(++i, new JobInfo(info.getItem(), info.getPosition(), info.getQuantity() - quantity, info.getJobCode(), info.getWeight()));
+					
+					weight = info.getWeight()*(info.getQuantity() - quantity);
+				}else{
+					ress.add(i++, new JobInfo("DropBox", this.getDrop(ress.get(i-1)), orderCode));
+					weight = 0f;
+				}
 			
 			} else {
 				weight = weight + value;
@@ -347,10 +352,19 @@ public class JobAssignment extends Thread {
 		
 		costs[robotIndex] = robot.getCost();
 		
-		costs[robotIndex] += robotToItem[path.indexOf(ress.peek())];
-		ress.get(0).setCost(robotToItem[path.indexOf(ress.peek())]);
+		int ind;
 		
-		for(int i = 1; i < ress.size(); i++){
+		if(!ress.peek().getItem().equals("DropBox")){
+			costs[robotIndex] += robotToItem[path.indexOf(ress.peek())];
+			ress.get(0).setCost(robotToItem[path.indexOf(ress.peek())]);
+			ind = 1;
+		}else{
+			costs[robotIndex] += itemToDrop[path.indexOf(ress.get(1))];
+			ress.get(0).setCost(itemToDrop[path.indexOf(ress.get(1))]);
+			ind = 2;
+		}
+		
+		for(int i = ind; i < ress.size(); i++){
 			if( ress.get(i).getItem().equals("DropBox") && i < ress.size()-1 ){
 				
 				ress.get(i).setCost(itemToDrop[path.indexOf(ress.get(i-1))]);
