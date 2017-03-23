@@ -7,7 +7,7 @@ import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 
 public class Movement {
-	private final int ERROR = 5;
+	private final int ERROR = 6;
 	private final float SPEED = 0.2f;
 	private int calibratedValue;
 	private final LightSensor leftSensor;
@@ -18,7 +18,6 @@ public class Movement {
 		this.leftSensor = leftSensor;
 		this.rightSensor = rightSensor;
 		this.pilot = pilot;
-
 		this.pilot.setTravelSpeed(SPEED);
 	}
 	
@@ -30,23 +29,30 @@ public class Movement {
 		calibratedValue = (leftValue + rightValue) / 2;
 	}
 
-	public void move(Direction direction) {
-		if(direction == null)
-			return; //if there is not movement order just do nothing
-		
-		switch (direction) {
-		case LEFT:
-			pilot.rotate(90);
-			break;
-		case RIGHT:
-			pilot.rotate(-90);
-			break;
-		case BACKWARD:
-			pilot.rotate(180);
-			break;
-		case FORWARD:
-			// dont't rotate
-			break;
+	public void move(Direction direction){
+		switch(direction){
+			case LEFT:
+				pilot.rotate(10);
+				while(!isOnBlack(leftSensor.readValue()))
+					pilot.rotateLeft();
+				pilot.rotate(13);
+				break;
+			case RIGHT:
+				pilot.rotate(-10);
+				while(!isOnBlack(rightSensor.readValue()))
+					pilot.rotateRight();
+				pilot.rotate(-13);
+				break;
+			case BACKWARD:
+				pilot.travel(-0.1);
+				pilot.rotate(10);
+				while(!isOnBlack(leftSensor.readValue()))
+					pilot.rotateLeft();
+				pilot.rotate(20);
+				break;
+			case FORWARD:
+				//dont't rotate
+				break;
 		}
 
 		boolean isLeftOnBlack = isOnBlack(leftSensor.readValue());
@@ -72,9 +78,10 @@ public class Movement {
 			isRightOnBlack = isOnBlack(rightSensor.readValue());
 		}
 
-		pilot.stop();
+		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
 		pilot.travel(0.07);
 		pilot.stop();
+		pilot.setTravelSpeed(SPEED);
 	}
 
 	private boolean isOnBlack(int sensorValue) {
