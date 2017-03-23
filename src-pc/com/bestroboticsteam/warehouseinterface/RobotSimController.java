@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import lejos.geom.Line;
 import lejos.robotics.navigation.Pose;
+import rp.robotics.MobileRobot;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
@@ -31,11 +32,12 @@ public class RobotSimController extends Thread {
 		this.pilot = new GridPilot(robot.getPilot(), map, start);
 		this.robot = robot;
 		this.theRobot = theRobot;
-		this.path = CreateSimRobots.getPath(theRobot);
+		this.path = CreateSimRobots.getPath(theRobot);	
 	}
-
+	
 	public void run() {
 		while (true) {
+			System.out.println();
 			float posForSimY = simY();
 			float posForSimX = simX();
 			posy = CreateSimRobots.getPosY(theRobot);
@@ -55,7 +57,6 @@ public class RobotSimController extends Thread {
 			}
 
 			position.setLocation(posForSimX, posForSimY);
-			position.setHeading(90.0f);
 			robot.setPose(position);
 		}
 	}
@@ -70,7 +71,7 @@ public class RobotSimController extends Thread {
 		return pos;
 	}
 
-	private float convertX(float posx) {
+	public static float convertX(float posx) {
 		float x = -1.0f;
 		if (posx == 0.0f) {
 			x = 0.17f;
@@ -102,7 +103,7 @@ public class RobotSimController extends Thread {
 		return x;
 	}
 
-	private float convertY(float posy) {
+	static float convertY(float posy) {
 		float y = -1.0f;
 		if (posy == 0) {
 			y = 0.155f;
@@ -131,8 +132,8 @@ public class RobotSimController extends Thread {
 		double goalX = theGoal.getX();
 		double goalY = theGoal.getY();
 		int pathLength = path.size();
+		
 		GridPose gridStart =  new GridPose((int)goalX, (int)goalY, Heading.PLUS_Y);;
 		
 	}
-
 }

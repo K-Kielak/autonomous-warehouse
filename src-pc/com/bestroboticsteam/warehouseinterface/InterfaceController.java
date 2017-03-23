@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.apache.log4j.Logger;
-
-import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.*;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import com.bestroboticsteam.robotsmanagement.RobotsManager;
@@ -43,9 +41,9 @@ public class InterfaceController extends Thread {
 			int goalx = CreateSimRobots.getGoalPoint(i).x;
 			int goaly = CreateSimRobots.getGoalPoint(i).y;
 			if (jobId != 0 && goalx != -1 && goaly != -1) {
-				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " goal: " + "(" + goalx + "," + goaly + ") " + " : " + robotInfo;
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " Goal: " + "(" + goalx + "," + goaly + ") " + " : " + robotInfo;
 			} else if (jobId != 0 && goalx == -1 && goaly == -1){
-				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " goal is unknown " + " : " + robotInfo;
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " Goal is unknown " + " : " + robotInfo;
 			} else {
 				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + "Disconnected" + " : " + robotInfo;
 			}
