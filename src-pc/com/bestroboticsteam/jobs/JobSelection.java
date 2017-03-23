@@ -12,6 +12,7 @@ public class JobSelection {
 	private LinkedList<Order> list;
 	private Collection<Item> itemList;
 	private LinkedList<Point> dropLocation;
+	private ReadData reader;
 	
 	final Logger logger = Logger.getLogger(JobSelection.class);
 
@@ -19,7 +20,7 @@ public class JobSelection {
 
 		// Read all the data
 		
-		ReadData reader = new ReadData();
+		this.reader = new ReadData();
 		itemList = reader.readItemData(path);
 		dropLocation = reader.readDropData(path);
 
@@ -85,6 +86,26 @@ public class JobSelection {
 				else
 					no = no * 0.001f;
 			}
+			
+			if(reader.getNoRewardProb((int) (o.getTotalReward()/5)) != 0)
+				no = no * reader.getNoRewardProb((int) (o.getTotalReward()/10));
+			else
+				no = no * 0.001f;
+			
+			if(reader.getYesRewardProb((int) (o.getTotalReward()/5)) != 0)
+				yes = yes * reader.getYesRewardProb((int) (o.getTotalReward()/10));
+			else
+				yes = yes * 0.001f;
+			
+			if(reader.getYesWeightProb((int) (o.getTotalWeight()/3)) != 0)
+				yes = yes * reader.getYesWeightProb((int) (o.getTotalWeight()/10));
+			else
+				yes = yes * 0.001f;
+			
+			if(reader.getNoWeightProb((int) (o.getTotalWeight()/3)) != 0)
+				no = no * reader.getNoWeightProb((int) (o.getTotalWeight()/10));
+			else
+				no = no * 0.001f;
 			
 			if(yes > no)
 				o.setPrediction(true);
