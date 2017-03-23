@@ -1,6 +1,7 @@
 package com.bestroboticsteam.warehouseinterface;
 
 import com.bestroboticsteam.communication.RobotNames;
+import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 import com.bestroboticsteam.robotsmanagement.RobotsManager;
 import java.awt.Point;
@@ -32,10 +33,10 @@ public class CreateSimRobots {
 		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
 			logger.info("Visualisation of " + robotArray[i].getName() + " is starting");
-			getPos(i);
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
 			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
 			controller.start();
+			getPos(i);
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;
@@ -83,6 +84,9 @@ public class CreateSimRobots {
 		} 
 	}
 	
+	public static Direction getDirection(int robot){
+		return robotArray[robot].getDirection();
+	}
 	public static String getName(int robot){
 		return robotArray[robot].getName();
 	}
