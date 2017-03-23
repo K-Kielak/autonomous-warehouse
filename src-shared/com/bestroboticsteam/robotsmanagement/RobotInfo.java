@@ -38,11 +38,11 @@ public class RobotInfo implements Communicatable {
 		Point newPos = currentPath.get(0);
 		currentPath.remove(0);
 		Direction newDir;
-		
+
 		if(position.distance(newPos) != 1
 		&& position.distance(newPos) != 0)
-			throw new IllegalArgumentException("wrong path:\ncurrent position: "
-												+ position + "\nnext position: " + newPos);
+				throw new IllegalArgumentException("wp: " + position + " " + newPos);
+				
 		if(position.equals(newPos))
 			return Direction.WAIT;
 		

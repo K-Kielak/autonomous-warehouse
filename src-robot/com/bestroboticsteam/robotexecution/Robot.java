@@ -9,6 +9,8 @@ import com.bestroboticsteam.communication.RobotCommunicationHandler;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
+import lejos.nxt.Button;
+import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
@@ -77,6 +79,13 @@ public class Robot implements StoppableRunnable {
 				
 				info.pickAll();
 				robotInterface.resetItemsQuantity(); // We've collected items so we reset item quantity
+			}
+			
+			//TODO delete
+			if(info.wasJobCancelled()){
+				LCD.clear();
+				LCD.drawString("Job was cancelled", 0, 0);
+				Button.waitForAnyPress();
 			}
 			
 			sendInfo();
