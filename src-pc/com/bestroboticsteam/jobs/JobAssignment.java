@@ -337,9 +337,10 @@ public class JobAssignment extends Thread {
 			}
 		}
 		
-		if(!ress.getLast().isDropPoint())
+		if(!ress.getLast().isDropPoint()){
 			ress.addLast(new JobInfo("DropBox", this.getDrop(ress.get(ress.size()-1)), orderCode));
-		
+			weight = 0f;
+		}
 		weights[robotIndex] = weight;
 		
 		//compute final cost for this path + previous costs
