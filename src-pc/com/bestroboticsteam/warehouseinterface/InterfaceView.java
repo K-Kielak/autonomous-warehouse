@@ -121,7 +121,8 @@ public class InterfaceView extends JFrame {
 
 		// create split pane and add the map and job panels to it respectively
 		JSplitPane split = new JSplitPane();
-		split.setSize(1000, 300);
+		split.setBackground(Color.white);
+		split.setSize(1000, 600);
 		split.setDividerLocation(500);
 		split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 		split.setLeftComponent(mapVis);

@@ -16,7 +16,6 @@ public class MyGridMap {
 		float xInset = 0.17f, yInstet = 0.155f;
 		int gridWitdth = 12, gridHeight = 8;
 		float cellSize = 0.30f;
-
 		// First ins 36 39 56 188
 
 		ArrayList<Line> lines = new ArrayList<Line>();

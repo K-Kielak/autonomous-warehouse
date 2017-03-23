@@ -6,8 +6,12 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MyDataInputStream extends DataInputStream{
-	
+public class MyDataInputStream extends DataInputStream {
+	/**
+	 * Had to define new DataStreams so special objects can be received such as
+	 * Strings and Points.
+	 */
+
 	public MyDataInputStream(InputStream in) {
 		super(in);
 	}
@@ -27,17 +31,16 @@ public class MyDataInputStream extends DataInputStream{
 		}
 
 	}
-	
+
 	public Point readPoint() throws IOException {
 		try {
 			boolean not_null = this.readInt() == 1;
 			if (not_null) {
-				return new Point(this.readInt(), this.readInt());	
-			}
-			else {
+				return new Point(this.readInt(), this.readInt());
+			} else {
 				return null;
 			}
-	
+
 		} catch (EOFException e) {
 			try {
 				Thread.sleep(10);
@@ -45,5 +48,5 @@ public class MyDataInputStream extends DataInputStream{
 			}
 			return readPoint();
 		}
-	}	
+	}
 }
