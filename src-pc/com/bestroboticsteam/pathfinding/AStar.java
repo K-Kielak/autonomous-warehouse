@@ -129,7 +129,7 @@ public class AStar {
 			openList = addToOpenList(new Point(nodeX, nodeY-1), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			openList = addToOpenList(new Point(nodeX+1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			openList = addToOpenList(new Point(nodeX-1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
-			//openList = addToOpenList(new Point(nodeX, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
+			openList = addToOpenList(new Point(nodeX, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			
 		}
 		
