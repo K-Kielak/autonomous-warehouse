@@ -265,7 +265,7 @@ public class ReadData {
 		 * Exceptions to logger
 		 */
 		try {
-			logger.info("Openning file");
+			logger.info("Opening file");
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			return reader;
 		} catch (FileNotFoundException e) {

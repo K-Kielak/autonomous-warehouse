@@ -42,7 +42,7 @@ public class Robot implements StoppableRunnable {
 		LightSensor leftSensor = new LightSensor(leftSensorPort);
 		DifferentialPilot pilot = new WheeledRobotSystem(ExpressBot).getPilot();
 		this.movement = new Movement(leftSensor, rightSensor, pilot);
-		this.robotInterface = new RobotInterface();
+		this.robotInterface = new RobotInterface(info);
 		this.comms = new RobotCommunicationHandler();
 	}
 
@@ -62,19 +62,18 @@ public class Robot implements StoppableRunnable {
 		}
 
 		while (m_run) {
-			robotInterface.printWaitingForOrdersMessage(info);
+			robotInterface.printWaitingForOrdersMessage();
 			receiveInfo();
 			// Going to destination
 			direction = info.move();
 			if (direction != null) {
-				System.out.println("moving to: " + direction);
 				// If we get a direction move to it. This means that we have not arrived yet.
-				robotInterface.printMovingMessage(info);
+				robotInterface.printMovingMessage();
 				movement.move(direction);
 			} else if (!info.finished()) { // Have we finished a job?
 				Sound.playTone(110, 800); // We play a sound
 				while (info.getCurrentJob().getQuantity() > robotInterface.getItemsQuantity() && !info.wasJobCancelled()) {
-					robotInterface.printLoadMessage(info);
+					robotInterface.printCheckpointMessage(); //when robot reaches DropPoint or Item
 				}
 				
 				info.pickAll();

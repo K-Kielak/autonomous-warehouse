@@ -11,7 +11,12 @@ import lejos.util.Delay;
 
 public class RobotInterface {
 
+	private final RobotInfo info;
 	private int itemsQuantity = 0;
+	
+	public RobotInterface(RobotInfo info){
+		this.info = info;
+	}
 	
 	public void waitForSensorCalibration() {
 		/*
@@ -55,43 +60,38 @@ public class RobotInterface {
 		Delay.msDelay(800);
 	}
 	
-	public void printWaitingForOrdersMessage(RobotInfo robot) {
+	public void printWaitingForOrdersMessage() {
 		/**
 		 * ┌──────────────────┐
-		 * │ John Cena        │
+		 * │   John Cena      │
 		 * │ Waiting for new  │
 		 * │ orders from the  │
 		 * │ server...        │
 		 * │                  │
 		 * │                  │
-		 * │                  │
+		 * │                  │robot
 		 * └──────────────────┘
 		 */
 		LCD.clear();
-		if(robot.getName() != null)
-			LCD.drawString(robot.getName(), 1, 0);
+		if(info.getName() != null)
+			LCD.drawString(info.getName(), 3, 0);
 		LCD.drawString("Waiting for new", 1, 1);
 		LCD.drawString("orders from the", 1, 2);
 		LCD.drawString("server...", 1, 3);
 	}
 	
-	public void printMovingMessage(RobotInfo robot) {
-		if(robot.getCurrentJob().isDropPoint())
-			printMovingToDropPointMessage(robot);
+	public void printMovingMessage() {
+		if(info.getCurrentJob().isDropPoint())
+			printMovingToDropPointMessage();
 		else
-			printMovingToItemMessage(robot);
+			printMovingToItemMessage();
 	}
-
-	public void printLoadMessage(RobotInfo robot) {
-		LCD.clear();
-		LCD.drawString(robot.getName(), 1, 0);
-		JobInfo j = robot.getCurrentJob();
-		LCD.drawString("Please load: " + Integer.toString(j.getQuantity()-this.getItemsQuantity()) + " items", 1, 1);
-		LCD.drawString("Right to load item", 0, 2);
-		LCD.drawString("Left (<-) to drop item", 0, 3);
-		LCD.drawString("Entr to and loading", 0, 4);
-		LCD.drawString("Esc to cancel order", 0, 5);
-		waitForLoading(robot);
+	
+	public void printCheckpointMessage(){
+		if(info.getCurrentJob().isDropPoint())
+			printUnloadMessage();
+		else
+			printLoadMessage();
 	}
 	
 	public void resetItemsQuantity() {
@@ -101,8 +101,30 @@ public class RobotInterface {
 	public int getItemsQuantity() {
 		return itemsQuantity;
 	}
+	
+	private void printLoadMessage() {
+		LCD.clear();
+		LCD.drawString(info.getName(), 3, 0);
+		JobInfo j = info.getCurrentJob();
+		LCD.drawString("Job: " + j.getItem(), 1, 1);
+		LCD.drawString("Please load: " + Integer.toString(j.getQuantity()-this.getItemsQuantity()) + " of " + j.getItem(), 1, 2);
+		LCD.drawString("-> to load item", 0, 3);
+		LCD.drawString("<- to drop item", 0, 4);
+		LCD.drawString("Esc to cancel order", 0, 5);
+		waitForLoading();
+	}
+	
+	private void printUnloadMessage(){
+		LCD.clear();
+		LCD.drawString(info.getName(), 1, 0);
+		JobInfo j = info.getCurrentJob();
+		LCD.drawString("Job code: " + j.getJobCode(), 1, 1);
+		LCD.drawString("Please unload all of the items", 1, 2);
+		LCD.drawString("Press any button to unload", 1, 3);
+		waitForUnloading();
+	}
 
-	private void waitForLoading(RobotInfo robot) {
+	private void waitForLoading() {
 		int pressedButtonID = Button.waitForAnyPress();
 		if (pressedButtonID == Button.ID_LEFT)
 			dropItems();
@@ -114,14 +136,19 @@ public class RobotInterface {
 			LCD.drawString("Press Enter for \"YES\" or any other button for \"NO\"", 1, 1);
 			int pressedButtonID2 = Button.waitForAnyPress();
 			if (pressedButtonID2 == Button.ID_ENTER) {
-				robot.cancelJob();
+				info.cancelJob();
 			} 
 			else
-				printLoadMessage(robot);
+				printLoadMessage();
 		}
 	}
 	
-	private void printMovingToDropPointMessage(RobotInfo robot) {
+	private void waitForUnloading(){
+		Button.waitForAnyPress();
+		dropItems();
+	}
+	
+	private void printMovingToDropPointMessage() {
 		/**
 		 * ┌──────────────────┐
 		 * │ John Cena        │
@@ -135,19 +162,18 @@ public class RobotInterface {
 		 * └──────────────────┘
 		 */
 		LCD.clear();
-		LCD.drawString(robot.getName(), 1, 0);
-		LCD.drawString("Job Code: " + robot.getCurrentJob().getItem(), 1, 1);
+		LCD.drawString(info.getName(), 1, 0);
+		LCD.drawString("Job Code: " + info.getCurrentJob().getItem(), 1, 1);
 		LCD.drawString("Moving to delivery point...", 1, 2);
-		Point p = robot.getCurrentJob().getPosition();
+		Point p = info.getCurrentJob().getPosition();
 		LCD.drawString("Destination: " + p.x + ", " + p.y, 1, 3);
 
 	}
 	
-	private void printMovingToItemMessage(RobotInfo robot) {
+	private void printMovingToItemMessage() {
 		/**
 		 * ┌──────────────────┐
-		 * │ Robot Name:      │
-		 * │   John Cena      │
+		 * |    John Cena      │
 		 * │ Job Code:        │
 		 * │ 1234             │
 		 * │ Moving to item:  │
@@ -158,16 +184,15 @@ public class RobotInterface {
 		 * └──────────────────┘
 		 */
 		LCD.clear();
-		LCD.drawString("Robot name: ", 1, 0);
-		LCD.drawString("  " + robot.getName() , 1, 1);
-		LCD.drawString("Job code: ", 1, 2);
-		JobInfo j = robot.getCurrentJob();
-		LCD.drawInt(j.getJobCode(), 1, 3);
-		LCD.drawString("Moving to item: " + j.getItem(), 1, 4);
-		LCD.drawString("Destination: ", 1, 5);
+		LCD.drawString("  " + info.getName() , 2, 0);
+		LCD.drawString("Job code: ", 1, 1);
+		JobInfo j = info.getCurrentJob();
+		LCD.drawInt(j.getJobCode(), 1, 2);
+		LCD.drawString("Moving to item: " + j.getItem(), 1, 3);
+		LCD.drawString("Destination: ", 1, 4);
 		Point p = j.getPosition();
-		LCD.drawString("    x: " + p.x, 1,6);
-		LCD.drawString("    y: " + p.y, 1,7);
+		LCD.drawString("    x: " + p.x, 1,5);
+		LCD.drawString("    y: " + p.y, 1,6);
 		
 	}
 	
