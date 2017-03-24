@@ -132,7 +132,7 @@ public class MyRobotInfo {
 				if(this.currentJob != null)
 					if(this.currentJob.getJobCode() == code)
 						this.currentJob = null;
-					
+			
 				this.decrementNumberAssigned();
 		
 				return 2;
