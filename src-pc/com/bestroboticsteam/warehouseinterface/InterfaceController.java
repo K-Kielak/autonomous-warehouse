@@ -2,6 +2,7 @@ package com.bestroboticsteam.warehouseinterface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -19,7 +20,7 @@ public class InterfaceController extends Thread {
 	private ConcurrentMap<Integer, Order> tenJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private ConcurrentMap<Integer, Order> progJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private static RobotInfo[] robotArray;
-	private float reward = 0.0f;
+	
 	public InterfaceController(JobSelection incomingJobs, JobAssignment assign, RobotsManager robots) {
 		this.robots = robots;
 		this.warehouseInterface = new InterfaceView(robots);
@@ -66,21 +67,19 @@ public class InterfaceController extends Thread {
 
 	public void setFinishedJobs() {
 		String jobsText = "";
-		for (int i = 0; i < 5; i++) {
+		float reward = 0.0f;
+		int listLength = assign.finishedOrderLength();
+		for (int i = 0; i < listLength; i++) {
 			if (assign.viewFinishedOrder(i) != null) {
 				Order job = assign.viewFinishedOrder(i);
 				reward += assign.viewFinishedOrder(i).getTotalReward();
 				jobsText = jobsText + " : " + job.toString();
 			}
 		}
-		warehouseInterface.setReward(getReward());
+		warehouseInterface.setReward(reward);
 		warehouseInterface.setFinishedList(jobsText);
 	}
 	
-	public float getReward(){
-		return reward;
-	}
-
 	public void setCurrentJobs() {
 		String jobsText = "";
 		int length = assign.getCurrentOrders().size();
