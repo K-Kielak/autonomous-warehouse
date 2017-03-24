@@ -1,10 +1,12 @@
 package com.bestroboticsteam.warehouseinterface;
 
+import java.awt.Point;
+import java.util.LinkedList;
+
 import org.apache.log4j.Logger;
 
-import lejos.geom.Point;
+import com.bestroboticsteam.robotsmanagement.Direction;
 import lejos.robotics.navigation.Pose;
-import lejos.util.Delay;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
@@ -17,95 +19,116 @@ public class RobotSimController extends Thread {
 	private GridPilot pilot;
 	private int theRobot;
 	private MovableRobot robot;
-	private int posx;
-	private int posy;
-
+	private float posx;
+	private float posy;
+	private Pose position = new Pose();
+	private LinkedList<Point> path;
+	
 	public RobotSimController(MovableRobot robot, GridMap map, GridPose start, int theRobot) {
 		this.map = map;
 		this.pilot = new GridPilot(robot.getPilot(), map, start);
 		this.robot = robot;
 		this.theRobot = theRobot;
+		this.path = CreateSimRobots.getPath(theRobot);	
 	}
-
+	
 	public void run() {
-		boolean ypos = false;
-		boolean xpos = false;
 		while (true) {
-			while (!ypos) {
-				int county = 0;
-				posx = CreateSimRobots.getPosX(theRobot);
-				posy = CreateSimRobots.getPosY(theRobot);
-				while (!xpos) {
-					int countx1 = 0;
-					int countx2 = 0;
-					logger.debug("actualx " + posx);
-					logger.debug("simx " + simX());
-					int xDifference = posx - simX();
-					logger.debug("xdiff " + xDifference);
-					if (xDifference > 0) {
-						// move right
-						if (countx2 == 0) {
-							pilot.rotatePositive();
-						}
-						logger.debug("moving right");
-						pilot.moveForward();
-						countx2++;
-
-					} else if (xDifference < 0) {
-						// move left
-						logger.debug("moving left");
-						if (countx1 == 0) {
-							pilot.rotateNegative();
-						}
-						pilot.moveForward();
-						countx1++;
-					} else {
-						xpos = true;
-					}
-					countx1 = 0;
-					countx2 = 0;
-				}
-				logger.debug("actualy " + posy);
-				logger.debug("simy " + simY());
-				int yDifference = posy - simY();
-				logger.debug(yDifference + " " + yDifference);
-				if (yDifference > 0) {
-					// move forward
-					logger.debug("move forward");
-					pilot.moveForward();
-
-				} else if (yDifference < 0) {
-					// move backward
-					logger.debug("move backward");
-					if (county == 0) {
-						pilot.rotatePositive();
-						pilot.rotatePositive();
-					}
-					pilot.moveForward();
-					county++;
-				} else {
-					ypos = true;
-				}
+			float posForSimY = simY();
+			float posForSimX = simX();
+			posy = CreateSimRobots.getPosY(theRobot);
+			posx = CreateSimRobots.getPosX(theRobot);
+			float newPosx = convertX(posx);
+			float newPosY = convertY(posy);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				logger.error("RobotSim thread has been interrupted");
 			}
-			Delay.msDelay(1000);
-			ypos = false;
-			xpos = false;
+			if (newPosY != simY()) {
+				posForSimY = newPosY;
+			}
+			if (newPosY != simX()) {
+				posForSimX = newPosx;
+			}
+			Direction dir = CreateSimRobots.getDirection(theRobot);
+			if (dir == Direction.LEFT){
+				position.setHeading(180);
+			} else if (dir == Direction.FORWARD){
+				position.setHeading(90);
+			} else if (dir == Direction.RIGHT){
+				position.setHeading(0);
+			} else if (dir == Direction.BACKWARD){
+				position.setHeading(270);
+			}
+			position.setLocation(posForSimX, posForSimY);
+			robot.setPose(position);
 		}
 	}
-
-	private int simX() {
-		int pos = (int) robot.getPose().getX();
-		if (pos != 0) {
-			pos = (int) (pos + 8.33);
-		}
+	
+	private float simX() {
+		float pos = robot.getPose().getX();
 		return pos;
 	}
 
-	private int simY() {
-		int pos = (int) robot.getPose().getY();
-		if (pos != 0) {
-			pos = (int) (pos + 5.56);
-		}
+	private float simY() {
+		float pos = robot.getPose().getY();
 		return pos;
+	}
+
+	public static float convertX(float posx) {
+		float x = -1.0f;
+		if (posx == 0.0f) {
+			x = 0.17f;
+		} else if (posx == 1.0f) {
+			x = 0.47f;
+		} else if (posx == 2.0f) {
+			x = 0.77f;
+		} else if (posx == 3.0f) {
+			x = 1.07f;
+		} else if (posx == 4.0f) {
+			x = 1.37f;
+		} else if (posx == 5.0f) {
+			x = 1.67f;
+		} else if (posx == 6.0f) {
+			x = 1.97f;
+		} else if (posx == 7.0f) {
+			x = 2.27f;
+		} else if (posx == 8.0f) {
+			x = 2.57f;
+		} else if (posx == 9.0f) {
+			x = 2.28f;
+		} else if (posx == 10.0f) {
+			x = 3.17f;
+		} else if (posx == 11.0f) {
+			x = 3.47f;
+		} else {
+			logger.error("position is not on map");
+		}
+		return x;
+	}
+
+	static float convertY(float posy) {
+		float y = -1.0f;
+		if (posy == 0) {
+			y = 0.155f;
+		} else if (posy == 1.0f) {
+			y = 0.455f;
+		} else if (posy == 2.0f) {
+			y = 0.755f;
+		} else if (posy == 3.0f) {
+			y = 1.055f;
+		} else if (posy == 4.0f) {
+			y = 1.355f;
+		} else if (posy == 5.0f) {
+			y = 1.655f;
+		} else if (posy == 6.0f) {
+			y = 1.955f;
+		} else if (posy == 7.0f) {
+			y = 2.255f;
+		} else {
+			logger.error("position is not on map");
+		}
+		return y;
 	}
 }

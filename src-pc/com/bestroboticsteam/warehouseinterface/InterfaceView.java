@@ -3,7 +3,6 @@ package com.bestroboticsteam.warehouseinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import rp.robotics.visualisation.GridMapVisualisation;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,7 +22,9 @@ public class InterfaceView extends JFrame {
 	public JPanel jobListPanel = new JPanel();
 	public JPanel jobFinishedPanel = new JPanel();
 	public JPanel robotStatus = new JPanel();
+	//robot status
 	public JTextArea statusText = new JTextArea();
+	public JTextArea weightText = new JTextArea();
 	public JTextArea fishedJobText = new JTextArea();
 	// will display list of orders -> from JobSelection class via interfaceController
 	public JTextArea nextJobText = new JTextArea();
@@ -37,10 +38,11 @@ public class InterfaceView extends JFrame {
 	public JTextArea cancelTextC = new JTextArea();
     public JButton cancelCurrent = new JButton();
 	public JLabel reward = new JLabel();
+	
 	public InterfaceView(RobotsManager robots) {
 		mapVis = CreateSimRobots.robots(robots);
 		this.setTitle("Warehouse Management Interface");
-		this.setSize(1300, 600);// set size of frame
+		this.setSize(1300, 700);// set size of frame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// right hand panel - jobs
@@ -57,7 +59,7 @@ public class InterfaceView extends JFrame {
 		currentJobText.setOpaque(true);
 		currentJobText.setEditable(false);
 		currentJobText.setBackground(null);
-		// list of first 10 jobs
+		// list of upcoming jobs
 		doingLabel.setPreferredSize(new Dimension(150, 20));
 		doingLabel.setOpaque(true);
 		nextJobText.setPreferredSize(new Dimension(220, 150));
@@ -67,8 +69,8 @@ public class InterfaceView extends JFrame {
 		
 		jobInProgPanel.setPreferredSize(new Dimension(350, 200));
 		jobListPanel.setPreferredSize(new Dimension(350, 200));
-		jobFinishedPanel.setPreferredSize(new Dimension(350, 200));	
-		robotStatus.setPreferredSize(new Dimension(350, 100));
+		jobFinishedPanel.setPreferredSize(new Dimension(350, 400));	
+		robotStatus.setPreferredSize(new Dimension(350, 200));
 		
 		cancelUpcoming.setPreferredSize(new Dimension(30,20));
 		cancelTextU.setPreferredSize(new Dimension(50, 30));
@@ -79,7 +81,7 @@ public class InterfaceView extends JFrame {
 		cancelTextC.setOpaque(true);
 		cancelTextC.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		fishedJobText.setPreferredSize(new Dimension(300, 150));
+		fishedJobText.setPreferredSize(new Dimension(300, 350));
 		fishedJobText.setOpaque(true);
 		fishedJobText.setEditable(false);
 		fishedJobText.setBorder(BorderFactory.createLineBorder(Color.green));
@@ -90,6 +92,11 @@ public class InterfaceView extends JFrame {
 		statusText.setEditable(false);
 		statusText.setBorder(BorderFactory.createLineBorder(Color.green));
 		statusText.setBackground(null);
+		weightText.setPreferredSize(new Dimension(300, 60));
+		weightText.setOpaque(true);
+		weightText.setEditable(false);
+		weightText.setBorder(BorderFactory.createLineBorder(Color.green));
+		weightText.setBackground(null);
 		
 		jobInProgPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		jobListPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
@@ -114,6 +121,7 @@ public class InterfaceView extends JFrame {
 		jobPanel.add(jobFinishedPanel);
 		robotStatus.add(commLabel);
 		robotStatus.add(statusText);
+		robotStatus.add(weightText);
 		jobPanel.add(robotStatus);
 		jobListPanel.setVisible(true);
 		jobInProgPanel.setVisible(true);
@@ -121,7 +129,8 @@ public class InterfaceView extends JFrame {
 
 		// create split pane and add the map and job panels to it respectively
 		JSplitPane split = new JSplitPane();
-		split.setSize(1000, 300);
+		split.setBackground(Color.white);
+		split.setSize(1000, 600);
 		split.setDividerLocation(500);
 		split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 		split.setLeftComponent(mapVis);
@@ -200,8 +209,17 @@ public class InterfaceView extends JFrame {
 			statusText.append(parts[i] + newline);
 		}
 	}
-
-	public void setReward(float addReward) {
-		reward.setText(Float.toString(addReward));
+    
+	public void setWeightText(String weight) {
+		weightText.setText("");
+		String newline = "\n";
+		String[] parts = weight.split(" : ");
+		for (int i = 0; i < parts.length; i++) {
+			weightText.append(parts[i] + newline);
+		}
 	}
+	public void setReward(float addReward) {
+		reward.setText("");
+		reward.setText(Float.toString(addReward));
+	} 
 }

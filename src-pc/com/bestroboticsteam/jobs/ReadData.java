@@ -20,6 +20,9 @@ public class ReadData {
 	private LinkedList<Order> orderList = new LinkedList<Order>();
 	private LinkedList<Point> dropLocations = new LinkedList<Point>();
 	private ArrayList<Order> trainingSet = new ArrayList<Order>();
+	
+	private int[][] rewardProb = new int[50][3];
+	private int[][] weightProb = new int[50][3];
 
 	public Collection<Item> readItemData(String path) {
 		
@@ -36,6 +39,22 @@ public class ReadData {
 		//First read the specifications and than the cancellations
 		readOrderSpecification(path + "/jobs.csv");
 		return orderList;
+	}
+	
+	public float getNoWeightProb(int i){
+		return weightProb[i][2]/weightProb[i][0];
+	}
+	
+	public float getYesWeightProb(int i){
+		return weightProb[i][1]/weightProb[i][0];
+	}
+	
+	public float getYesRewardProb(int i){
+		return rewardProb[i][1]/rewardProb[i][0];
+	}
+	
+	public float getNoRewardProb(int i){
+		return rewardProb[i][2]/rewardProb[i][0];
 	}
 
 	public LinkedList<Point> readDropData(String path) {
@@ -164,8 +183,16 @@ public class ReadData {
 						for(Item i: o.getOrderTable().keySet()){
 							if(value == 1){
 								i.incrementYesProbability(o.getQuantity(i));
+								rewardProb[(int) (o.getTotalReward()/5)][1]++;
+								rewardProb[(int) (o.getTotalReward()/5)][0]++;
+								weightProb[(int) (o.getTotalWeight()/3)][1]++;
+								weightProb[(int) (o.getTotalWeight()/3)][0]++;
 							}else{
 								i.incrementNoProbability(o.getQuantity(i));
+								rewardProb[(int) (o.getTotalReward()/5)][2]++;
+								rewardProb[(int) (o.getTotalReward()/5)][0]++;
+								weightProb[(int) (o.getTotalWeight()/3)][2]++;
+								weightProb[(int) (o.getTotalWeight()/3)][0]++;
 							}
 							i.incrementOccurrence(o.getQuantity(i));
 						}
@@ -238,7 +265,7 @@ public class ReadData {
 		 * Exceptions to logger
 		 */
 		try {
-			logger.info("Openning file");
+			logger.info("Opening file");
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			return reader;
 		} catch (FileNotFoundException e) {

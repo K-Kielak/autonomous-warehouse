@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.JobAssignment;
+import com.bestroboticsteam.jobs.JobInfo;
 import com.bestroboticsteam.pathfinding.AStar;
 
 import rp.util.Pair;
@@ -40,10 +41,8 @@ public class Robot extends Thread{
 				info.cancelJob();
 			}
 			
-			if(info.wasJobCancelled() || info.finished()){
-				info.setCurrentJob(jobs.getNextJob(info.getName()));
-				logger.debug("Got new job: " + info.getCurrentJob().getJobCode());
-			}
+			if(info.wasJobCancelled() || info.finished())
+				getNextJob();
 			
 			recalculatePath();
 		
@@ -73,12 +72,28 @@ public class Robot extends Thread{
 		return info;
 	}
 	
+	private void getNextJob(){
+		JobInfo nextJob = jobs.getNextJob(info.getName());
+		while(nextJob == null){
+			logger.warn("Robot " + info.getName() + " is waiting for a new job (it is not accessible now)");
+			nextJob = jobs.getNextJob(info.getName());
+			try {
+				Thread.sleep(2*DELAY);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		
+		info.setCurrentJob(nextJob);
+		logger.debug(info.getCurrentJob().getJobCode() + " got new job");
+	}
+	
 	private void recalculatePath(){
 		logger.debug("recalculating path for " + info.getName());
 		Point start = info.getPosition();
 		Point goal = info.getCurrentJob().getPosition();
 		Pair<Point, Point> startGoalPair = Pair.makePair(start, goal);
-		LinkedList<Point> path = null;
+		LinkedList<Point> path = AStar.multiGetPath(startGoalPair, otherRobotInfos);
 		while(path == null){
 			logger.warn("Robot " + info.getName() + " is waiting for a new path (goal is not accessible now)");
 			path = AStar.multiGetPath(startGoalPair, otherRobotInfos);

@@ -11,6 +11,7 @@ import rp.robotics.mapping.LineMap;
 public class MyGridMap {
 
 	public static GridMap createRealWarehouse() {
+
 		float height = 2.44f;
 		float width = 3.67f;
 
@@ -28,10 +29,10 @@ public class MyGridMap {
 		lines.add(new Line(width, height, 0f, height));
 		lines.add(new Line(0f, height, 0f, 0f));
 
-		lines.add(new Line(0.31f, 0.29f, 0.31f, height - 0.61f));
+		lines.add(new Line(0.34f, 0.29f, 0.34f, height - 0.61f));
 		lines.add(new Line(0.61f, 0.29f, 0.61f, height - 0.61f));
-		lines.add(new Line(0.31f, 0.29f, 0.61f, 0.29f));
-		lines.add(new Line(0.31f, height - 0.61f, 0.61f, height - 0.61f));
+		lines.add(new Line(0.34f, 0.29f, 0.61f, 0.29f));
+		lines.add(new Line(0.34f, height - 0.61f, 0.61f, height - 0.61f));
 
 		lines.add(new Line(1.24f, 0.28f, 1.24f, height - 0.62f));
 		lines.add(new Line(1.54f, 0.28f, 1.54f, height - 0.62f));
@@ -43,10 +44,10 @@ public class MyGridMap {
 		lines.add(new Line(2.14f, 0.29f, 2.44f, 0.29f));
 		lines.add(new Line(2.14f, height - 0.61f, 2.44f, height - 0.61f));
 
-		lines.add(new Line(3.08f, 0.30f, 3.08f, height - 0.60f));
+		lines.add(new Line(3.04f, 0.30f, 3.04f, height - 0.60f));
 		lines.add(new Line(3.38f, 0.30f, 3.38f, height - 0.60f));
-		lines.add(new Line(3.08f, 0.30f, 3.38f, 0.30f));
-		lines.add(new Line(3.08f, height - 0.60f, 3.38f, height - 0.60f));
+		lines.add(new Line(3.04f, 0.30f, 3.38f, 0.30f));
+		lines.add(new Line(3.04f, height - 0.60f, 3.38f, height - 0.60f)); 
 
 		Line[] lineArray = new Line[lines.size()];
 
@@ -55,6 +56,7 @@ public class MyGridMap {
 		return new GridMap(gridWitdth, gridHeight, xInset, yInstet, cellSize,
 				new LineMap(lineArray, new Rectangle(0, 0, width, height)));
 	}
+
 
 	public static String toString(Pose _pose) {
 		StringBuilder sb = new StringBuilder("Pose: ");

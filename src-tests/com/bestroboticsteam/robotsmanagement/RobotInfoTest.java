@@ -7,7 +7,6 @@ import java.util.LinkedList;
 
 import org.junit.Test;
 
-import com.bestroboticsteam.jobs.JobInfo;
 
 public class RobotInfoTest {
 

@@ -71,6 +71,14 @@ public class Order implements Comparable<Order> {
 		return reward;
 	}
 	
+	public float getTotalWeight(){
+		float weight = 0f;
+		for(Item e: orderTable.keySet()){
+			weight += e.getWeight() * orderTable.get(e);
+		}
+		return weight;
+	}
+	
 	@Override
 	public boolean equals(Object o){
 		return (this.id == ((Order) o).getId());
