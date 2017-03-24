@@ -99,6 +99,8 @@ public class JobAssignment extends Thread {
 		
 		MyRobotInfo robot = robotMap.get(robots[index].getName());
 		
+		logger.info("ASSIGN DEBUG: " + robots[index].getName() + " " + nextOrder.getId() + " " + finalPath.getLast().getItem() + " " + finalPath.getLast().getPosition().x + " " + finalPath.getLast().getPosition().y);
+		
 		robot.addJobPath(finalPath);
 		robot.setCost(costs[index]);
 		robot.setWeight(weights[index]);
@@ -127,6 +129,10 @@ public class JobAssignment extends Thread {
 		Order currentOrder = robot.getCurrentOrder();
 				
 		JobInfo job = robot.getNextJob();
+		
+		if(job.getItem().equals("DropBox")){
+			logger.info("NEXT DROPBOX: " + job.getJobCode() + " " + job.getPosition().x + job.getPosition().y);
+		}
 		
 		if(job == null)
 			return job;
