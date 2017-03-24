@@ -19,9 +19,6 @@ public class CreateSimRobots {
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
-	public static Point dPos = null;
-	public static Point jPos = null;
-	public static Point hPos = null;
 	public static Point dGPos = null;
 	public static Point jGPos = null;
 	public static Point hGPos = null;
@@ -33,7 +30,6 @@ public class CreateSimRobots {
 		robotArray = getRobotInfos(robots);
 		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
-			getPos(i);
 			logger.info("Visualisation of " + robotArray[i].getName() + " is starting");
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
 			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
@@ -61,18 +57,6 @@ public class CreateSimRobots {
 	public static int getPosY(int robot){
 		Point pos = robotArray[robot].getPosition();
 		return pos.y;
-	}
-	
-	public static void getPos(int robot){
-		Point pos = robotArray[robot].getPosition();
-		String name = getName(robot);
-		if (name == RobotNames.ROBOT_3_NAME){
-			dPos = pos;
-		} else if (name == RobotNames.ROBOT_1_NAME){
-			jPos = pos;
-		} else if (name == RobotNames.ROBOT_2_NAME){
-			hPos = pos;
-		}
 	}
 	
 	public static Point getGoalPoint(int robot){

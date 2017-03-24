@@ -106,7 +106,6 @@ public class MapVisualisationComponent extends JComponent {
 	}
 
 	public static MapVisualisationComponent createVisualisation(float _width, float _height) {
-
 		return new MapVisualisationComponent(MapUtils.createRectangularMap(_width, _height));
 	}
 
@@ -199,8 +198,10 @@ public class MapVisualisationComponent extends JComponent {
 		}
 
 		// if the robot can give us a pose
+		int i = 1;
 		for (MobileRobot r : m_robots) {
-			renderRobot(g2, r);
+			renderRobot(g2, r, i);
+			i++;
 		}
 
 		for (PoseProvider pp : m_poseProviders) {
@@ -216,26 +217,14 @@ public class MapVisualisationComponent extends JComponent {
 		}
 	}
 
-	private void renderRobot(Graphics2D g2, MobileRobot _robot) {
+	private void renderRobot(Graphics2D g2, MobileRobot _robot, int a) {
 		g2.setStroke(new BasicStroke(2));
-		float accXD = RobotSimController.convertX((float)CreateSimRobots.dPos.getX());
-		float accYD = RobotSimController.convertY((float)CreateSimRobots.dPos.getY());
-		float accXH = RobotSimController.convertX((float)CreateSimRobots.hPos.getX());
-		float accYH = RobotSimController.convertY((float)CreateSimRobots.hPos.getY());
-		float accXJ = RobotSimController.convertX((float)CreateSimRobots.jPos.getX());
-		float accYJ = RobotSimController.convertY((float)CreateSimRobots.jPos.getY());
-		float x = (float)_robot.getPose().getX();
-		float y = (float)_robot.getPose().getY();
-		logger.debug("X " + x);
-		logger.debug("Y " + y);
-		logger.debug("acc robot x " + RobotSimController.convertX((float)CreateSimRobots.jPos.getX()));
-		logger.debug("acc robot" + RobotSimController.convertY((float)CreateSimRobots.jPos.getY()));
-		if (x == accXD && y == accYD){
-			g2.setPaint(Color.BLUE);
-		} else if (x == accXH && y == accYH){
-			g2.setPaint(Color.ORANGE);
-		} else if (x == accXJ && y == accYJ){
+		if (a == 1){
 			g2.setPaint(Color.RED);
+		} else if (a==2){
+			g2.setPaint(Color.BLUE);
+		} else if (a==3){
+			g2.setPaint(Color.ORANGE);
 		} else {
 			g2.setPaint(Color.BLACK);
 		}
