@@ -315,11 +315,11 @@ public class MapVisualisationComponent extends JComponent {
 		Ellipse2D ell =	new Ellipse2D.Double(scale(_point.getX() - _radius) + X_MARGIN,
 						scale(flipY(_point.getY() + _radius)) + Y_MARGIN, scale(_radius * 2), scale(_radius * 2));
 		float jx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float jy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float hx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float hy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float dx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float dy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
+		float jy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getY());
+		float hx = RobotSimController.convertX((float) CreateSimRobots.hGPos.getX());
+		float hy = RobotSimController.convertX((float) CreateSimRobots.hGPos.getY());
+		float dx = RobotSimController.convertX((float) CreateSimRobots.dGPos.getX());
+		float dy = RobotSimController.convertX((float) CreateSimRobots.dGPos.getY());
 		if (_point.x == jx && _point.y == jy){
 			_g2.setColor(Color.RED);
 		} else if (_point.x == hx && _point.y == hy){

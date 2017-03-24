@@ -20,15 +20,15 @@ public class CreateSimRobots {
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
 	public static Point dGPos = new Point(0,0);
-	public static Point jGPos = new Point(0,0);;
-	public static Point hGPos = new Point(0,0);;
+	public static Point jGPos = new Point(0,0);
+	public static Point hGPos = new Point(0,0);
 	final static Logger logger = Logger.getLogger(CreateSimRobots.class);
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {
 		robotArray = new RobotInfo[robots.getRobotInfos().length];
 		int numOfRobots = getRobotNumber();
 		robotArray = getRobotInfos(robots);
-		for (int i = 0; i< numOfRobots; i++){
+		for (int i = 0; i< 1; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
 			logger.info("Visualisation of " + robotArray[i].getName() + " is starting");
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
