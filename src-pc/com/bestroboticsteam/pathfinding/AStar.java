@@ -176,8 +176,10 @@ public class AStar {
 		GridMap map = MapUtils.createRealWarehouse();
 		//Calculates the TimePoint for the current node based on its gCost
 		TimePoint nodeTimePoint = new TimePoint(location, currentNode.gCost);
+		//The space still needs to be free after the robot has moved into it
+		TimePoint nodeTimePoint2 = new TimePoint(location, currentNode.gCost+1);
 		if(location.x>=0 && location.y>=0 && location.x<map.getXSize() && location.y <map.getYSize()){
-			if(!map.isObstructed(location.x, location.y) && !closedListLocations[location.x][location.y] && !timedReservationTable.containsKey(nodeTimePoint)){
+			if(!map.isObstructed(location.x, location.y) && !closedListLocations[location.x][location.y] && !timedReservationTable.containsKey(nodeTimePoint) && !timedReservationTable.containsKey(nodeTimePoint2)){
 				if(!openListLocations[location.x][location.y]){
 					openList.add(new AStarNode(new Point(location.x,location.y), currentNode, currentNode.gCost+1+Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y), currentNode.gCost+1, Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y)));
 					openListLocations[location.x][location.y]=true;
