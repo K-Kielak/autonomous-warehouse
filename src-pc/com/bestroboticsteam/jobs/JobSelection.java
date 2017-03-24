@@ -52,6 +52,15 @@ public class JobSelection {
 			}
 		}
 	}
+	
+	public synchronized Order viewOrder(int i) {
+		if(i >= list.size()){
+			return null;
+		}
+		
+		return list.get(i);
+
+	}
 
 	private synchronized void setList() {
 
@@ -85,6 +94,16 @@ public class JobSelection {
 					no = no * i.getNoProbability(o.getQuantity(i));
 				else
 					no = no * 0.001f;
+				
+				if(i.getNameNoProb() != 0)
+					no = no * i.getNameNoProb();
+				else
+					no = no * 0.001f;
+				
+				if(i.getNameYesProb() != 0)
+					yes = yes * i.getNameYesProb();
+				else
+					yes = yes * 0.001f;
 			}
 			
 			if(reader.getNoRewardProb((int) (o.getTotalReward()/5)) != 0)

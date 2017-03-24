@@ -183,22 +183,27 @@ public class ReadData {
 						for(Item i: o.getOrderTable().keySet()){
 							if(value == 1){
 								i.incrementYesProbability(o.getQuantity(i));
-								rewardProb[(int) (o.getTotalReward()/5)][1]++;
-								rewardProb[(int) (o.getTotalReward()/5)][0]++;
-								weightProb[(int) (o.getTotalWeight()/3)][1]++;
-								weightProb[(int) (o.getTotalWeight()/3)][0]++;
+								i.incrementNameYes();
 							}else{
 								i.incrementNoProbability(o.getQuantity(i));
-								rewardProb[(int) (o.getTotalReward()/5)][2]++;
-								rewardProb[(int) (o.getTotalReward()/5)][0]++;
-								weightProb[(int) (o.getTotalWeight()/3)][2]++;
-								weightProb[(int) (o.getTotalWeight()/3)][0]++;
+								i.incrementNameNo();
 							}
 							i.incrementOccurrence(o.getQuantity(i));
 						}
+						
+						if(value == 1){
+							rewardProb[(int) (o.getTotalReward()/5)][1]++;
+							rewardProb[(int) (o.getTotalReward()/5)][0]++;
+							weightProb[(int) (o.getTotalWeight()/3)][1]++;
+							weightProb[(int) (o.getTotalWeight()/3)][0]++;
+						}else{
+							rewardProb[(int) (o.getTotalReward()/5)][2]++;
+							rewardProb[(int) (o.getTotalReward()/5)][0]++;
+							weightProb[(int) (o.getTotalWeight()/3)][2]++;
+							weightProb[(int) (o.getTotalWeight()/3)][0]++;
+						}
 					}
 				}
-
 			}
 			reader.close();
 		} catch (IOException e) {

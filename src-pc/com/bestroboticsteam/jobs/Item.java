@@ -11,11 +11,29 @@ public class Item {
 	private final float reward;
 	private Point position;
 	private int[][] probability = new int[50][3];
+	private int probNameYes = 0;
+	private int probNameNo = 0;
 	
 	public Item(String _code, float _reward, float _weight) {
 		this.code = _code;
 		this.weight = _weight;
 		this.reward = _reward;
+	}
+	
+	public void incrementNameNo(){
+		probNameNo++;
+	}
+	
+	public void incrementNameYes(){
+		probNameYes++;
+	}
+	
+	public float getNameNoProb(){
+		return (float) (probNameNo/ (probNameYes + probNameNo));
+	}
+	
+	public float getNameYesProb(){
+		return (float) (probNameYes/ (probNameYes + probNameNo));
 	}
 	
 	public void incrementYesProbability(int quantity){
