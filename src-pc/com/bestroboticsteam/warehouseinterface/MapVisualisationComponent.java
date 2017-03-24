@@ -54,7 +54,7 @@ public class MapVisualisationComponent extends JComponent {
 	private boolean m_trackRobots = true;
 	private ArrayList<Point> m_robotTracks = new ArrayList<Point>();
 	final static Logger logger = Logger.getLogger(MapVisualisationComponent.class);
-	
+
 	public MapVisualisationComponent(LineMap _lineMap, float _scaleFactor) {
 
 		int _width = (int) _lineMap.getBoundingRect().getWidth();
@@ -219,11 +219,11 @@ public class MapVisualisationComponent extends JComponent {
 
 	private void renderRobot(Graphics2D g2, MobileRobot _robot, int a) {
 		g2.setStroke(new BasicStroke(2));
-		if (a == 1){
+		if (a == 1) {
 			g2.setPaint(Color.RED);
-		} else if (a==2){
+		} else if (a == 2) {
 			g2.setPaint(Color.BLUE);
-		} else if (a==3){
+		} else if (a == 3) {
 			g2.setPaint(Color.ORANGE);
 		} else {
 			g2.setPaint(Color.BLACK);
@@ -312,11 +312,23 @@ public class MapVisualisationComponent extends JComponent {
 	}
 
 	protected void renderPoint(Point _point, Graphics2D _g2, double _radius) {
-		Ellipse2D ell =
-				// first 2 coords are upper left corner of framing rectangle
-				new Ellipse2D.Double(scale(_point.getX() - _radius) + X_MARGIN,
+		Ellipse2D ell =	new Ellipse2D.Double(scale(_point.getX() - _radius) + X_MARGIN,
 						scale(flipY(_point.getY() + _radius)) + Y_MARGIN, scale(_radius * 2), scale(_radius * 2));
-		_g2.setColor(Color.DARK_GRAY);
+		float jx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
+		float jy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
+		float hx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
+		float hy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
+		float dx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
+		float dy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
+		if (_point.x == jx && _point.y == jy){
+			_g2.setColor(Color.RED);
+		} else if (_point.x == hx && _point.y == hy){
+			_g2.setColor(Color.YELLOW);
+		}else if (_point.x == dx && _point.y == dy){
+			_g2.setColor(Color.BLUE);
+		} else {
+			_g2.setColor(Color.BLACK);
+		}
 		_g2.draw(ell);
 	}
 
@@ -333,13 +345,6 @@ public class MapVisualisationComponent extends JComponent {
 		m_robots.add(_robot);
 	}
 
-	public void addObstacle(DynamicObstacle _obstacle) {
-		m_obstacles.add(_obstacle);
-	}
-
-	public void addRangeScanner(LocalisedRangeScanner _scanner) {
-		m_rangers.add(_scanner);
-	}
 
 	/**
 	 * Creates a visualisation for the given simulation.
@@ -363,18 +368,6 @@ public class MapVisualisationComponent extends JComponent {
 
 		for (MobileRobotWrapper<?> wrapper : _sim.getRobots()) {
 			_viz.addRobot(wrapper.getRobot());
-		}
-
-		if (_sim.getObstacles() != null) {
-			for (DynamicObstacle obstacle : _sim.getObstacles()) {
-				_viz.addObstacle(obstacle);
-			}
-		}
-
-		if (_sim.getRangers() != null) {
-			for (LocalisedRangeScanner ranger : _sim.getRangers()) {
-				_viz.addRangeScanner(ranger);
-			}
 		}
 
 	}

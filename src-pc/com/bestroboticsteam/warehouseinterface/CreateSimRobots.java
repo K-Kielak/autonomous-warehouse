@@ -19,9 +19,9 @@ public class CreateSimRobots {
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
-	public static Point dGPos = null;
-	public static Point jGPos = null;
-	public static Point hGPos = null;
+	public static Point dGPos = new Point(0,0);
+	public static Point jGPos = new Point(0,0);;
+	public static Point hGPos = new Point(0,0);;
 	final static Logger logger = Logger.getLogger(CreateSimRobots.class);
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {
@@ -34,7 +34,6 @@ public class CreateSimRobots {
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
 			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
 			controller.start();
-			//getGoalPoint(i);
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);
 		return mapVis;
