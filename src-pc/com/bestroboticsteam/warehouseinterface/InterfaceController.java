@@ -69,7 +69,7 @@ public class InterfaceController extends Thread {
 		String jobsText = "";
 		float reward = 0.0f;
 		int listLength = assign.finishedOrderLength();
-		for (int i = 0; i < listLength; i++) {
+		for (int i = listLength-1; i >=0 ; i++) {
 			if (assign.viewFinishedOrder(i) != null) {
 				Order job = assign.viewFinishedOrder(i);
 				reward += assign.viewFinishedOrder(i).getTotalReward();
