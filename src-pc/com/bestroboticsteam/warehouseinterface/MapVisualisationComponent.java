@@ -213,9 +213,9 @@ public class MapVisualisationComponent extends JComponent {
 		if (a == 1) {
 			g2.setPaint(Color.RED);
 		} else if (a == 2) {
-			g2.setPaint(Color.BLUE);
-		} else if (a == 3) {
 			g2.setPaint(Color.ORANGE);
+		} else if (a == 3) {
+			g2.setPaint(Color.BLUE);
 		} else {
 			g2.setPaint(Color.BLACK);
 		}

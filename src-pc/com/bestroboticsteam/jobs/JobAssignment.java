@@ -130,38 +130,39 @@ public class JobAssignment extends Thread {
 			return null;
 		}
 		
-		synchronized(assignedOrders){
-			
-			LinkedList<Order> orders = (LinkedList<Order>) robot.getCurrentOrders().clone();
-			
-			if(orders.isEmpty()){
-				orders.add(this.getOrderAssigned(job.getJobCode()));
-			
-			}else{
+		if(currentJob != null){
+			synchronized(assignedOrders){
 				
-				if(currentJob.getItem().equals("DropBox")){
-					
-					while(orders.size() > 1){
-						Order o = orders.pop();
-						assignedOrders.remove(o);
-						robot.decrementNumberAssigned();
-						finishedOrders.add(o);
-					}
-					
-					if(job.getJobCode() != orders.peek().getId()){
-						Order o = orders.poll();
-						assignedOrders.remove(o);
-						robot.decrementNumberAssigned();
-						finishedOrders.add(orders.poll());
+				LinkedList<Order> orders = (LinkedList<Order>) robot.getCurrentOrders().clone();
+				
+				if(orders.isEmpty()){
+					orders.add(this.getOrderAssigned(job.getJobCode()));
+				
+				}else{
+					if(currentJob.getItem().equals("DropBox")){
+						
+						while(orders.size() > 1){
+							Order o = orders.pop();
+							assignedOrders.remove(o);
+							robot.decrementNumberAssigned();
+							finishedOrders.add(o);
+						}
+						
+						if(job.getJobCode() != orders.peek().getId()){
+							Order o = orders.poll();
+							assignedOrders.remove(o);
+							robot.decrementNumberAssigned();
+							finishedOrders.add(orders.poll());
+							orders.add(this.getOrderAssigned(job.getJobCode()));
+						}
+						
+					}else if(job.getJobCode() != orders.peekLast().getId()){
 						orders.add(this.getOrderAssigned(job.getJobCode()));
 					}
-					
-				}else if(job.getJobCode() != orders.peekLast().getId()){
-					orders.add(this.getOrderAssigned(job.getJobCode()));
 				}
+				
+				robot.setCurrentOrders(orders);
 			}
-			
-			robot.setCurrentOrders(orders);
 		}
 		
 		if(robot.getCurrentJob() == null)
@@ -219,6 +220,7 @@ public class JobAssignment extends Thread {
 				if(j == 2 && !robot.getLastJobInfoAssigned().getItem().equals("DropBox")){
 					JobInfo info = new JobInfo("DropBox", this.getDrop(robot.getLastJobInfoAssigned()), robot.getLastJobInfoAssigned().getJobCode());
 					robot.addJobPath(info);
+					robot.setCurrentJob(info);
 					break;
 				}
 				if(j == 1)
