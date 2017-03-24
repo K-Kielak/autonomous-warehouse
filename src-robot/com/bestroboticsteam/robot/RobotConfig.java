@@ -11,5 +11,5 @@ public class RobotConfig {
 	
 	public static final SensorPort LEFT_LIGHT_SENSOR = SensorPort.S1;
 	public static final SensorPort RIGHT_LIGHT_SENSOR = SensorPort.S3;
-
+	public static final SensorPort DISTANCE_SENSOR = SensorPort.S2;
 }

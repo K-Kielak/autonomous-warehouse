@@ -9,9 +9,9 @@ public class Main {
 	private static final String PATH = "../central-system/assets/production";
 	
 	private static final RobotInfo[] robots = { 
-			new RobotInfo(ROBOT_1_NAME, new Point(0, 0), Direction.FORWARD, 50f),
-			new RobotInfo(ROBOT_2_NAME, new Point(11, 7), Direction.FORWARD, 50f),
-			new RobotInfo(ROBOT_3_NAME, new Point(11, 0), Direction.FORWARD, 50f)
+			new RobotInfo(ROBOT_1_NAME, Direction.FORWARD, 50f),
+			new RobotInfo(ROBOT_2_NAME, Direction.FORWARD, 50f),
+			new RobotInfo(ROBOT_3_NAME, Direction.FORWARD, 50f)
 		};
 	
 	

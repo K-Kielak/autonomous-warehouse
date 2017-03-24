@@ -87,6 +87,10 @@ public class Movement {
 		pilot.travel(0.07);
 		pilot.stop();
 	}
+	
+	public void turn(){
+		pilot.rotate(-90);
+	}
 
 	private boolean isOnBlack(int sensorValue) {
 		return Math.abs(calibratedValue - sensorValue) > ERROR;

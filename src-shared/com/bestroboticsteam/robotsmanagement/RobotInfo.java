@@ -20,7 +20,17 @@ public class RobotInfo implements Communicatable {
 	private float maxCapacity;
 	private float currentLoad = 0;
 	
-
+	public RobotInfo() {}
+	
+	//in case of localization needed
+	public RobotInfo(String name, Direction direction, float maxCapacity) {
+		super();
+		this.name = name;
+		this.direction = direction;
+		this.maxCapacity = maxCapacity;
+	}
+	
+	//in case of know position from the beginning
 	public RobotInfo(String name, Point position, Direction direction, float maxCapacity) {
 		super();
 		this.name = name;
@@ -28,8 +38,6 @@ public class RobotInfo implements Communicatable {
 		this.direction = direction;
 		this.maxCapacity = maxCapacity;
 	}
-	
-	public RobotInfo() {}
 
 	// returns null if whole path was finished
 	public Direction move() {
@@ -82,6 +90,10 @@ public class RobotInfo implements Communicatable {
 	public String getName(){
 		return name;
 	}
+	
+	public void setPosition(Point p){
+		position = p;
+	}
 
 	public Point getPosition() {
 		return position;
@@ -116,7 +128,7 @@ public class RobotInfo implements Communicatable {
 		return currentPath;
 	}
 
-	private Direction turn(Direction goal) {
+	public Direction turn(Direction goal) {
 		Direction turnSide;
 		
 		if (direction == goal)
@@ -190,9 +202,5 @@ public class RobotInfo implements Communicatable {
 			this.currentPath.add(j, i.readPoint());
 		}
 		return this;
-	}
-	
-	public Direction getDirection() {
-		return direction;
 	}
 }

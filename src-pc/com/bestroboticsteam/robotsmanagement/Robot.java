@@ -9,6 +9,8 @@ import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.PCConnectionHandler;
 import com.bestroboticsteam.jobs.JobAssignment;
 import com.bestroboticsteam.jobs.JobInfo;
+import com.bestroboticsteam.localization.LocalizationInfo;
+import com.bestroboticsteam.localization.Localizator;
 import com.bestroboticsteam.pathfinding.AStar;
 
 import rp.util.Pair;
@@ -31,6 +33,8 @@ public class Robot extends Thread{
 	
 	public void run(){
 		connectionHandler.run();
+		localize();
+		
 		while(true){
 			if(info.wasJobCancelled()){
 				logger.info("Job " + info.getCurrentJob().getJobCode() + "was cancelled on the robot side");
@@ -70,6 +74,32 @@ public class Robot extends Thread{
 	
 	public RobotInfo getInfo(){
 		return info;
+	}
+	
+	private void localize(){
+		Localizator localizator = new Localizator();
+		while(!localizator.foundPosition()){
+			
+			logger.debug("Sending information to robot " + info.getName());
+			try {
+				connectionHandler.sendObject(info);
+				connectionHandler.sendObject(localizator.getInfo());
+			} catch (ConnectionNotEstablishedException e) {
+				logger.error("Connection to robot " + info.getName() + " not established", e);
+			}
+			
+			logger.debug("Receiving information from robot " + info.getName());
+			try {
+				connectionHandler.receiveObject(info);
+				connectionHandler.receiveObject(localizator.getInfo());
+			} catch (ConnectionNotEstablishedException e) {
+				logger.error("Connection to robot " + info.getName() + " not established", e);
+			}
+			
+			Direction dir = localizator.nextMove();
+		}
+		
+		
 	}
 	
 	private void getNextJob(){
