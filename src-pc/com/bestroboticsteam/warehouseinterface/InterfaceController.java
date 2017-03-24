@@ -66,7 +66,6 @@ public class InterfaceController extends Thread {
 	}
 
 	public void setFinishedJobs() {
-		//need to change reward
 		String jobsText = "";
 		float reward = 0.0f;
 		for (int i = 0; i < 5; i++) {
