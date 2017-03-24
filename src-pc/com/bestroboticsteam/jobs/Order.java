@@ -87,22 +87,22 @@ public class Order implements Comparable<Order> {
 	@Override
 	public int compareTo(Order compareOrder) {
 		//used to sort the LinkedList by reward
-		float compareReward = compareOrder.getOverallReward();
+		float compareReward = compareOrder.getTotalReward();
 
 		if(this.prediction == true){
 			if (compareOrder.getPrediction() == true)
-				if (this.getOverallReward() - compareReward < 0)
+				if (this.getTotalReward() - compareReward < 0)
 					return 1;
-				else if (this.getOverallReward() - compareReward == 0)
+				else if (this.getTotalReward() - compareReward == 0)
 					return 0;
 				else
 					return -1;
 			else return 1;
 		} else{
 			if (compareOrder.getPrediction() == false)
-				if (this.getOverallReward() - compareReward < 0)
+				if (this.getTotalReward() - compareReward < 0)
 					return 1;
-				else if (this.getOverallReward() - compareReward == 0)
+				else if (this.getTotalReward() - compareReward == 0)
 					return 0;
 				else
 					return -1;
