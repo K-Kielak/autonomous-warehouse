@@ -45,6 +45,7 @@ public class AStar {
 						//This is needed because the other robots may be stopped to pick up or drop off
 						timedReservationTable.put(new TimePoint(robot.getPosition(), i), true);
 					}
+					logger.info("Robot " + robot.getName() + " is waiting for pickup at " + robot.getPosition());
 				}
 				
 			}
