@@ -8,7 +8,8 @@ import lejos.util.Delay;
 
 public class Movement {
 	private final int ERROR = 5;
-	private final float SPEED = 0.2f;
+	private final float SPEED = 0.25f;
+	private final float ROTATE_SPEED_COEFF = 0.6f;
 	private final int WAIT_DELAY = 1000;
 	private int calibratedValue;
 	private final LightSensor leftSensor;
@@ -21,6 +22,7 @@ public class Movement {
 		this.pilot = pilot;
 
 		this.pilot.setTravelSpeed(SPEED);
+		this.pilot.setTravelSpeed(ROTATE_SPEED_COEFF * this.pilot.getMaxRotateSpeed());
 	}
 	
 	public void calibrate() {
