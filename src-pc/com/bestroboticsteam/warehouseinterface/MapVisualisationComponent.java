@@ -218,17 +218,23 @@ public class MapVisualisationComponent extends JComponent {
 
 	private void renderRobot(Graphics2D g2, MobileRobot _robot) {
 		g2.setStroke(new BasicStroke(2));
+		float accXD = RobotSimController.convertX((float)CreateSimRobots.dPos.getX());
+		float accYD = RobotSimController.convertY((float)CreateSimRobots.dPos.getY());
+		float accXH = RobotSimController.convertX((float)CreateSimRobots.hPos.getX());
+		float accYH = RobotSimController.convertY((float)CreateSimRobots.hPos.getY());
+		float accXJ = RobotSimController.convertX((float)CreateSimRobots.jPos.getX());
+		float accYJ = RobotSimController.convertY((float)CreateSimRobots.jPos.getY());
 		float x = (float)_robot.getPose().getX();
 		float y = (float)_robot.getPose().getY();
 		logger.debug("X " + x);
 		logger.debug("Y " + y);
 		logger.debug("acc robot x " + RobotSimController.convertX((float)CreateSimRobots.jPos.getX()));
 		logger.debug("acc robot" + RobotSimController.convertY((float)CreateSimRobots.jPos.getY()));
-		if (x == RobotSimController.convertX((float)CreateSimRobots.dPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.dPos.getY())){
+		if (x == accXD && y == accYD){
 			g2.setPaint(Color.BLUE);
-		} else if (x == RobotSimController.convertX((float)CreateSimRobots.hPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.hPos.getY())){
+		} else if (x == accXH && y == accYH){
 			g2.setPaint(Color.ORANGE);
-		} else if (x == RobotSimController.convertX((float)CreateSimRobots.jPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.jPos.getY())){
+		} else if (x == accXJ && y == accYJ){
 			g2.setPaint(Color.RED);
 		} else {
 			g2.setPaint(Color.BLACK);
