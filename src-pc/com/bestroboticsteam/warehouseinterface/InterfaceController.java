@@ -41,7 +41,8 @@ public class InterfaceController extends Thread {
 			int goalx = CreateSimRobots.getGoalPoint(i).x;
 			int goaly = CreateSimRobots.getGoalPoint(i).y;
 			if (jobId != 0 && goalx != -1 && goaly != -1) {
-				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " Goal: " + "(" + goalx + "," + goaly + ") " + " : " + robotInfo;
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " Goal: " + "(" + goalx + "," + goaly + 
+						") " + " : " + robotInfo;
 			} else if (jobId != 0 && goalx == -1 && goaly == -1){
 				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " Goal is unknown " + " : " + robotInfo;
 			} else {
@@ -49,6 +50,18 @@ public class InterfaceController extends Thread {
 			}
 		}
 		warehouseInterface.setStatusText(robotInfo);
+	}
+	
+	public void setRobotWeight() {
+		String robotInfo = "";
+		// String status = "";
+		for (int i = 0; i < robotArray.length; i++) {
+			String robot = robotArray[i].getName();
+			float maxWeight = robotArray[i].getMaxCapacity();
+			
+			robotInfo = robot + " - " + "Current Weight: " + " Maximum Weight -> " + maxWeight + " : " + robotInfo;
+		}
+		warehouseInterface.setWeightText(robotInfo);
 	}
 
 	public void setFinishedJobs() {
