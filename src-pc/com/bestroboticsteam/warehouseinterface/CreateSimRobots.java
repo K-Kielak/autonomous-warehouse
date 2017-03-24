@@ -20,8 +20,8 @@ public class CreateSimRobots {
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
 	public static Point dGPos = new Point(0,0);
-	public static Point jGPos = new Point(0,0);;
-	public static Point hGPos = new Point(0,0);;
+	public static Point jGPos = new Point(0,0);
+	public static Point hGPos = new Point(0,0);
 	final static Logger logger = Logger.getLogger(CreateSimRobots.class);
 	
 	public static GridMapVisualisation robots(RobotsManager robots) {

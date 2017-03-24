@@ -17,11 +17,8 @@ import org.apache.log4j.Logger;
 
 import lejos.geom.Line;
 import lejos.geom.Point;
-import lejos.robotics.RangeReading;
-import lejos.robotics.RangeReadings;
 import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Pose;
-import rp.config.RangeScannerDescription;
 import rp.geom.GeometryUtils;
 import rp.robotics.LocalisedRangeScanner;
 import rp.robotics.MobileRobot;
@@ -315,11 +312,11 @@ public class MapVisualisationComponent extends JComponent {
 		Ellipse2D ell =	new Ellipse2D.Double(scale(_point.getX() - _radius) + X_MARGIN,
 						scale(flipY(_point.getY() + _radius)) + Y_MARGIN, scale(_radius * 2), scale(_radius * 2));
 		float jx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float jy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float hx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float hy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float dx = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
-		float dy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getX());
+		float jy = RobotSimController.convertX((float) CreateSimRobots.jGPos.getY());
+		float hx = RobotSimController.convertX((float) CreateSimRobots.hGPos.getX());
+		float hy = RobotSimController.convertX((float) CreateSimRobots.hGPos.getY());
+		float dx = RobotSimController.convertX((float) CreateSimRobots.dGPos.getX());
+		float dy = RobotSimController.convertX((float) CreateSimRobots.dGPos.getY());
 		if (_point.x == jx && _point.y == jy){
 			_g2.setColor(Color.RED);
 		} else if (_point.x == hx && _point.y == hy){
