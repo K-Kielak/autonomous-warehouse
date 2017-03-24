@@ -99,7 +99,7 @@ public class JobAssignment extends Thread {
 		
 		MyRobotInfo robot = robotMap.get(robots[index].getName());
 		
-		logger.debug(robots[index].getName() + " " + nextOrder.getId() + " " + finalPath.getLast().getItem());
+		logger.debug("ASSIGN DEBUG: " + robots[index].getName() + " " + nextOrder.getId() + " " + finalPath.getLast().getItem() + " " + finalPath.getLast().getPosition().x + " " + finalPath.getLast().getPosition().y);
 		
 		robot.addJobPath(finalPath);
 		robot.setCost(costs[index]);
