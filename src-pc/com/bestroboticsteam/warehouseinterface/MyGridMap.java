@@ -11,11 +11,14 @@ import rp.robotics.mapping.LineMap;
 public class MyGridMap {
 
 	public static GridMap createRealWarehouse() {
+
 		float height = 2.44f;
 		float width = 3.67f;
+
 		float xInset = 0.17f, yInstet = 0.155f;
 		int gridWitdth = 12, gridHeight = 8;
 		float cellSize = 0.30f;
+
 		// First ins 36 39 56 188
 
 		ArrayList<Line> lines = new ArrayList<Line>();
@@ -53,6 +56,7 @@ public class MyGridMap {
 		return new GridMap(gridWitdth, gridHeight, xInset, yInstet, cellSize,
 				new LineMap(lineArray, new Rectangle(0, 0, width, height)));
 	}
+
 
 	public static String toString(Pose _pose) {
 		StringBuilder sb = new StringBuilder("Pose: ");

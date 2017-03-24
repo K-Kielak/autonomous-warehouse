@@ -94,6 +94,10 @@ public class RobotInfo implements Communicatable {
 	public float getMaxCapacity(){
 		return maxCapacity;
 	}
+	
+	public float getCurrentLoad(){
+		return currentLoad;
+	}
 
 	public void setCurrentJob(JobInfo job) {
 		wasJobCancelled = false;
@@ -107,7 +111,7 @@ public class RobotInfo implements Communicatable {
 	public void setCurrentPath(LinkedList<Point> path){
 		currentPath = path;
 	}
-
+	
 	public LinkedList<Point> getCurrentPath() {
 		return currentPath;
 	}

@@ -12,6 +12,9 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.Timer;
+
+import org.apache.log4j.Logger;
+
 import lejos.geom.Line;
 import lejos.geom.Point;
 import lejos.robotics.RangeReading;
@@ -50,7 +53,8 @@ public class MapVisualisationComponent extends JComponent {
 	private ArrayList<LocalisedRangeScanner> m_rangers = new ArrayList<>(1);
 	private boolean m_trackRobots = true;
 	private ArrayList<Point> m_robotTracks = new ArrayList<Point>();
-
+	final static Logger logger = Logger.getLogger(MapVisualisationComponent.class);
+	
 	public MapVisualisationComponent(LineMap _lineMap, float _scaleFactor) {
 
 		int _width = (int) _lineMap.getBoundingRect().getWidth();
@@ -67,7 +71,7 @@ public class MapVisualisationComponent extends JComponent {
 		// render time during visualisation
 		m_transformedLines = staticTransformMapLines(m_lineMap, X_MARGIN, Y_MARGIN);
 
-		// repaint frequecy
+		// repaint frequency
 		new Timer(16, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				repaint();
@@ -199,10 +203,6 @@ public class MapVisualisationComponent extends JComponent {
 			renderRobot(g2, r);
 		}
 
-		for (LocalisedRangeScanner ranger : m_rangers) {
-			renderRanger(g2, ranger);
-		}
-
 		for (PoseProvider pp : m_poseProviders) {
 			renderPose(pp.getPose(), g2);
 		}
@@ -216,30 +216,16 @@ public class MapVisualisationComponent extends JComponent {
 		}
 	}
 
-	private void renderRanger(Graphics2D _g2, LocalisedRangeScanner _ranger) {
-		Pose sensorPose = _ranger.getPose();
-		RangeReadings readings = _ranger.getRangeValues();
-		for (RangeReading reading : readings) {
-			float range = reading.getRange();
-			if (!RangeScannerDescription.isValidReading(range)) {
-				range = 2.55f;
-				_g2.setStroke(new BasicStroke(1));
-				_g2.setPaint(Color.RED);
-			} else {
-				_g2.setStroke(new BasicStroke(1));
-				_g2.setPaint(Color.BLUE);
-			}
-			drawLineToHeading(_g2, sensorPose.getX(), sensorPose.getY(), sensorPose.getHeading() + reading.getAngle(),
-					range);
-		}
-	}
-
 	private void renderRobot(Graphics2D g2, MobileRobot _robot) {
 		g2.setStroke(new BasicStroke(2));
 		float x = (float)_robot.getPose().getX();
 		float y = (float)_robot.getPose().getY();
+		logger.debug("X " + x);
+		logger.debug("Y " + y);
+		logger.debug("acc robot x " + RobotSimController.convertX((float)CreateSimRobots.jPos.getX()));
+		logger.debug("acc robot" + RobotSimController.convertY((float)CreateSimRobots.jPos.getY()));
 		if (x == RobotSimController.convertX((float)CreateSimRobots.dPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.dPos.getY())){
-			g2.setPaint(Color.GREEN);
+			g2.setPaint(Color.BLUE);
 		} else if (x == RobotSimController.convertX((float)CreateSimRobots.hPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.hPos.getY())){
 			g2.setPaint(Color.ORANGE);
 		} else if (x == RobotSimController.convertX((float)CreateSimRobots.jPos.getX()) && y == RobotSimController.convertY((float)CreateSimRobots.jPos.getY())){
@@ -335,6 +321,7 @@ public class MapVisualisationComponent extends JComponent {
 				// first 2 coords are upper left corner of framing rectangle
 				new Ellipse2D.Double(scale(_point.getX() - _radius) + X_MARGIN,
 						scale(flipY(_point.getY() + _radius)) + Y_MARGIN, scale(_radius * 2), scale(_radius * 2));
+		_g2.setColor(Color.DARK_GRAY);
 		_g2.draw(ell);
 	}
 

@@ -19,7 +19,7 @@ public class InterfaceController extends Thread {
 	private ConcurrentMap<Integer, Order> tenJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private ConcurrentMap<Integer, Order> progJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private static RobotInfo[] robotArray;
-
+	private float reward = 0.0f;
 	public InterfaceController(JobSelection incomingJobs, JobAssignment assign, RobotsManager robots) {
 		this.robots = robots;
 		this.warehouseInterface = new InterfaceView(robots);
@@ -41,7 +41,8 @@ public class InterfaceController extends Thread {
 			int goalx = CreateSimRobots.getGoalPoint(i).x;
 			int goaly = CreateSimRobots.getGoalPoint(i).y;
 			if (jobId != 0 && goalx != -1 && goaly != -1) {
-				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " Goal: " + "(" + goalx + "," + goaly + ") " + " : " + robotInfo;
+				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " Goal: " + "(" + goalx + "," + goaly + 
+						") " + " : " + robotInfo;
 			} else if (jobId != 0 && goalx == -1 && goaly == -1){
 				robotInfo = robot + " - " + "(" + posx + "," + posy + ") " + jobId + " Goal is unknown " + " : " + robotInfo;
 			} else {
@@ -50,10 +51,21 @@ public class InterfaceController extends Thread {
 		}
 		warehouseInterface.setStatusText(robotInfo);
 	}
+	
+	public void setRobotWeight() {
+		String robotInfo = "";
+		// String status = "";
+		for (int i = 0; i < robotArray.length; i++) {
+			String robot = robotArray[i].getName();
+			float maxWeight = robotArray[i].getMaxCapacity();
+			float current = robotArray[i].getCurrentLoad();
+			robotInfo = robot + " - " + "Current: " + current +  " Max -> " + maxWeight + " : " + robotInfo;
+		}
+		warehouseInterface.setWeightText(robotInfo);
+	}
 
 	public void setFinishedJobs() {
 		String jobsText = "";
-		float reward = 0.0f;
 		for (int i = 0; i < 5; i++) {
 			if (assign.viewFinishedOrder(i) != null) {
 				Order job = assign.viewFinishedOrder(i);
@@ -61,8 +73,12 @@ public class InterfaceController extends Thread {
 				jobsText = jobsText + " : " + job.toString();
 			}
 		}
-		warehouseInterface.setReward(reward);
+		warehouseInterface.setReward(getReward());
 		warehouseInterface.setFinishedList(jobsText);
+	}
+	
+	public float getReward(){
+		return reward;
 	}
 
 	public void setCurrentJobs() {
@@ -111,6 +127,7 @@ public class InterfaceController extends Thread {
 			try {
 				// while running keep updating jobs
 				setRobotStatus();
+				setRobotWeight();
 				setUpcomingjobs();
 				setCurrentJobs();
 				setFinishedJobs();

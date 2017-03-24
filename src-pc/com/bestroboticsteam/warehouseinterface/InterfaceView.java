@@ -22,7 +22,9 @@ public class InterfaceView extends JFrame {
 	public JPanel jobListPanel = new JPanel();
 	public JPanel jobFinishedPanel = new JPanel();
 	public JPanel robotStatus = new JPanel();
+	//robot status
 	public JTextArea statusText = new JTextArea();
+	public JTextArea weightText = new JTextArea();
 	public JTextArea fishedJobText = new JTextArea();
 	// will display list of orders -> from JobSelection class via interfaceController
 	public JTextArea nextJobText = new JTextArea();
@@ -36,6 +38,7 @@ public class InterfaceView extends JFrame {
 	public JTextArea cancelTextC = new JTextArea();
     public JButton cancelCurrent = new JButton();
 	public JLabel reward = new JLabel();
+	
 	public InterfaceView(RobotsManager robots) {
 		mapVis = CreateSimRobots.robots(robots);
 		this.setTitle("Warehouse Management Interface");
@@ -67,7 +70,7 @@ public class InterfaceView extends JFrame {
 		jobInProgPanel.setPreferredSize(new Dimension(350, 200));
 		jobListPanel.setPreferredSize(new Dimension(350, 200));
 		jobFinishedPanel.setPreferredSize(new Dimension(350, 200));	
-		robotStatus.setPreferredSize(new Dimension(350, 100));
+		robotStatus.setPreferredSize(new Dimension(350, 200));
 		
 		cancelUpcoming.setPreferredSize(new Dimension(30,20));
 		cancelTextU.setPreferredSize(new Dimension(50, 30));
@@ -89,6 +92,11 @@ public class InterfaceView extends JFrame {
 		statusText.setEditable(false);
 		statusText.setBorder(BorderFactory.createLineBorder(Color.green));
 		statusText.setBackground(null);
+		weightText.setPreferredSize(new Dimension(300, 60));
+		weightText.setOpaque(true);
+		weightText.setEditable(false);
+		weightText.setBorder(BorderFactory.createLineBorder(Color.green));
+		weightText.setBackground(null);
 		
 		jobInProgPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		jobListPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
@@ -113,6 +121,7 @@ public class InterfaceView extends JFrame {
 		jobPanel.add(jobFinishedPanel);
 		robotStatus.add(commLabel);
 		robotStatus.add(statusText);
+		robotStatus.add(weightText);
 		jobPanel.add(robotStatus);
 		jobListPanel.setVisible(true);
 		jobInProgPanel.setVisible(true);
@@ -200,8 +209,16 @@ public class InterfaceView extends JFrame {
 			statusText.append(parts[i] + newline);
 		}
 	}
-
+    
+	public void setWeightText(String weight) {
+		weightText.setText("");
+		String newline = "\n";
+		String[] parts = weight.split(" : ");
+		for (int i = 0; i < parts.length; i++) {
+			weightText.append(parts[i] + newline);
+		}
+	}
 	public void setReward(float addReward) {
 		reward.setText(Float.toString(addReward));
-	}
+	} 
 }
