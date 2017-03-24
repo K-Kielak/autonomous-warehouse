@@ -17,11 +17,8 @@ import org.apache.log4j.Logger;
 
 import lejos.geom.Line;
 import lejos.geom.Point;
-import lejos.robotics.RangeReading;
-import lejos.robotics.RangeReadings;
 import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Pose;
-import rp.config.RangeScannerDescription;
 import rp.geom.GeometryUtils;
 import rp.robotics.LocalisedRangeScanner;
 import rp.robotics.MobileRobot;

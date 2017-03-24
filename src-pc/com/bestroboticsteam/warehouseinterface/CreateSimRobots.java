@@ -28,7 +28,7 @@ public class CreateSimRobots {
 		robotArray = new RobotInfo[robots.getRobotInfos().length];
 		int numOfRobots = getRobotNumber();
 		robotArray = getRobotInfos(robots);
-		for (int i = 0; i< 1; i++){
+		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
 			logger.info("Visualisation of " + robotArray[i].getName() + " is starting");
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
