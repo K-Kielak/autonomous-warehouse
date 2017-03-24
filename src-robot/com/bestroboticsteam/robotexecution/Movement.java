@@ -7,7 +7,7 @@ import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 
 public class Movement {
-	private final int ERROR = 5;
+	private final int ERROR = 6;
 	private final float SPEED = 0.2f;
 	private final int WAIT_DELAY = 1000;
 	private int calibratedValue;
@@ -19,7 +19,6 @@ public class Movement {
 		this.leftSensor = leftSensor;
 		this.rightSensor = rightSensor;
 		this.pilot = pilot;
-
 		this.pilot.setTravelSpeed(SPEED);
 	}
 	
@@ -83,9 +82,10 @@ public class Movement {
 			isRightOnBlack = isOnBlack(rightSensor.readValue());
 		}
 
-		pilot.stop();
+		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
 		pilot.travel(0.07);
 		pilot.stop();
+		pilot.setTravelSpeed(SPEED);
 	}
 	
 	public void turn(){
