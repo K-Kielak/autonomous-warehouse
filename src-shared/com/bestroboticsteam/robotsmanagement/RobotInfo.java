@@ -14,10 +14,11 @@ public class RobotInfo implements Communicatable {
 	private String name;
 	private Point position;
 	private Direction direction;
-	private float maxCapacity;
 	private JobInfo currentJob = new JobInfo();
 	private boolean wasJobCancelled = false;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
+	private float maxCapacity;
+	private float currentLoad = 0;
 	
 
 	public RobotInfo(String name, Point position, Direction direction, float maxCapacity) {
@@ -69,6 +70,9 @@ public class RobotInfo implements Communicatable {
 
 	public void pickAll(){
 		currentJob.pickAll();
+		currentLoad += currentJob.getWeight()*currentJob.getQuantity();
+		if(currentJob.isDropPoint())
+			currentLoad = 0;
 	}
 
 	public boolean finished() {
