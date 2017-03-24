@@ -19,7 +19,7 @@ public class InterfaceController extends Thread {
 	private ConcurrentMap<Integer, Order> tenJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private ConcurrentMap<Integer, Order> progJobsMap = new ConcurrentHashMap<Integer, Order>();
 	private static RobotInfo[] robotArray;
-
+	private float reward = 0.0f;
 	public InterfaceController(JobSelection incomingJobs, JobAssignment assign, RobotsManager robots) {
 		this.robots = robots;
 		this.warehouseInterface = new InterfaceView(robots);
@@ -66,7 +66,6 @@ public class InterfaceController extends Thread {
 
 	public void setFinishedJobs() {
 		String jobsText = "";
-		float reward = 0.0f;
 		for (int i = 0; i < 5; i++) {
 			if (assign.viewFinishedOrder(i) != null) {
 				Order job = assign.viewFinishedOrder(i);
@@ -74,8 +73,12 @@ public class InterfaceController extends Thread {
 				jobsText = jobsText + " : " + job.toString();
 			}
 		}
-		warehouseInterface.setReward(reward);
+		warehouseInterface.setReward(getReward());
 		warehouseInterface.setFinishedList(jobsText);
+	}
+	
+	public float getReward(){
+		return reward;
 	}
 
 	public void setCurrentJobs() {
