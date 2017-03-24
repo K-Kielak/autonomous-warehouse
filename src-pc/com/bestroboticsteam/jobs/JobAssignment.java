@@ -99,6 +99,8 @@ public class JobAssignment extends Thread {
 		
 		MyRobotInfo robot = robotMap.get(robots[index].getName());
 		
+		logger.debug(robots[index].getName() + " " + nextOrder.getId() + " " + finalPath.getLast().getItem());
+		
 		robot.addJobPath(finalPath);
 		robot.setCost(costs[index]);
 		robot.setWeight(weights[index]);
