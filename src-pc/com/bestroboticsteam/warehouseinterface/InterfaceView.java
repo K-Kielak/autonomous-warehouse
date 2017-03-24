@@ -42,7 +42,7 @@ public class InterfaceView extends JFrame {
 	public InterfaceView(RobotsManager robots) {
 		mapVis = CreateSimRobots.robots(robots);
 		this.setTitle("Warehouse Management Interface");
-		this.setSize(1300, 600);// set size of frame
+		this.setSize(1300, 700);// set size of frame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// right hand panel - jobs
@@ -69,7 +69,7 @@ public class InterfaceView extends JFrame {
 		
 		jobInProgPanel.setPreferredSize(new Dimension(350, 200));
 		jobListPanel.setPreferredSize(new Dimension(350, 200));
-		jobFinishedPanel.setPreferredSize(new Dimension(350, 200));	
+		jobFinishedPanel.setPreferredSize(new Dimension(350, 400));	
 		robotStatus.setPreferredSize(new Dimension(350, 200));
 		
 		cancelUpcoming.setPreferredSize(new Dimension(30,20));
@@ -81,7 +81,7 @@ public class InterfaceView extends JFrame {
 		cancelTextC.setOpaque(true);
 		cancelTextC.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		fishedJobText.setPreferredSize(new Dimension(300, 150));
+		fishedJobText.setPreferredSize(new Dimension(300, 350));
 		fishedJobText.setOpaque(true);
 		fishedJobText.setEditable(false);
 		fishedJobText.setBorder(BorderFactory.createLineBorder(Color.green));

@@ -170,6 +170,10 @@ public class JobAssignment extends Thread {
 		return finishedOrders.get(index);
 	}
 	
+	public int finishedOrderLength(){
+		return finishedOrders.size();
+	}
+	
 	public LinkedList<Order> getCurrentOrders(){
 		LinkedList<Order> currentOrders = new LinkedList<>();
 		for(int i = 0; i < robots.length; i ++){
