@@ -46,8 +46,6 @@ public class MapVisualisationComponent extends JComponent {
 	private Line[] m_transformedLines;
 	private ArrayList<PoseProvider> m_poseProviders = new ArrayList<PoseProvider>(1);
 	private ArrayList<MobileRobot> m_robots = new ArrayList<>(1);
-	private ArrayList<DynamicObstacle> m_obstacles = new ArrayList<>(1);
-	private ArrayList<LocalisedRangeScanner> m_rangers = new ArrayList<>(1);
 	private boolean m_trackRobots = true;
 	private ArrayList<Point> m_robotTracks = new ArrayList<Point>();
 	final static Logger logger = Logger.getLogger(MapVisualisationComponent.class);
@@ -190,10 +188,6 @@ public class MapVisualisationComponent extends JComponent {
 					scale(flipY(mapHeight)) + Y_MARGIN - 5);
 		}
 
-		for (DynamicObstacle obstacle : m_obstacles) {
-			renderRelative(obstacle.getFootprint(), obstacle.getPose(), g2);
-		}
-
 		// if the robot can give us a pose
 		int i = 1;
 		for (MobileRobot r : m_robots) {
@@ -233,14 +227,11 @@ public class MapVisualisationComponent extends JComponent {
 	}
 
 	private void renderRelative(Line[] _lines, Pose _pose, Graphics2D _g2) {
-
 		for (Line l : _lines) {
-
 			l = GeometryUtils.transform(_pose, l);
 			_g2.drawLine((int) scale(l.x1) + X_MARGIN, (int) scale(flipY(l.y1)) + X_MARGIN,
 					(int) scale(l.x2) + X_MARGIN, (int) scale(flipY(l.y2)) + X_MARGIN);
 		}
-
 	}
 
 	/**
@@ -253,35 +244,24 @@ public class MapVisualisationComponent extends JComponent {
 	 * @param _lineLength
 	 */
 	private void drawLineToHeading(Graphics2D g2, double _x, double _y, double heading, double _lineLength) {
-
 		if (heading > 180) {
 			heading -= 360;
 		}
-
 		double headingX = _x;
 		double headingY = _y;
 		if (heading >= 0 && heading < 90) {
-
 			headingX = _lineLength * Math.cos(Math.toRadians(heading));
 			headingY = (_lineLength * Math.sin(Math.toRadians(heading)));
-
 		} else if (heading >= 90 && heading <= 180) {
-
 			headingX = -(_lineLength * Math.cos(Math.toRadians(180 - heading)));
 			headingY = (_lineLength * Math.sin(Math.toRadians(180 - heading)));
-
 		} else if (heading < 0 && heading >= -90) {
-
 			headingX = _lineLength * Math.cos(Math.toRadians(Math.abs(heading)));
 			headingY = -(_lineLength * Math.sin(Math.toRadians(Math.abs(heading))));
-
 		} else if (heading < -90 && heading >= -180) {
-
 			headingX = -(_lineLength * Math.cos(Math.toRadians(180 - Math.abs(heading))));
 			headingY = -(_lineLength * Math.sin(Math.toRadians(180 - Math.abs(heading))));
-
 		}
-
 		Line2D l = new Line2D.Double(scale(_x) + X_MARGIN, scale(flipY(_y)) + Y_MARGIN, scale(_x + headingX) + X_MARGIN,
 				scale(flipY(_y + headingY)) + Y_MARGIN);
 		g2.draw(l);
