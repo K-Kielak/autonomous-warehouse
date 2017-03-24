@@ -85,7 +85,8 @@ public class Robot extends Thread{
 		}
 		
 		info.setCurrentJob(nextJob);
-		logger.debug(info.getCurrentJob().getJobCode() + " got new job");
+		logger.info(info.getName() + " got new job: " + nextJob.getJobCode() + 
+		"; going for " + nextJob.getItem() + " to " + nextJob.getPosition());
 	}
 	
 	private void recalculatePath(){

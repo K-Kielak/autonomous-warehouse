@@ -19,7 +19,7 @@ public class RobotInterface {
 	}
 	
 	public void waitForSensorCalibration() {
-		/*
+		/**
 		 * Prints a message to the screen like follows:
 		 * 
 		 * ┌──────────────────┐
@@ -69,7 +69,7 @@ public class RobotInterface {
 		 * │ server...        │
 		 * │                  │
 		 * │                  │
-		 * │                  │robot
+		 * │                  │
 		 * └──────────────────┘
 		 */
 		LCD.clear();
@@ -106,11 +106,12 @@ public class RobotInterface {
 		LCD.clear();
 		LCD.drawString(info.getName(), 3, 0);
 		JobInfo j = info.getCurrentJob();
-		LCD.drawString("Job: " + j.getItem(), 1, 1);
-		LCD.drawString("Please load: " + Integer.toString(j.getQuantity()-this.getItemsQuantity()) + " of " + j.getItem(), 1, 2);
-		LCD.drawString("-> to load item", 0, 3);
-		LCD.drawString("<- to drop item", 0, 4);
-		LCD.drawString("Esc to cancel order", 0, 5);
+		LCD.drawString("Job: " + j.getJobCode(), 1, 1);
+		LCD.drawString("Please load: " + Integer.toString(j.getQuantity()-this.getItemsQuantity()), 1, 2);
+		LCD.drawString("of " + j.getItem(), 2, 3);
+		LCD.drawString("-> to load item", 1, 4);
+		LCD.drawString("<- to drop item", 1, 5);
+		LCD.drawString("Esc to cancel order", 1, 6);
 		waitForLoading();
 	}
 	
@@ -145,7 +146,7 @@ public class RobotInterface {
 	
 	private void waitForUnloading(){
 		Button.waitForAnyPress();
-		dropItems();
+		addItems();
 	}
 	
 	private void printMovingToDropPointMessage() {
@@ -173,7 +174,7 @@ public class RobotInterface {
 	private void printMovingToItemMessage() {
 		/**
 		 * ┌──────────────────┐
-		 * |    John Cena      │
+		 * |    John Cena     │
 		 * │ Job Code:        │
 		 * │ 1234             │
 		 * │ Moving to item:  │
