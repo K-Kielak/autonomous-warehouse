@@ -41,7 +41,7 @@ public class RobotSimController extends Thread {
 			float newPosx = convertX(posx);
 			float newPosY = convertY(posy);
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				logger.error("RobotSim thread has been interrupted");
 			}
