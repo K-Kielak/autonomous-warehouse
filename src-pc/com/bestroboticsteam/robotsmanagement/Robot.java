@@ -84,7 +84,7 @@ public class Robot extends Thread{
 			}
 		}
 		
-		info.setCurrentJob(jobs.getNextJob(info.getName()));
+		info.setCurrentJob(nextJob);
 		logger.debug(info.getCurrentJob().getJobCode() + " got new job");
 	}
 	
