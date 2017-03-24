@@ -32,6 +32,7 @@ public class JobInfo implements Communicatable {
 		this.position = position;
 		this.quantity = 1;
 		this.jobCode = _jobCode;
+		this.weight = 0f;
 	}
 	
 	public JobInfo() {
@@ -39,6 +40,7 @@ public class JobInfo implements Communicatable {
 		this.position = new Point();
 		this.quantity = 0;
 		this.jobCode = 0;
+		this.weight = 0f;
 	}
 	
 
