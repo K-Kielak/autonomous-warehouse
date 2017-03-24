@@ -6,17 +6,12 @@ import java.util.LinkedList;
 import org.apache.log4j.Logger;
 
 import com.bestroboticsteam.robotsmanagement.Direction;
-
-import lejos.geom.Line;
 import lejos.robotics.navigation.Pose;
-import rp.robotics.MobileRobot;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MovableRobot;
-import rp.robotics.simulation.SimulatedRobots;
-import rp.robotics.visualisation.MapVisualisationComponent;
 
 public class RobotSimController extends Thread {
 	final static Logger logger = Logger.getLogger(RobotSimController.class);
@@ -135,15 +130,5 @@ public class RobotSimController extends Thread {
 			logger.error("position is not on map");
 		}
 		return y;
-	}
-	
-	private void mapOutPath(){
-		Point theGoal = CreateSimRobots.getGoalPoint(theRobot);
-		double goalX = theGoal.getX();
-		double goalY = theGoal.getY();
-		int pathLength = path.size();
-		
-		GridPose gridStart =  new GridPose((int)goalX, (int)goalY, Heading.PLUS_Y);;
-		
 	}
 }
