@@ -12,7 +12,7 @@ public class MyRobotInfo {
 	private int totalCost;
 	private int numberJobsAssigned;
 	private JobInfo currentJob = null;
-	private Order currentOrder = null;
+	private LinkedList<Order> currentOrders = new LinkedList<Order>();
 	
 	public MyRobotInfo(float maxWeight, float weight, Point position){
 		this.MAX_WEIGHT = maxWeight;
@@ -22,12 +22,12 @@ public class MyRobotInfo {
 		this.numberJobsAssigned = 0;
 	}
 	
-	public void setCurrentOrder(Order o){
-		currentOrder = o;
+	public void setCurrentOrders(LinkedList<Order> o){
+		currentOrders = (LinkedList<Order>) o.clone();
 	}
 	
-	public Order getCurrentOrder(){
-		return currentOrder;
+	public LinkedList<Order> getCurrentOrders(){
+		return currentOrders;
 	}
 	
 	public void setCurrentJob(JobInfo info){
@@ -36,6 +36,10 @@ public class MyRobotInfo {
 	
 	public JobInfo getCurrentJob(){
 		return currentJob;
+	}
+	
+	public JobInfo getLastJobInfoAssigned(){
+		return jobPath.peekLast();
 	}
 	
 	public void setWeight(float weight){
@@ -47,9 +51,11 @@ public class MyRobotInfo {
 	}
 	
 	public void addJobPath(LinkedList<JobInfo> list){
-		synchronized(jobPath){
-			jobPath.addAll(list);
-		}
+		jobPath.addAll(list);
+	}
+	
+	public void addJobPath(JobInfo info){
+		jobPath.add(info);
 	}
 	
 	public float getWeight(){
@@ -85,35 +91,80 @@ public class MyRobotInfo {
 	}
 	
 	public JobInfo getNextJob(){
-		return jobPath.poll();
-	
+		return jobPath.poll();	
 	}
 	
-	public void cancelOrder(int code){
+	public int cancelOrder(int code){
 		
 		boolean removed = false;
 		
-		synchronized(jobPath){
-		
-			for(JobInfo info: jobPath){
-				if(info.getJobCode() == code){
-					jobPath.remove(info);
-					removed = true;
-				}
+		for(Order o: currentOrders){
+			if(o.getId() == code){
+				currentOrders.remove(o);
+				break;
 			}
-			
-			if(removed)
+		}
+		
+		for(JobInfo j: jobPath){
+			if(j.getJobCode() == code){
+				removed = true;
+				break;
+			}
+		}
+		
+		if(removed){
+			if(jobPath.peekLast().getJobCode() == code){
+				
+				boolean check = false;
+				
+				while(!check){
+					check = true;
+				
+					for(JobInfo info: jobPath){
+						if(info.getJobCode() == code){
+							jobPath.remove(info);
+							check = false;
+							break;
+						}
+					}
+				}
+					
+				if(this.currentJob != null)
+					if(this.currentJob.getJobCode() == code)
+						this.currentJob = null;
+					
+				this.decrementNumberAssigned();
+		
+				return 2;
+				
+			}else {
+				
+				boolean check = false;
+				
+				while(!check){
+					check = true;
+				
+					for(JobInfo info: jobPath){
+						if(info.getJobCode() == code){
+							jobPath.remove(info);
+							check = false;
+							break;
+						}
+					}
+				}
+						
+				if(this.currentJob != null)
+					if(this.currentJob.getJobCode() == code)
+						this.currentJob = null;
+						
 				this.decrementNumberAssigned();
 			
-			
-			if(this.currentOrder != null)
-				if(this.currentOrder.getId() == code)
-					this.currentOrder = null;
-			
-			if(this.currentJob != null)
-				if(this.currentJob.getJobCode() == code)
-					this.currentJob = null;
-		}
+				return 1;
+			}
+	
+		}else 
+			return 0;
+		
 		
 	}
 }
