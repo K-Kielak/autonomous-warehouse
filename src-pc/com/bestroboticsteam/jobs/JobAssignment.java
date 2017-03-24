@@ -436,4 +436,8 @@ public class JobAssignment extends Thread {
 			
 		return point;
 	}
+
+	public int finishedOrderLength() {
+		return finishedOrders.size();
+	}
 }
