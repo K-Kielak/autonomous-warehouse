@@ -105,7 +105,7 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		 * the super class method to add logging message
 		 * 
 		 */
-		logger.info(this.robotName + " Receiving: " + obj.toString());
+		logger.debug(this.robotName + " Receiving: " + obj.toString());
 		return super.receiveObject(obj);
 	}
 
@@ -116,7 +116,7 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		 * the super class method to add logging message
 		 * 
 		 */
-		logger.info(this.robotName + " Sending: " + obj.toString());
+		logger.debug(this.robotName + " Sending: " + obj.toString());
 		super.sendObject(obj);
 	}
 }
