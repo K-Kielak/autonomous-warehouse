@@ -12,20 +12,16 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.Timer;
-
 import org.apache.log4j.Logger;
-
 import lejos.geom.Line;
 import lejos.geom.Point;
 import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Pose;
 import rp.geom.GeometryUtils;
-import rp.robotics.LocalisedRangeScanner;
 import rp.robotics.MobileRobot;
 import rp.robotics.MobileRobotWrapper;
 import rp.robotics.mapping.LineMap;
 import rp.robotics.mapping.MapUtils;
-import rp.robotics.simulation.DynamicObstacle;
 import rp.robotics.simulation.MapBasedSimulation;
 
 public class MapVisualisationComponent extends JComponent {
