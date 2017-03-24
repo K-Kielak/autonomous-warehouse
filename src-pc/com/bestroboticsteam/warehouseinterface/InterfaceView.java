@@ -219,6 +219,7 @@ public class InterfaceView extends JFrame {
 		}
 	}
 	public void setReward(float addReward) {
+		reward.setText("");
 		reward.setText(Float.toString(addReward));
 	} 
 }
