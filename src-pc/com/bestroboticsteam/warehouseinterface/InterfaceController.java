@@ -59,7 +59,7 @@ public class InterfaceController extends Thread {
 			String robot = robotArray[i].getName();
 			float maxWeight = robotArray[i].getMaxCapacity();
 			float current = robotArray[i].getCurrentLoad();
-			robotInfo = robot + " - " + "Current Weight: " + current +  " Maximum Weight -> " + maxWeight + " : " + robotInfo;
+			robotInfo = robot + " - " + "Current: " + current +  " Max -> " + maxWeight + " : " + robotInfo;
 		}
 		warehouseInterface.setWeightText(robotInfo);
 	}
@@ -124,6 +124,7 @@ public class InterfaceController extends Thread {
 			try {
 				// while running keep updating jobs
 				setRobotStatus();
+				setRobotWeight();
 				setUpcomingjobs();
 				setCurrentJobs();
 				setFinishedJobs();
