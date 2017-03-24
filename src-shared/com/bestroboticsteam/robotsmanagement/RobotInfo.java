@@ -18,7 +18,7 @@ public class RobotInfo implements Communicatable {
 	private boolean wasJobCancelled = false;
 	private LinkedList<Point> currentPath = new LinkedList<Point>();
 	private float maxCapacity;
-	private float currentLoad = 0;
+	private float currentLoad = 0.0f;
 	
 
 	public RobotInfo(String name, Point position, Direction direction, float maxCapacity) {
