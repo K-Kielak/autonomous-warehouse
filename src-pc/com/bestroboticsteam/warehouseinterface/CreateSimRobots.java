@@ -1,5 +1,4 @@
 package com.bestroboticsteam.warehouseinterface;
-
 import com.bestroboticsteam.communication.RobotNames;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
@@ -14,16 +13,15 @@ import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MapBasedSimulation;
 import rp.robotics.simulation.MovableRobot;
 import rp.robotics.simulation.SimulatedRobots;
-
 public class CreateSimRobots {
 	public static GridMap map = MyGridMap.createRealWarehouse();
 	public static MapBasedSimulation sim = new MapBasedSimulation(map);
 	public static GridMapVisualisation mapVis = new GridMapVisualisation(map, sim.getMap());
 	private static MobileRobotWrapper<MovableRobot> wrapper;
 	private static RobotInfo[] robotArray;
-	public static Point dPos = new Point(-1, -1);
-	public static Point jPos = new Point(-1, -1);;
-	public static Point hPos = new Point(-1, -1);;
+	public static Point dPos = null;
+	public static Point jPos = null;
+	public static Point hPos = null;
 	public static Point dGPos = null;
 	public static Point jGPos = null;
 	public static Point hGPos = null;
@@ -33,13 +31,13 @@ public class CreateSimRobots {
 		robotArray = new RobotInfo[robots.getRobotInfos().length];
 		int numOfRobots = getRobotNumber();
 		robotArray = getRobotInfos(robots);
-		for (int i = 0; i< 1; i++){
+		for (int i = 0; i< numOfRobots; i++){
 			GridPose gridStart = new GridPose(getPosX(i), getPosY(i), Heading.PLUS_Y);
+			getPos(i);
 			logger.info("Visualisation of " + robotArray[i].getName() + " is starting");
 			wrapper = sim.addRobot(SimulatedRobots.makeConfiguration(false, false), map.toPose(gridStart));
 			RobotSimController controller = new RobotSimController(wrapper.getRobot(), map, gridStart, i);
 			controller.start();
-			getPos(i);
 			//getGoalPoint(i);
 		}
 		MapVisualisationComponent.populateVisualisation(mapVis, sim);

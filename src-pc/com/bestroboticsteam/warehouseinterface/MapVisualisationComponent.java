@@ -203,10 +203,6 @@ public class MapVisualisationComponent extends JComponent {
 			renderRobot(g2, r);
 		}
 
-		for (LocalisedRangeScanner ranger : m_rangers) {
-			renderRanger(g2, ranger);
-		}
-
 		for (PoseProvider pp : m_poseProviders) {
 			renderPose(pp.getPose(), g2);
 		}
@@ -217,24 +213,6 @@ public class MapVisualisationComponent extends JComponent {
 			for (Point p : m_robotTracks) {
 				renderPoint(p, g2, 0.005);
 			}
-		}
-	}
-
-	private void renderRanger(Graphics2D _g2, LocalisedRangeScanner _ranger) {
-		Pose sensorPose = _ranger.getPose();
-		RangeReadings readings = _ranger.getRangeValues();
-		for (RangeReading reading : readings) {
-			float range = reading.getRange();
-			if (!RangeScannerDescription.isValidReading(range)) {
-				range = 2.55f;
-				_g2.setStroke(new BasicStroke(1));
-				_g2.setPaint(Color.RED);
-			} else {
-				_g2.setStroke(new BasicStroke(1));
-				_g2.setPaint(Color.BLUE);
-			}
-			drawLineToHeading(_g2, sensorPose.getX(), sensorPose.getY(), sensorPose.getHeading() + reading.getAngle(),
-					range);
 		}
 	}
 
