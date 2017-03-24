@@ -58,8 +58,8 @@ public class InterfaceController extends Thread {
 		for (int i = 0; i < robotArray.length; i++) {
 			String robot = robotArray[i].getName();
 			float maxWeight = robotArray[i].getMaxCapacity();
-			
-			robotInfo = robot + " - " + "Current Weight: " + " Maximum Weight -> " + maxWeight + " : " + robotInfo;
+			float current = robotArray[i].getCurrentLoad();
+			robotInfo = robot + " - " + "Current Weight: " + current +  " Maximum Weight -> " + maxWeight + " : " + robotInfo;
 		}
 		warehouseInterface.setWeightText(robotInfo);
 	}
