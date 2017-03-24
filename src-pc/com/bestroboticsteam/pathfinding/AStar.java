@@ -23,7 +23,7 @@ public class AStar {
 	final static Logger logger = Logger.getLogger(AStar.class);
 	
 	// multi robot AStar
-	public static LinkedList<Point> multiGetPath(Pair<Point, Point> locationDestinationPair, RobotInfo[] otherRobots) {
+	public synchronized static LinkedList<Point> multiGetPath(Pair<Point, Point> locationDestinationPair, RobotInfo[] otherRobots) {
 		HashMap<TimePoint, Boolean> timedReservationTable = new HashMap<>(100);
 		//Set up the timesReservationTable to avoid collisions with other robots
 		for(RobotInfo robot : otherRobots){
@@ -40,16 +40,17 @@ public class AStar {
 				}
 			}else{
 				//If the robot has finished its current job then it will be free to move
-				if(!robot.finished()){
+				if(robot.getCurrentJob().getPosition().equals(robot.getPosition())){
 					for(int i = 0; i<100; i++){
 						//This is needed because the other robots may be stopped to pick up or drop off
 						timedReservationTable.put(new TimePoint(robot.getPosition(), i), true);
 					}
 				}
-				//Even if the robot can move, it cannot instantly teleport out of the way
-				timedReservationTable.put(new TimePoint(robot.getPosition(), 0), true);
 				
 			}
+			//Even if the robot can move, it cannot instantly teleport out of the way
+			timedReservationTable.put(new TimePoint(robot.getPosition(), 0), true);
+			timedReservationTable.put(new TimePoint(robot.getPosition(), 1), true);
 		}
 		List<Point> path = AStarPath(locationDestinationPair, timedReservationTable);
 		
@@ -127,6 +128,7 @@ public class AStar {
 			openList = addToOpenList(new Point(nodeX, nodeY-1), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			openList = addToOpenList(new Point(nodeX+1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			openList = addToOpenList(new Point(nodeX-1, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
+			openList = addToOpenList(new Point(nodeX, nodeY), currentNode, openListLocations, openList, closedListLocations, doorPosition, timedReservationTable);
 			
 		}
 		
@@ -173,11 +175,10 @@ public class AStar {
 		GridMap map = MapUtils.createRealWarehouse();
 		//Calculates the TimePoint for the current node based on its gCost
 		TimePoint nodeTimePoint = new TimePoint(location, currentNode.gCost);
+		//The space still needs to be free after the robot has moved into it
+		TimePoint nodeTimePoint2 = new TimePoint(location, currentNode.gCost+1);
 		if(location.x>=0 && location.y>=0 && location.x<map.getXSize() && location.y <map.getYSize()){
-			if(location.equals(new Point(3,  0)) && doorPosition.equals(new Point(5, 0))){
-				System.out.println(currentNode + " " + adjacentRobot(currentNode, timedReservationTable));
-			}
-			if(!map.isObstructed(location.x, location.y) && !closedListLocations[location.x][location.y] && !timedReservationTable.containsKey(nodeTimePoint)){
+			if(!map.isObstructed(location.x, location.y) && !closedListLocations[location.x][location.y] && !timedReservationTable.containsKey(nodeTimePoint) && !timedReservationTable.containsKey(nodeTimePoint2)){
 				if(!openListLocations[location.x][location.y]){
 					openList.add(new AStarNode(new Point(location.x,location.y), currentNode, currentNode.gCost+1+Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y), currentNode.gCost+1, Math.abs(location.x-doorPosition.x)+Math.abs(location.y-doorPosition.y)));
 					openListLocations[location.x][location.y]=true;
@@ -185,7 +186,7 @@ public class AStar {
 					for(AStarNode n : openList){
 						// Calculates the information needed by the new node
 						if(n.location.x==location.x && n.location.y==location.y){
-							if(n.gCost>currentNode.gCost){
+							if(n.gCost>currentNode.gCost+1){
 								n.gCost=currentNode.gCost+1;
 								n.parentNode=currentNode;
 								n.fCost=n.gCost+n.hCost;

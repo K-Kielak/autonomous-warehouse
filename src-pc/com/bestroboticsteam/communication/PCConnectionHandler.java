@@ -10,10 +10,15 @@ import lejos.pc.comm.NXTConnector;
 public class PCConnectionHandler extends BaseConnectionHandler {
 
 	private String robotName;
+	// The maximum number of communication attempts before giving a DISCONNECTED
+	// state.
 	private static final int NUM_RETRYS = 10;
 
+	// Self explanatory. The logger
 	final static Logger logger = Logger.getLogger(PCConnectionHandler.class);
 
+	// We have two constructors. One assuming that Bluetooth will be the method
+	// of communication.
 	public PCConnectionHandler(String robotName) {
 		this(robotName, true);
 	}
@@ -38,6 +43,9 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 		 * Method will retry for NUM_RETRY times and still failing after that
 		 * will mean ERROR message
 		 * 
+		 * We also have a log listener on the NXTConnector to listen for any
+		 * messages.
+		 * 
 		 */
 
 		logger.info("Attempting connection to: " + this.robotName);
@@ -57,21 +65,25 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 			}
 
 		});
-		
+		// The delay between connection attempts.
 		int time_delay = 1000;
 
 		for (int retry = 0; retry < PCConnectionHandler.NUM_RETRYS; retry++) {
+			// The method to attempt a connection. Returns a boolean if it was
+			// successful
 			boolean sucessful = conn.connectTo(this.protocol + this.robotName);
 
 			if (sucessful) {
 				this.status = CONNECTED;
 				logger.info(this.robotName + " Connection Established via " + this.protocol);
+				// If successful get the DataStreams.
 				input = new MyDataInputStream(conn.getInputStream());
 				output = new MyDataOutputStream(conn.getOutputStream());
 				return;
 			} else {
 				this.status = BaseConnectionHandler.RETRYING;
-				logger.info("Retrying connection in " + time_delay/1000 + " seconds...");
+				time_delay = Math.min(30000, time_delay * 2);
+				logger.info("Retrying connection in " + time_delay / 1000 + " seconds...");
 				try {
 					Thread.sleep(time_delay);
 				} catch (InterruptedException e) {
@@ -79,7 +91,6 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 					logger.info("Cleaning Up...");
 					return;
 				}
-				time_delay = Math.min(30000, time_delay * 2);
 			}
 		}
 
@@ -88,12 +99,24 @@ public class PCConnectionHandler extends BaseConnectionHandler {
 	}
 
 	public Communicatable receiveObject(Communicatable obj) throws ConnectionNotEstablishedException {
-		logger.info(this.robotName + " Receiving: " + obj.toString());
+		/**
+		 * 
+		 * The method used to receive an object from the data stream. Extends
+		 * the super class method to add logging message
+		 * 
+		 */
+		logger.debug(this.robotName + " Receiving: " + obj.toString());
 		return super.receiveObject(obj);
 	}
 
 	public void sendObject(Communicatable obj) throws ConnectionNotEstablishedException {
-		logger.info(this.robotName + " Sending: " + obj.toString());
+		/**
+		 * 
+		 * The method used to send an object to the data stream. Extends
+		 * the super class method to add logging message
+		 * 
+		 */
+		logger.debug(this.robotName + " Sending: " + obj.toString());
 		super.sendObject(obj);
 	}
 }

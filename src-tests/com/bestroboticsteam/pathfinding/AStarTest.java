@@ -51,7 +51,17 @@ public class AStarTest {
 		actualPath.add(new Point(2, 1));
 		actualPath.add(new Point(2, 2));
 		actualPath.add(new Point(2, 3));
-		assertEquals(path, actualPath);
+		List<Point> actualPath2 = new LinkedList<Point>();
+		actualPath2.add(new Point(0, 4));
+		actualPath2.add(new Point(0, 5));
+		actualPath2.add(new Point(0, 6));
+		actualPath2.add(new Point(1, 6));
+		actualPath2.add(new Point(2, 6));
+		actualPath2.add(new Point(2, 5));
+		actualPath2.add(new Point(2, 4));
+		actualPath2.add(new Point(2, 3));
+		//assertEquals(path, actualPath);
+		assertTrue(path.equals(actualPath) || path.equals(actualPath2));
 
 		path = AStar.singleGetPath(new Point(0, 3), new Point(1, 3));
 		// Should return null when no path is found
@@ -98,13 +108,13 @@ public class AStarTest {
 		RobotInfo[] robots = new RobotInfo[] { new RobotInfo("John Cena", new Point(0, 3), Direction.BACKWARD, 20) , new RobotInfo("John Cena2", new Point(0, 1), Direction.BACKWARD, 20) };
 
 		LinkedList<Point>[] paths  = (LinkedList<Point>[]) new LinkedList<?>[2];
-		Point[][] actualPaths = new Point[][] { { new Point(0, 2), new Point(0, 1) },
+		Point[][] actualPaths = new Point[][] { { new Point(0, 2), new Point(0, 2), new Point(0, 1) },
 			{ new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(2, 1), new Point(2, 2), new Point(2, 3),
 					new Point(2, 4), new Point(2, 5), new Point(2, 6), new Point(1, 6), new Point(0, 6),
 					new Point(0, 5), new Point(0, 4), new Point(0, 3), } };
 		for (int i = 0; i < locationDetinationPairs.length; i++) {
 			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
-			robots[i].setCurrentJob(new JobInfo("", new Point(0, 0)), path);
+			robots[i].setCurrentPath(path);
 			paths[i] = path;
 			assertArrayEquals(path.toArray(new Point[path.size()]), actualPaths[i]);
 		}
@@ -117,26 +127,25 @@ public class AStarTest {
 
 		paths  = (LinkedList<Point>[]) new LinkedList<?>[2];
 		actualPaths = new Point[][] { { new Point(4, 0), new Point(3, 0), new Point(2, 0) },
-			{ new Point(2, 2), new Point(2, 1), new Point(3, 1), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
+			{ new Point(3, 1), new Point(3, 1), new Point(3, 1), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
 		for (int i = 0; i < locationDetinationPairs.length; i++) {
 			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
-			robots[i].setCurrentJob(new JobInfo("", new Point(0, 0)), path);
+			robots[i].setCurrentPath(path);
 			paths[i] = path;
 			assertArrayEquals(path.toArray(new Point[path.size()]), actualPaths[i]);
 		}
 
 		
-		System.out.println("start");
 		locationDetinationPairs = new Pair[] { Pair.makePair(new Point(5, 0), new Point(3, 2)),
 				Pair.makePair(new Point(0, 0), new Point(5, 0)) };
 		robots = new RobotInfo[] { new RobotInfo("John Cena", new Point(5, 0), Direction.BACKWARD, 10) , new RobotInfo("John Cena2", new Point(3, 2), Direction.BACKWARD, 20) };
 
 		paths  = (LinkedList<Point>[]) new LinkedList<?>[2];
 		actualPaths = new Point[][] { { new Point(4, 0), new Point(3, 0), new Point(3, 1), new Point(3, 2) },
-			{ new Point(1, 0), new Point(2, 0), new Point(2, 1), new Point(2, 0), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
+			{ new Point(1, 0), new Point(2, 0), new Point(2, 0), new Point(3, 0), new Point(4, 0), new Point(5, 0) } };
 		for (int i = 0; i < locationDetinationPairs.length; i++) {
 			path = AStar.multiGetPath(locationDetinationPairs[i], robots);
-			robots[i].setCurrentJob(new JobInfo("", new Point(0, 0)), path);
+			robots[i].setCurrentPath(path);
 			paths[i] = path;
 			assertArrayEquals(path.toArray(new Point[path.size()]), actualPaths[i]);
 		}

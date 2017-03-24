@@ -1,8 +1,11 @@
 package com.bestroboticsteam.robotexecution;
 
+import static com.bestroboticsteam.robot.RobotConfig.CUSTOM_EXPRESS_BOT;
+import static com.bestroboticsteam.robot.RobotConfig.LEFT_LIGHT_SENSOR;
+import static com.bestroboticsteam.robot.RobotConfig.RIGHT_LIGHT_SENSOR;
+
 import com.bestroboticsteam.communication.ConnectionNotEstablishedException;
 import com.bestroboticsteam.communication.RobotCommunicationHandler;
-import com.bestroboticsteam.robot.RobotConfig;
 import com.bestroboticsteam.robotsmanagement.Direction;
 import com.bestroboticsteam.robotsmanagement.RobotInfo;
 
@@ -37,14 +40,14 @@ public class Robot implements StoppableRunnable {
 		LightSensor leftSensor = new LightSensor(leftSensorPort);
 		DifferentialPilot pilot = new WheeledRobotSystem(ExpressBot).getPilot();
 		this.movement = new Movement(leftSensor, rightSensor, pilot);
-		this.robotInterface = new RobotInterface();
+		this.robotInterface = new RobotInterface(info);
 		this.comms = new RobotCommunicationHandler();
 	}
 
 	@Override
 	public void run() {
-		this.robotInterface.waitForSensorCalibration();
-		this.movement.calibrate();
+		robotInterface.waitForSensorCalibration();
+		movement.calibrate();
 		Thread connection = new Thread(this.comms);
 		connection.start();
 
@@ -57,29 +60,25 @@ public class Robot implements StoppableRunnable {
 		}
 
 		while (m_run) {
-			this.receiveInfo();
-			this.robotInterface.printMovingToItemMessage(this.info);
+			robotInterface.printWaitingForOrdersMessage();
+			receiveInfo();
 			// Going to destination
 			direction = info.move();
 			if (direction != null) {
-				System.out.println("moving to: " + direction);
 				// If we get a direction move to it. This means that we have not arrived yet.
+				robotInterface.printMovingMessage();
 				movement.move(direction);
-				if (info.getCurrentJob().isGoingToDropPoint()) { // Is the current route going to a drop off point?
-					robotInterface.printMovingToDropPointMessage(info);
-					
-				} else { // Not a drop off point. Therefore, going to an item.
-					robotInterface.printMovingToItemMessage(info);
-				}	
 			} else if (!info.finished()) { // Have we finished a job?
 				Sound.playTone(110, 800); // We play a sound
-				while (info.getCurrentJob().getQuantity() != robotInterface.getItemsQuantity()) {
-					robotInterface.printLoadMessage(info);
+				while (info.getCurrentJob().getQuantity() > robotInterface.getItemsQuantity() && !info.wasJobCancelled()) {
+					robotInterface.printCheckpointMessage(); //when robot reaches DropPoint or Item
 				}
-				this.info.pickAll();
+				
+				info.pickAll();
+				robotInterface.resetItemsQuantity(); // We've collected items so we reset item quantity
 			}
-			robotInterface.setItemsQuantity(0); // We've collected items so we reset item quantity
-			this.sendInfo();
+			
+			sendInfo();
 		}
 	}
 	
@@ -105,11 +104,7 @@ public class Robot implements StoppableRunnable {
 	}
 
 	public static void main(String[] args) {
-		WheeledRobotConfiguration config = RobotConfig.CUSTOM_EXPRESS_BOT;
-		final SensorPort left = SensorPort.S2;
-		final SensorPort right = SensorPort.S3;
-		Robot demo = new Robot(left, right, config);
+		Robot demo = new Robot(LEFT_LIGHT_SENSOR, RIGHT_LIGHT_SENSOR, CUSTOM_EXPRESS_BOT);
 		demo.run();
 	}
-
 }
