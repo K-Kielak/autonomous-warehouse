@@ -19,7 +19,7 @@ public class RobotInterface {
 	}
 	
 	public void waitForSensorCalibration() {
-		/*
+		/**
 		 * Prints a message to the screen like follows:
 		 * 
 		 * ┌──────────────────┐
@@ -69,7 +69,7 @@ public class RobotInterface {
 		 * │ server...        │
 		 * │                  │
 		 * │                  │
-		 * │                  │robot
+		 * │                  │
 		 * └──────────────────┘
 		 */
 		LCD.clear();
@@ -174,7 +174,7 @@ public class RobotInterface {
 	private void printMovingToItemMessage() {
 		/**
 		 * ┌──────────────────┐
-		 * |    John Cena      │
+		 * |    John Cena     │
 		 * │ Job Code:        │
 		 * │ 1234             │
 		 * │ Moving to item:  │

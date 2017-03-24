@@ -11,6 +11,8 @@ public class MyDataInputStream extends DataInputStream {
 	 * Had to define new DataStreams so special objects can be received such as
 	 * Strings and Points.
 	 */
+	
+	private int attempt = 0;
 
 	public MyDataInputStream(InputStream in) {
 		super(in);
@@ -27,6 +29,10 @@ public class MyDataInputStream extends DataInputStream {
 				Thread.sleep(10);
 			} catch (InterruptedException e1) {
 			}
+//			attempt++
+//			if (attempt > 200) {
+//				throw new E
+//			}
 			return readString();
 		}
 
