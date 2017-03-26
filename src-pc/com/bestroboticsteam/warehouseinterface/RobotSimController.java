@@ -63,6 +63,7 @@ public class RobotSimController extends Thread {
 			}
 			position.setLocation(posForSimX, posForSimY);
 			robot.setPose(position);
+			CreateSimRobots.getGoalPoint(theRobot);
 		}
 	}
 	

@@ -69,8 +69,8 @@ public class RobotInfo implements Communicatable {
 	}
 
 	public void pickAll(){
-		currentJob.pickAll();
 		currentLoad += currentJob.getWeight()*currentJob.getQuantity();
+		currentJob.pickAll();
 		if(currentJob.isDropPoint())
 			currentLoad = 0;
 	}

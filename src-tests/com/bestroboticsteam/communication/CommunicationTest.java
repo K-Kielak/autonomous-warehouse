@@ -2,7 +2,7 @@ package com.bestroboticsteam.communication;
 
 import static org.junit.Assert.*;
 
-//import org.junit.Ignore;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CommunicationTest {
@@ -68,7 +68,7 @@ public class CommunicationTest {
 
 	}
 
-	@Test()
+	@Ignore()
 	public void testSendReceiveDummyObjectUSB() throws InterruptedException {
 		DummyObject d = new DummyObject();
 

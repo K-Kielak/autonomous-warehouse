@@ -15,8 +15,7 @@ import com.bestroboticsteam.robotsmanagement.RobotInfo;
 public class JobAssignmentTest {
 	
 	private static final RobotInfo[] robots = {  //TODO For loop
-		new RobotInfo(ROBOT_1_NAME, new Point(0, 0), Direction.FORWARD, 30f),
-		new RobotInfo(ROBOT_2_NAME, new Point(11, 7), Direction.FORWARD, 30f)
+		new RobotInfo(ROBOT_1_NAME, new Point(0, 0), Direction.FORWARD, 50f)
 	};
 	
 	private static JobSelection selector;
@@ -25,7 +24,7 @@ public class JobAssignmentTest {
 	@BeforeClass
 	public static void ReadData(){
 		
-		selector = new JobSelection("../central-system/assets/test");
+		selector = new JobSelection("../central-system/assets/test/TEST1");
 		assignment = new JobAssignment(selector, robots);
 	
 	}
@@ -33,7 +32,19 @@ public class JobAssignmentTest {
 	@Test
 	public void TestNextJob(){
 		
-		
+		for(int i = 0; i < 5; i ++){
+			
+			JobInfo info = assignment.getNextJob(robots[0].getName());
+			
+			float w = 0f;
+			
+			while(!info.getItem().equals("DropBox")){
+				w += info.getWeight();
+				info = assignment.getNextJob(robots[0].getName());
+			}
+			
+			assertTrue(w <= 50f);
+		}
 	}
 	
 }
