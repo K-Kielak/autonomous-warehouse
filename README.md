@@ -1,16 +1,13 @@
-This is PC part of warehouse-assignment, the whole pc robots management code is stored here.
+## Final Robot Programmig assignment 
+#### Simulation of warehouse managed by autonomous robots.
 
-Don't push any binary or IDE files! Don't push rp-pc, rp-shared or rp-utils projects!
+##### Team Members:
+- Kacper Kielak - Team Management, Integration, Robot Movement and help with Robot Interface
+- Matei Vicovan-Hantascu - Job Selection, Job Assignment and Input Proccessing
+- Alexander Lloyd - Robots-Server Communication and help with Integration
+- Lewis Wakeland - Multi-Robot Path Finding
+- Bhavina Mistry - Waregouse Management Interface
+- Andrei-Mariano Gherase - Robot Interface and help with Robot Movement
+- Theodor Mazilu - Robot Interface
 
-How to start working on this project:
-
-1. clone repository
-2. create new branch for your part of assignment
-3. start working on your branch
-4. commit and push changes only to your branches
-
-If you want to integrate your changes with the rest of the system:
-
-1. make sure you code works
-2. commit and push changes to your branch
-3. create merge request with branch integration
+###### We received 4501 points which was the best score within the last 2 years (about 20 teams per year). For comparison 2nd team this year received 3957 points, 3rd - 3163p and 4th - 1767p, whereas the first team last year received ~2300 points.
