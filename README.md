@@ -1,12 +1,14 @@
-## Final Robot Programmig assignment 
+## Final Robot Programming assignment 
 #### Simulation of warehouse managed by autonomous robots.
+
+##### The whole system is based on communication between three robots and a server. It consists research-level concepts like Traveling Salesman Problem, Multi-Robot Pathfinding, Monte Carlo Localization to name a few. 
 
 ##### Team Members:
 - Kacper Kielak - Team Management, Integration, Robot Movement and help with Robot Interface
-- Matei Vicovan-Hantascu - Job Selection, Job Assignment and Input Proccessing
+- Matei Vicovan-Hantascu - Job Selection, Job Assignment, and Input Processing
 - Alexander Lloyd - Robots-Server Communication and help with Integration
-- Lewis Wakeland - Multi-Robot Path Finding
-- Bhavina Mistry - Waregouse Management Interface
+- Lewis Wakeland - Multi-Robot Pathfinding
+- Bhavina Mistry - Warehouse Management Interface
 - Andrei-Mariano Gherase - Robot Interface and help with Robot Movement
 - Theodor Mazilu - Robot Interface
 
